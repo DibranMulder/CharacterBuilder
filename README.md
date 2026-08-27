@@ -8,7 +8,7 @@ This folder now contains a runnable Godot 4 character-builder prototype for the 
 godot --editor project.godot
 ```
 
-Press **F6/F5**, select any of eight races, swap equipment independently, and trigger three race-specific gestures.
+Press **F6/F5**, select any of eight races, swap equipment independently, and trigger jab, forehand, backhand, or one of three race-specific gestures.
 
 ## Production strategy
 
@@ -25,6 +25,7 @@ The runtime seam is intentionally small:
 ```gdscript
 avatar.configure("goblin", saved_loadout)
 avatar.equip(&"weapon", "bow")
+avatar.play_weapon_attack(&"forehand")
 avatar.play_gesture(0)
 ```
 
@@ -49,7 +50,7 @@ For production, put definitions in custom `.tres` resources rather than hard-cod
 ## Animation plan
 
 - Shared locomotion: idle, walk/run, jump start, rise, apex, fall, land, ladder/rope, hit, defeat.
-- Weapon-family actions: unarmed, one-hand slash, two-hand slash, thrust, bow, staff/cast, shield.
+- Weapon attacks use a two-joint shoulder/elbow/hand chain. At rest, the elbow has an approximately 120° interior bend and the weapon rests diagonally down along the screen-right side of the body. Jab retracts almost to the shoulder while staying horizontal, then stabs forward along the same line. Forehand keeps that strong elbow bend folded toward the weapon side, carries the blade up and back beyond the screen-left edge of the face, raises it overhead, then smashes diagonally down toward a screen-right enemy. Backhand remains provisional. Every attack recovers to the same guard, and the equipped weapon follows the hand socket.
 - Race gestures: three are represented per race in the prototype. Production clips should animate the race rig; weapon visuals follow the hand socket automatically.
 - Put gameplay timing in animation events or action data: startup, active, recovery, hitbox, movement impulse, cancel window. Never infer hit timing from a rendered frame.
 - Use `AnimationPlayer` for authored transforms/events and `AnimationTree` for state transitions, one-shots, and filtered upper-body overlays. Use discrete/carry blending for cel-swapped tracks.

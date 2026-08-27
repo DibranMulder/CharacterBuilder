@@ -6,6 +6,7 @@ var avatar: ModularCharacter
 var race_selector: OptionButton
 var gear_selectors := {}
 var gesture_box: HBoxContainer
+var weapon_attack_box: HBoxContainer
 var race_ids: Array[String]
 var title_label: Label
 var tagline_label: Label
@@ -60,9 +61,13 @@ func _build_ui() -> void:
 		for item in CharacterCatalog.items_for(slot): selector.add_item(String(item).capitalize())
 		selector.item_selected.connect(_equip_selected.bind(slot,selector)); grid.add_child(selector); gear_selectors[String(slot)]=selector
 	column.add_child(HSeparator.new())
+	column.add_child(_label("Weapon attacks"))
+	weapon_attack_box=HBoxContainer.new(); weapon_attack_box.add_theme_constant_override("separation",6); column.add_child(weapon_attack_box)
+	for attack in Avatar.WEAPON_ATTACKS:
+		var attack_button:=Button.new(); attack_button.text=String(attack).capitalize(); attack_button.size_flags_horizontal=Control.SIZE_EXPAND_FILL
+		attack_button.pressed.connect(avatar.play_weapon_attack.bind(attack)); weapon_attack_box.add_child(attack_button)
 	column.add_child(_label("Race gestures"))
 	gesture_box=HBoxContainer.new(); gesture_box.add_theme_constant_override("separation",6); column.add_child(gesture_box)
-	var hint := Label.new(); hint.text="Art swaps at named sockets; no loadout-specific sheets."; hint.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART; hint.add_theme_font_size_override("font_size",11); hint.add_theme_color_override("font_color",Color("7f91a8")); column.add_child(hint)
 
 
 func _label(text_: String) -> Label:
@@ -81,7 +86,8 @@ func _select_race(index: int) -> void:
 
 func _equip_selected(index: int, slot: StringName, selector: OptionButton) -> void:
 	var items:=CharacterCatalog.items_for(slot)
-	if index >= 0 and index < items.size(): avatar.equip(slot,items[index])
+	if index >= 0 and index < items.size():
+		avatar.equip(slot,items[index])
 
 
 func _sync_selectors() -> void:

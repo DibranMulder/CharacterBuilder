@@ -7,6 +7,27 @@ signal gesture_started(name: String)
 const Part := preload("res://src/part_visual.gd")
 const Gear := preload("res://src/gear_visual.gd")
 
+const WEAPON_ATTACKS := [&"jab", &"forehand", &"backhand"]
+const ATTACK_CURVES := {
+	"jab": [
+		# Retract with a deeply bent elbow while keeping the blade horizontal,
+		# then extend the arm along that same line into the thrust.
+		{"upper": 70.0, "forearm": -160.0, "torso": 7.0, "x": -13.0, "duration": 0.18},
+		{"upper": -60.0, "forearm": -30.0, "torso": -8.0, "x": 22.0, "duration": 0.13},
+	],
+	"forehand": [
+		# Carry a consistently bent elbow behind the head, reach a vertical
+		# overhead weapon pose, then smash diagonally down and forward.
+		{"upper": -165.0, "forearm": -60.0, "torso": -8.0, "x": -7.0, "duration": 0.20},
+		{"upper": -120.0, "forearm": -60.0, "torso": -13.0, "x": -13.0, "duration": 0.15},
+		{"upper": -20.0, "forearm": -25.0, "torso": 11.0, "x": 12.0, "duration": 0.18},
+	],
+	"backhand": [
+		{"upper": 45.0, "forearm": -15.0, "torso": 11.0, "x": 7.0, "duration": 0.18},
+		{"upper": -120.0, "forearm": 30.0, "torso": -11.0, "x": -5.0, "duration": 0.17},
+	],
+}
+
 var race_id := "human"
 var loadout := {
 	"weapon": "sword", "offhand": "shield", "armor": "leather",
@@ -50,13 +71,30 @@ func available_gestures() -> Array:
 func play_gesture(index: int) -> void:
 	var gestures: Array = available_gestures()
 	if index < 0 or index >= gestures.size(): return
+	var gesture: Dictionary = gestures[index]
+	_play_action(gesture.name, gesture.style)
+
+
+func available_weapon_attacks() -> Array[StringName]:
+	return WEAPON_ATTACKS.duplicate()
+
+
+func play_weapon_attack(attack: StringName = &"forehand") -> void:
+	if not attack in WEAPON_ATTACKS:
+		return
+	_play_action("%s %s" % [String(loadout.weapon).capitalize(), String(attack).capitalize()], String(attack))
+
+
+func _play_action(action_name: String, style: String) -> void:
 	if _active_tween and _active_tween.is_valid(): _active_tween.kill()
 	_restore_pose()
 	_gesturing = true
-	var gesture: Dictionary = gestures[index]
-	gesture_started.emit(gesture.name)
+	gesture_started.emit(action_name)
 	_active_tween = create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	match gesture.style:
+	match style:
+		"jab": _animate_weapon_curve("jab")
+		"forehand": _animate_weapon_curve("forehand")
+		"backhand": _animate_weapon_curve("backhand")
 		"slash": _animate_slash()
 		"thrust": _animate_thrust()
 		"cast": _animate_cast()
@@ -85,7 +123,11 @@ func _part(parent: Node, name_: String, kind: String, size: Vector2, color: Colo
 
 
 func _rebuild() -> void:
-	for child in get_children(): child.queue_free()
+	# Detach immediately so rebuilt sockets keep stable names in the same frame.
+	# queue_free() alone leaves the old nodes present until frame end.
+	for child in get_children():
+		remove_child(child)
+		child.queue_free()
 	_bones.clear(); _gear.clear(); _rest.clear()
 	_profile = CharacterCatalog.race(race_id)
 	var rig := Node2D.new(); rig.name = "Rig"; add_child(rig); _bones.rig = rig
@@ -120,16 +162,27 @@ func _rebuild() -> void:
 		var wl := Part.new().setup("wing",Vector2(-65,72),Color("a8e8de"),_profile.accent); wl.position=Vector2(-16,20); wl.z_index=-5; torso.add_child(wl)
 		var wr := Part.new().setup("wing",Vector2(65,72),Color("a8e8de"),_profile.accent); wr.position=Vector2(16,20); wr.z_index=-5; torso.add_child(wr)
 
-	_part(torso, "left_arm", "limb", Vector2(16,float(_profile.arm)), skin.darkened(.07), Vector2(-torso_size.x*.48,8), -3)
-	_part(torso, "right_arm", "limb", Vector2(16,float(_profile.arm)), skin, Vector2(torso_size.x*.48,8), 3)
-	_bones.left_arm.rotation_degrees = 9; _bones.right_arm.rotation_degrees = -9
+	var upper_arm_length := float(_profile.arm) * 0.52
+	var forearm_length := float(_profile.arm) - upper_arm_length
+	_part(torso, "left_arm", "limb", Vector2(16,upper_arm_length), skin.darkened(.07), Vector2(-torso_size.x*.48,8), -3)
+	_part(_bones.left_arm, "left_forearm", "limb", Vector2(15,forearm_length), skin.darkened(.04), Vector2(0,upper_arm_length), -3)
+	_part(torso, "right_arm", "limb", Vector2(16,upper_arm_length), skin, Vector2(torso_size.x*.48,8), 3)
+	_part(_bones.right_arm, "right_forearm", "limb", Vector2(15,forearm_length), skin, Vector2(0,upper_arm_length), 3)
+	# Readable combat-ready silhouette: shield guards the screen-left side while
+	# the weapon points away from the shoulder in the screen-right hand.
+	_bones.left_arm.rotation_degrees = 18; _bones.left_forearm.rotation_degrees = -8
+	# Relative forearm rotation of -60 degrees produces an approximately
+	# 120-degree interior elbow angle. The slight inward upper-arm rotation
+	# keeps the weapon in a relaxed diagonal guard alongside the body instead
+	# of projecting it horizontally forward.
+	_bones.right_arm.rotation_degrees = 5; _bones.right_forearm.rotation_degrees = -60
 
 	_attach_gear("back", torso, Vector2(0,5), -6)
 	_attach_gear("armor", torso, Vector2.ZERO, 1)
 	_attach_gear("head", head, Vector2.ZERO, 2)
 	_attach_gear("accessory", head, Vector2(0,4), 3)
-	_attach_gear("weapon", _bones.right_arm, Vector2(0,float(_profile.arm)), 6)
-	_attach_gear("offhand", _bones.left_arm, Vector2(0,float(_profile.arm)), 5)
+	_attach_gear("weapon", _bones.right_forearm, Vector2(0,forearm_length), 6)
+	_attach_gear("offhand", _bones.left_forearm, Vector2(0,forearm_length), 5)
 	_capture_pose()
 
 
@@ -162,25 +215,44 @@ func _swing(node: Node2D, windup: float, strike: float) -> void:
 	_active_tween.tween_property(node,"rotation_degrees",rad_to_deg(_rest[node.name].rotation),.24)
 
 
-func _animate_slash() -> void: _swing(_bones.right_arm, -105, 72)
+func _animate_weapon_curve(curve_id: String) -> void:
+	for pose in ATTACK_CURVES[curve_id]:
+		_active_tween.tween_property(_bones.right_arm, "rotation_degrees", pose.upper, pose.duration)
+		_active_tween.parallel().tween_property(_bones.right_forearm, "rotation_degrees", pose.forearm, pose.duration)
+		_active_tween.parallel().tween_property(_bones.torso, "rotation_degrees", pose.torso, pose.duration)
+		_active_tween.parallel().tween_property(_bones.rig, "position:x", pose.x, pose.duration)
+	_active_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_active_tween.tween_property(_bones.right_arm, "rotation", _rest.right_arm.rotation, .24)
+	_active_tween.parallel().tween_property(_bones.right_forearm, "rotation", _rest.right_forearm.rotation, .24)
+	_active_tween.parallel().tween_property(_bones.torso, "rotation", _rest.torso.rotation, .24)
+	_active_tween.parallel().tween_property(_bones.rig, "position:x", _rest.rig.position.x, .24)
+
+
+func _animate_slash() -> void: _animate_weapon_curve("forehand")
 func _animate_thrust() -> void:
 	_active_tween.tween_property(_bones.torso,"rotation_degrees",-12,.12)
 	_active_tween.parallel().tween_property(_bones.right_arm,"rotation_degrees",-88,.12)
+	_active_tween.parallel().tween_property(_bones.right_forearm,"rotation_degrees",-4,.12)
 	_active_tween.tween_property(_bones.rig,"position:x",24.0,.12)
 	_active_tween.tween_property(_bones.rig,"position:x",0.0,.22)
 func _animate_cast() -> void:
 	_active_tween.tween_property(_bones.left_arm,"rotation_degrees",-145,.22)
 	_active_tween.parallel().tween_property(_bones.right_arm,"rotation_degrees",145,.22)
+	_active_tween.parallel().tween_property(_bones.left_forearm,"rotation_degrees",18,.22)
+	_active_tween.parallel().tween_property(_bones.right_forearm,"rotation_degrees",-18,.22)
 	_active_tween.tween_property(_bones.torso,"scale",Vector2(1.08,.94),.16)
 	_active_tween.tween_interval(.14)
 func _animate_smash() -> void:
 	_active_tween.tween_property(_bones.right_arm,"rotation_degrees",-175,.25)
+	_active_tween.parallel().tween_property(_bones.right_forearm,"rotation_degrees",15,.25)
 	_active_tween.tween_property(_bones.right_arm,"rotation_degrees",12,.12).set_trans(Tween.TRANS_EXPO)
 	_active_tween.parallel().tween_property(_bones.rig,"position:y",7.0,.12)
 	_active_tween.tween_interval(.12)
 func _animate_shoot() -> void:
 	_active_tween.tween_property(_bones.left_arm,"rotation_degrees",-88,.18)
 	_active_tween.parallel().tween_property(_bones.right_arm,"rotation_degrees",-78,.18)
+	_active_tween.parallel().tween_property(_bones.left_forearm,"rotation_degrees",-8,.18)
+	_active_tween.parallel().tween_property(_bones.right_forearm,"rotation_degrees",-12,.18)
 	_active_tween.tween_interval(.2)
 	_active_tween.tween_property(_bones.right_arm,"rotation_degrees",-25,.08)
 func _animate_leap() -> void:
@@ -188,4 +260,3 @@ func _animate_leap() -> void:
 	_active_tween.tween_property(_bones.rig,"position:y",-62.0,.24).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	_active_tween.parallel().tween_property(_bones.right_arm,"rotation_degrees",-130,.22)
 	_active_tween.tween_property(_bones.rig,"position:y",0.0,.28).set_ease(Tween.EASE_IN)
-

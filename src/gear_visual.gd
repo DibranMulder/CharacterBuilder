@@ -5,6 +5,14 @@ var slot := "weapon"
 var item := "none"
 var accent := Color("d7a54f")
 
+const REACH_ENDPOINTS := {
+	"sword": Vector2(0, 88),
+	"axe": Vector2(30, 92),
+	"bow": Vector2(18, 80),
+	"spear": Vector2(0, 126),
+	"staff": Vector2(0, 120),
+}
+
 
 func setup(p_slot: String, p_item: String, p_accent: Color) -> GearVisual:
 	slot = p_slot
@@ -15,6 +23,10 @@ func setup(p_slot: String, p_item: String, p_accent: Color) -> GearVisual:
 	return self
 
 
+func reach_endpoint() -> Vector2:
+	return REACH_ENDPOINTS.get(item, Vector2.ZERO)
+
+
 func _draw() -> void:
 	var ink := Color("202936")
 	var metal := Color("cbd4d8")
@@ -22,21 +34,22 @@ func _draw() -> void:
 		"weapon":
 			match item:
 				"sword":
-					draw_line(Vector2.ZERO, Vector2(0, -72), metal, 9.0, true)
-					draw_colored_polygon(PackedVector2Array([Vector2(-4,-72), Vector2(0,-88), Vector2(4,-72)]), metal)
-					draw_line(Vector2(-13,-8), Vector2(13,-8), accent, 6.0, true)
+					draw_line(Vector2(0, 10), Vector2(0, 72), metal, 9.0, true)
+					draw_colored_polygon(PackedVector2Array([Vector2(-4,72), Vector2(0,88), Vector2(4,72)]), metal)
+					draw_line(Vector2(-13,8), Vector2(13,8), accent, 6.0, true)
+					draw_line(Vector2.ZERO, Vector2(0,-12), Color("70472b"), 7.0, true)
 				"axe":
-					draw_line(Vector2.ZERO, Vector2(0, -82), Color("70472b"), 8.0, true)
-					draw_colored_polygon(PackedVector2Array([Vector2(0,-80), Vector2(30,-92), Vector2(27,-65), Vector2(0,-62)]), metal)
+					draw_line(Vector2.ZERO, Vector2(0, 82), Color("70472b"), 8.0, true)
+					draw_colored_polygon(PackedVector2Array([Vector2(0,80), Vector2(30,92), Vector2(27,65), Vector2(0,62)]), metal)
 				"bow":
-					draw_arc(Vector2(-18,-40), 40, -PI/2, PI/2, 20, Color("8a5c34"), 5.0)
-					draw_line(Vector2(-18,-80), Vector2(-18,0), Color("e8dcc6"), 2.0)
+					draw_arc(Vector2(18,40), 40, PI/2, PI*1.5, 20, Color("8a5c34"), 5.0)
+					draw_line(Vector2(18,0), Vector2(18,80), Color("e8dcc6"), 2.0)
 				"spear":
-					draw_line(Vector2.ZERO, Vector2(0,-110), Color("795033"), 6.0, true)
-					draw_colored_polygon(PackedVector2Array([Vector2(-8,-105), Vector2(0,-126), Vector2(8,-105)]), metal)
+					draw_line(Vector2(0,-18), Vector2(0,110), Color("795033"), 6.0, true)
+					draw_colored_polygon(PackedVector2Array([Vector2(-8,105), Vector2(0,126), Vector2(8,105)]), metal)
 				"staff":
-					draw_line(Vector2.ZERO, Vector2(0,-112), Color("6f4c31"), 7.0, true)
-					draw_circle(Vector2(0,-120), 12, accent.lightened(.15))
+					draw_line(Vector2(0,-18), Vector2(0,112), Color("6f4c31"), 7.0, true)
+					draw_circle(Vector2(0,120), 12, accent.lightened(.15))
 		"offhand":
 			match item:
 				"shield":
