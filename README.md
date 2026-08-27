@@ -45,6 +45,8 @@ Authored replacements should be transparent PNGs (or `Polygon2D` meshes) with a 
 | main/off hand | wrist | 5 to 6 |
 | head/accessory | head | 2 to 3 |
 
+The shield is a deliberate exception to the general offhand layer: the far-side arm crosses behind the torso so the shield appears on the same screen-right side as the weapon, with its inside face and straps toward the viewer. Lanterns and spellbooks remain on the normal foreground hand layer.
+
 For production, put definitions in custom `.tres` resources rather than hard-coded dictionaries. Godot Resources are Inspector-editable, typed, version-control-friendly data containers. Atlas related textures, but keep logical items independent so downloads and cosmetics can be managed without rebuilding every character.
 
 ## Animation plan

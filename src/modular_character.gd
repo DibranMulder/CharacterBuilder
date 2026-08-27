@@ -59,7 +59,9 @@ func equip(slot: StringName, item_id: String) -> bool:
 		return false
 	loadout[String(slot)] = item_id
 	var visual: GearVisual = _gear.get(String(slot))
-	if visual: visual.setup(String(slot), item_id, _profile.accent)
+	if visual:
+		visual.setup(String(slot), item_id, _profile.accent)
+		_apply_gear_presentation(String(slot), item_id, visual)
 	equipment_changed.emit(slot, item_id)
 	return true
 
@@ -168,9 +170,9 @@ func _rebuild() -> void:
 	_part(_bones.left_arm, "left_forearm", "limb", Vector2(15,forearm_length), skin.darkened(.04), Vector2(0,upper_arm_length), -3)
 	_part(torso, "right_arm", "limb", Vector2(16,upper_arm_length), skin, Vector2(torso_size.x*.48,8), 3)
 	_part(_bones.right_arm, "right_forearm", "limb", Vector2(15,forearm_length), skin, Vector2(0,upper_arm_length), 3)
-	# Readable combat-ready silhouette: shield guards the screen-left side while
-	# the weapon points away from the shoulder in the screen-right hand.
-	_bones.left_arm.rotation_degrees = 18; _bones.left_forearm.rotation_degrees = -8
+	# The far-side offhand crosses behind the torso so the shield appears on the
+	# same screen-right side as the weapon while its inside remains visible.
+	_bones.left_arm.rotation_degrees = -70; _bones.left_forearm.rotation_degrees = -20
 	# Relative forearm rotation of -60 degrees produces an approximately
 	# 120-degree interior elbow angle. The slight inward upper-arm rotation
 	# keeps the weapon in a relaxed diagonal guard alongside the body instead
@@ -190,6 +192,23 @@ func _attach_gear(slot: String, parent: Node2D, at: Vector2, z: int) -> void:
 	var visual := Gear.new().setup(slot, loadout[slot], _profile.accent)
 	visual.name = slot.capitalize(); visual.position = at; visual.z_index = z
 	parent.add_child(visual); _gear[slot] = visual
+	_apply_gear_presentation(slot, loadout[slot], visual)
+
+
+func _apply_gear_presentation(slot: String, item_id: String, visual: GearVisual) -> void:
+	if slot != "offhand":
+		return
+	if item_id == "shield":
+		# Advance along the crossed forearm just enough to expose the inside face
+		# beyond the torso's screen-right edge.
+		# Negative local X moves the shield downward in this crossed-arm pose.
+		visual.position.x = -10.0
+		visual.position.y = float(_profile.arm) * 0.48 + 20.0
+		visual.z_index = -1
+	else:
+		visual.position.x = 0.0
+		visual.position.y = float(_profile.arm) * 0.48
+		visual.z_index = 5
 
 
 func _capture_pose() -> void:

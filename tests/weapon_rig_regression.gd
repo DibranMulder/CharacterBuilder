@@ -30,8 +30,10 @@ func _run() -> void:
 
 	if weapon.global_position.x <= avatar.global_position.x:
 		_fail("weapon must render on the screen-right hand")
-	if shield.global_position.x >= avatar.global_position.x:
-		_fail("shield must render on the screen-left hand")
+	if shield.global_position.x <= avatar.global_position.x:
+		_fail("cross-body shield must render on the same screen-right side as the weapon")
+	if shield.z_index >= 0:
+		_fail("shield must remain behind the far-side forearm and torso")
 	if shoulder_position.distance_to(sword_tip) <= shoulder_position.distance_to(hand_position):
 		_fail("sword tip must extend beyond the hand from the shoulder pivot")
 	var rest_weapon_angle := rad_to_deg(rest_weapon_vector.angle())

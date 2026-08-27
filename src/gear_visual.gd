@@ -53,9 +53,18 @@ func _draw() -> void:
 		"offhand":
 			match item:
 				"shield":
-					draw_circle(Vector2(0,-20), 27, Color("8f6337"))
-					draw_arc(Vector2(0,-20), 27, 0, TAU, 24, metal, 5.0)
-					draw_circle(Vector2(0,-20), 7, accent)
+					# The offhand is on the far side of the body, so the player sees
+					# the shield's darker inside face, arm straps, and grip.
+					var center := Vector2(0,-20)
+					draw_circle(center, 27, Color("68462f"))
+					draw_circle(center, 21, Color("815a3b"))
+					draw_arc(center, 27, 0, TAU, 24, metal.darkened(.12), 5.0)
+					# Bias the straps toward the exposed half because the torso overlaps
+					# the shield's screen-right side.
+					draw_line(center + Vector2(-20,-10), center + Vector2(3,8), Color("3e2b22"), 7.0, true)
+					draw_line(center + Vector2(-18,12), center + Vector2(3,-10), Color("ad7b4b"), 4.0, true)
+					for rivet in [Vector2(-17,-12), Vector2(17,-12), Vector2(-17,12), Vector2(17,12)]:
+						draw_circle(center + rivet, 2.5, metal)
 				"lantern":
 					draw_rect(Rect2(-13,-44,26,31), Color("f4b942"), true)
 					draw_rect(Rect2(-13,-44,26,31), ink, false, 4.0)
