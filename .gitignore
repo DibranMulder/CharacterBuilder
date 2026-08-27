@@ -1,0 +1,9 @@
+# Godot-generated editor and import cache.
+.godot/
+
+# Platform/editor noise.
+.DS_Store
+
+# Local exports.
+build/
+exports/
