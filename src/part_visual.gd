@@ -128,8 +128,35 @@ func _draw() -> void:
 			draw_circle(Vector2(0,size.y),size.x*.50,INK)
 			draw_circle(Vector2(0,size.y),size.x*.36,color)
 		"horse":
-			_ellipse(Vector2(0, 4), size * 0.5, color)
-			draw_arc(Vector2(size.x*.28,0),size.y*.30,-PI*.55,PI*.55,12,color.lightened(.08),5.0)
+			if back_view:
+				# Foreshortened top/rear view for ladders: the withers taper into a
+				# rounded rump instead of projecting horizontally to one side.
+				var back := PackedVector2Array([
+					Vector2(-size.y*.28,-size.y*.18), Vector2(size.y*.28,-size.y*.18),
+					Vector2(size.y*.48,size.y*.20), Vector2(size.y*.50,size.y*.58),
+					Vector2(size.y*.32,size.y*.82), Vector2(0,size.y*.94),
+					Vector2(-size.y*.32,size.y*.82), Vector2(-size.y*.50,size.y*.58),
+					Vector2(-size.y*.48,size.y*.20),
+				])
+				_outlined_polygon(back,color)
+				draw_line(Vector2(0,-size.y*.04),Vector2(0,size.y*.67),color.lightened(.10),3.0,true)
+				draw_arc(Vector2(0,size.y*.45),size.y*.31,.08,PI-.08,16,color.darkened(.10),3.0)
+			else:
+				_ellipse(Vector2(0, 4), size * 0.5, color)
+				draw_arc(Vector2(size.x*.28,0),size.y*.30,-PI*.55,PI*.55,12,color.lightened(.08),5.0)
+		"horse_neck":
+			# A narrow human-waist transition opening into the horse's withers and
+			# chest. This keeps the centaur readable as two joined anatomies.
+			var neck := PackedVector2Array([
+				Vector2(-size.x*.20,0), Vector2(size.x*.20,0),
+				Vector2(size.x*(.38 if back_view else .48),size.y*.70), Vector2(size.x*.30,size.y),
+				Vector2(-size.x*.30,size.y), Vector2(-size.x*(.38 if back_view else .42),size.y*(.70 if back_view else .88)),
+			])
+			_outlined_polygon(neck,color)
+			if back_view:
+				draw_line(Vector2(0,size.y*.12),Vector2(0,size.y*.82),color.lightened(.08),3.0,true)
+			else:
+				draw_arc(Vector2(size.x*.08,size.y*.62),size.x*.30,-PI*.82,PI*.42,14,color.lightened(.08),5.0)
 		"wing":
 			var wing := PackedVector2Array([Vector2.ZERO, Vector2(size.x, -size.y * .65), Vector2(size.x * .78, size.y * .12), Vector2(size.x * .2, size.y)])
 			_outlined_polygon(wing,Color(color,.52),2.0)

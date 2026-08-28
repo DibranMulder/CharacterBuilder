@@ -50,6 +50,9 @@ var _head_visual: PartVisual
 var _head_base: BaseAnatomyVisual
 var _left_hand_base: BaseAnatomyVisual
 var _right_hand_base: BaseAnatomyVisual
+var _horse_tail_base: BaseAnatomyVisual
+var _horse_body_visual: PartVisual
+var _horse_neck_visual: PartVisual
 
 
 func _ready() -> void:
@@ -119,6 +122,7 @@ func play_motion(motion: StringName) -> void:
 	current_motion = motion
 	_gesturing = true
 	_set_back_view(motion == &"climb")
+	_set_climbing_anatomy(motion == &"climb")
 	_set_climbing_gear(motion == &"climb")
 	_active_tween = create_tween().set_loops().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	if motion == &"run":
@@ -134,6 +138,7 @@ func stop_motion() -> void:
 	current_motion = &"idle"
 	_gesturing = false
 	_set_back_view(false)
+	_set_climbing_anatomy(false)
 	_set_climbing_gear(false)
 	motion_changed.emit(current_motion)
 
@@ -150,6 +155,7 @@ func _play_action(action_name: String, style: String) -> void:
 	current_motion = &"idle"
 	_gesturing = true
 	_set_back_view(false)
+	_set_climbing_anatomy(false)
 	_set_climbing_gear(false)
 	motion_changed.emit(current_motion)
 	gesture_started.emit(action_name)
@@ -206,6 +212,9 @@ func _rebuild() -> void:
 		remove_child(child)
 		child.queue_free()
 	_bones.clear(); _gear.clear(); _rest.clear()
+	_horse_tail_base = null
+	_horse_body_visual = null
+	_horse_neck_visual = null
 	_profile = CharacterCatalog.race(race_id)
 	var rig := Node2D.new(); rig.name = "Rig"; add_child(rig); _bones.rig = rig
 	var shadow := Part.new().setup("shadow", Vector2(118,24), Color.WHITE, Color.TRANSPARENT)
@@ -219,7 +228,16 @@ func _rebuild() -> void:
 	var hip := Node2D.new(); hip.name = "Hip"; hip.position = Vector2(0, hip_y); rig.add_child(hip); _bones.hip = hip
 
 	if _profile.topology == "centaur":
-		_part(hip, "horse_body", "horse", Vector2(128,62), skin.darkened(.16), Vector2(-12, 18), -1)
+		_horse_body_visual = _part(hip, "horse_body", "horse", Vector2(128,62), skin.darkened(.16), Vector2(-12, 18), -1)
+		_horse_neck_visual = _part(hip, "horse_neck", "horse_neck", Vector2(62,48), skin.darkened(.10), Vector2(28, -6), -1)
+		var tail := Node2D.new()
+		tail.name = "horse_tail"
+		tail.position = Vector2(-72,12)
+		tail.z_index = -4
+		hip.add_child(tail)
+		_bones.horse_tail = tail
+		# The authored tail is rooted at its right edge and flows behind the rump.
+		_horse_tail_base = _base_sprite(tail,"HorseTailSprite","horse_tail",Vector2(72,72),Vector2(-33,17),0)
 		var horse_upper_length := float(_profile.leg) * .52
 		var horse_lower_length := float(_profile.leg) - horse_upper_length
 		for i in 4:
@@ -240,7 +258,8 @@ func _rebuild() -> void:
 		_bones.left_shin.rotation_degrees = 4.0
 		_bones.right_shin.rotation_degrees = -4.0
 
-	var torso_visual := _part(hip, "torso", "torso", torso_size, skin.darkened(.04), Vector2(0,-torso_size.y), 0)
+	var torso_x := 30.0 if _profile.topology == "centaur" else 0.0
+	var torso_visual := _part(hip, "torso", "torso", torso_size, skin.darkened(.04), Vector2(torso_x,-torso_size.y), 0)
 	var torso: Node2D = torso_visual.get_parent()
 	var head_visual := _part(torso, "head", "head", head_size, skin, Vector2(0,-head_size.y*.25), 4)
 	_head_visual = head_visual
@@ -278,7 +297,7 @@ func _rebuild() -> void:
 
 	_attach_gear("back", torso, Vector2(0,5), -6)
 	_attach_gear("armor", torso, Vector2.ZERO, 1)
-	_attach_gear("pants", hip, Vector2(0,2), 2)
+	_attach_gear("pants", hip, Vector2(torso_x,2), 2)
 	_attach_gear("head", head, Vector2.ZERO, 2)
 	_attach_gear("accessory", head, Vector2(0,4), 3)
 	_attach_gear("weapon", _bones.right_forearm, Vector2(0,forearm_length), 6)
@@ -399,6 +418,8 @@ func _apply_facing() -> void:
 	if magnitude == 0.0:
 		magnitude = float(_profile.get("scale", 1.0))
 	rig.scale.x = -magnitude if facing == &"left" else magnitude
+	if current_motion == &"climb" and _profile.topology == "centaur" and _bones.has("torso"):
+		_center_centaur_climb()
 	if _rest.has("rig"):
 		_rest.rig.scale = rig.scale
 
@@ -410,6 +431,36 @@ func _set_back_view(enabled: bool) -> void:
 		_head_base.set_back_view(enabled)
 	if _left_hand_base:
 		_left_hand_base.set_part("hand_grip" if enabled else "hand_open")
+	if _horse_tail_base:
+		_horse_tail_base.set_back_view(enabled)
+	if _horse_body_visual:
+		_horse_body_visual.set_back_view(enabled)
+	if _horse_neck_visual:
+		_horse_neck_visual.set_back_view(enabled)
+
+
+func _set_climbing_anatomy(enabled: bool) -> void:
+	if _profile.topology != "centaur" or not _bones.has("horse_tail"):
+		return
+	for leg_index in 4:
+		_bones["horse_leg_%d" % leg_index].visible = not enabled
+	if enabled:
+		_center_centaur_climb()
+	else:
+		_bones.rig.position.x = _rest.rig.position.x
+	# The climbing silhouette looks down over the horse's back: recenter the
+	# foreshortened barrel under the humanoid torso and root the tail at the
+	# lower middle of its rump.
+	_bones.horse_body.position = Vector2(_bones.torso.position.x,12) if enabled else _rest.horse_body.position
+	_bones.horse_tail.position = Vector2(_bones.torso.position.x,58) if enabled else _rest.horse_tail.position
+	_bones.horse_tail.rotation = 0.0 if enabled else _rest.horse_tail.rotation
+	_bones.horse_tail.z_index = 1 if enabled else -4
+
+
+func _center_centaur_climb() -> void:
+	# The ladder is centered on the avatar origin. Counter the centaur torso's
+	# side-view front offset after facing scale so its rear-view spine sits on it.
+	_bones.rig.position.x = -_bones.rig.scale.x * _bones.torso.position.x
 
 
 func _stop_active_animation() -> void:
@@ -427,21 +478,21 @@ func _queue_motion_pose(rotations: Dictionary, rig_y: float, duration: float) ->
 
 func _build_run_loop() -> void:
 	var stride_a := {
-		"torso": -7.0,
+		"torso": 10.0, "head": -2.0,
 		"left_arm": -78.0, "left_forearm": -14.0,
 		"right_arm": 13.0, "right_forearm": -66.0,
 	}
 	var stride_b := {
-		"torso": -7.0,
+		"torso": 10.0, "head": -2.0,
 		"left_arm": -62.0, "left_forearm": -27.0,
 		"right_arm": -3.0, "right_forearm": -53.0,
 	}
 	if _profile.topology == "centaur":
-		stride_a.merge({"horse_leg_0": -26.0, "horse_shin_0": 38.0, "horse_leg_1": 24.0, "horse_shin_1": -16.0, "horse_leg_2": 24.0, "horse_shin_2": -16.0, "horse_leg_3": -26.0, "horse_shin_3": 38.0})
-		stride_b.merge({"horse_leg_0": 24.0, "horse_shin_0": -16.0, "horse_leg_1": -26.0, "horse_shin_1": 38.0, "horse_leg_2": -26.0, "horse_shin_2": 38.0, "horse_leg_3": 24.0, "horse_shin_3": -16.0})
+		stride_a.merge({"horse_tail": -12.0, "horse_leg_0": -31.0, "horse_shin_0": 60.0, "horse_leg_1": 28.0, "horse_shin_1": -20.0, "horse_leg_2": 28.0, "horse_shin_2": -20.0, "horse_leg_3": -31.0, "horse_shin_3": 60.0})
+		stride_b.merge({"horse_tail": 10.0, "horse_leg_0": 28.0, "horse_shin_0": -20.0, "horse_leg_1": -31.0, "horse_shin_1": 60.0, "horse_leg_2": -31.0, "horse_shin_2": 60.0, "horse_leg_3": 28.0, "horse_shin_3": -20.0})
 	else:
-		stride_a.merge({"left_leg": -30.0, "left_shin": 44.0, "right_leg": 26.0, "right_shin": -12.0})
-		stride_b.merge({"left_leg": 26.0, "left_shin": -12.0, "right_leg": -30.0, "right_shin": 44.0})
+		stride_a.merge({"left_leg": -35.0, "left_shin": 68.0, "right_leg": 30.0, "right_shin": -18.0})
+		stride_b.merge({"left_leg": 30.0, "left_shin": -18.0, "right_leg": -35.0, "right_shin": 68.0})
 	_queue_motion_pose(stride_a, -5.0, .16)
 	_queue_motion_pose(stride_b, 1.0, .16)
 

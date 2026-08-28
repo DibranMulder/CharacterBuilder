@@ -43,6 +43,13 @@ func _run() -> void:
 
 	for race_id in CharacterCatalog.race_ids():
 		avatar.configure(race_id, {})
+		if CharacterCatalog.race(race_id).topology == "centaur":
+			if not avatar._bones.has("horse_neck") or not avatar._bones.has("horse_tail"):
+				_fail("centaur must have distinct equine neck/withers and tail parts")
+				return
+			if avatar._bones.torso.position.x <= avatar._bones.horse_body.position.x:
+				_fail("centaur humanoid torso must rise from the horse's front rather than its center")
+				return
 		var knee_bone := "horse_shin_0" if CharacterCatalog.race(race_id).topology == "centaur" else "left_shin"
 		if not avatar._bones.has(knee_bone):
 			_fail("%s run rig has no knee/shin joint" % race_id)
@@ -52,12 +59,19 @@ func _run() -> void:
 			_fail("%s did not start its run loop" % race_id)
 			return
 		avatar._active_tween.custom_step(.16)
+		if avatar._bones.torso.rotation_degrees <= 0.0:
+			_fail("%s run pose leans its head and torso backward instead of into the run" % race_id)
+			return
 		var run_bone := "horse_leg_0" if CharacterCatalog.race(race_id).topology == "centaur" else "left_leg"
 		if is_equal_approx(avatar._bones[run_bone].rotation, avatar._rest[run_bone].rotation):
 			_fail("%s run loop did not move its legs" % race_id)
 			return
 		if is_equal_approx(avatar._bones[knee_bone].rotation, avatar._rest[knee_bone].rotation):
 			_fail("%s run loop left its knee rigid" % race_id)
+			return
+		var minimum_knee_bend := 50.0 if CharacterCatalog.race(race_id).topology == "centaur" else 60.0
+		if absf(avatar._bones[knee_bone].rotation_degrees) < minimum_knee_bend:
+			_fail("%s run pose knee bend is too shallow" % race_id)
 			return
 
 		avatar.play_motion(&"climb")
@@ -80,6 +94,33 @@ func _run() -> void:
 		if not avatar._head_visual.back_view:
 			_fail("%s climb loop did not switch to the rear view" % race_id)
 			return
+		if CharacterCatalog.race(race_id).topology == "centaur":
+			var torso_center_x := avatar.to_local(avatar._bones.torso.global_position).x
+			if not is_zero_approx(torso_center_x):
+				_fail("centaur climbing spine must align with the ladder center")
+				return
+			avatar.set_facing(&"left")
+			if not is_zero_approx(avatar.to_local(avatar._bones.torso.global_position).x):
+				_fail("centaur climbing spine lost ladder center when facing changed")
+				return
+			avatar.set_facing(&"right")
+			var horse_body_visual: PartVisual = avatar._bones.horse_body.get_child(0)
+			if not horse_body_visual.back_view:
+				_fail("centaur climb must switch the horse body to a top/rear view")
+				return
+			if not is_equal_approx(avatar._bones.horse_body.position.x,avatar._bones.torso.position.x):
+				_fail("centaur climbing body must center beneath its humanoid torso instead of extending left")
+				return
+			for leg_index in 4:
+				if avatar._bones["horse_leg_%d" % leg_index].visible:
+					_fail("centaur horse legs must be hidden while climbing")
+					return
+			if not avatar._horse_tail_base.back_view:
+				_fail("centaur climb did not switch to the rear tail sprite")
+				return
+			if avatar._bones.horse_tail.z_index <= avatar._bones.horse_body.z_index:
+				_fail("centaur rear tail must render above the horse body while climbing")
+				return
 		var weapon: GearVisual = avatar._gear.weapon
 		var shield: GearVisual = avatar._gear.offhand
 		if weapon.get_parent() != avatar._bones.torso or shield.get_parent() != avatar._bones.torso:
@@ -98,6 +139,18 @@ func _run() -> void:
 		if avatar._head_visual.back_view:
 			_fail("%s did not restore its side-facing head after climbing" % race_id)
 			return
+		if CharacterCatalog.race(race_id).topology == "centaur":
+			var restored_horse_body_visual: PartVisual = avatar._bones.horse_body.get_child(0)
+			if restored_horse_body_visual.back_view:
+				_fail("centaur horse body did not restore its side view after climbing")
+				return
+			for leg_index in 4:
+				if not avatar._bones["horse_leg_%d" % leg_index].visible:
+					_fail("centaur horse legs did not return after climbing")
+					return
+			if avatar._bones.horse_tail.z_index != -4:
+				_fail("centaur side tail did not return behind the rump")
+				return
 		if weapon.get_parent() != avatar._bones.right_forearm or shield.get_parent() != avatar._bones.left_forearm:
 			_fail("%s did not return equipment to its hand sockets" % race_id)
 			return

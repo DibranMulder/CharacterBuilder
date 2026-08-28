@@ -6,6 +6,9 @@ extends Node2D
 # source-background cleanup, and fallback state remain private to this module.
 
 const EXTREMITY_ATLAS := preload("res://assets/base_sprites/extremities.png")
+const CENTAUR_TAIL_TEXTURE := preload("res://assets/base_sprites/centaur_tail.png")
+const CENTAUR_TAIL_BACK_TEXTURE := preload("res://assets/base_sprites/centaur_tail_back.png")
+const CENTAUR_TAIL_BACK_REGION := Rect2(350,135,420,1140)
 
 const HEAD_TEXTURES := {
 	"bogkin": preload("res://assets/base_sprites/bogkin_heads.png"),
@@ -66,7 +69,7 @@ func set_back_view(enabled: bool) -> void:
 	if back_view == enabled:
 		return
 	back_view = enabled
-	if part_id == "head":
+	if part_id in ["head","horse_tail"]:
 		_build_sprite()
 
 
@@ -95,6 +98,10 @@ func _build_sprite() -> void:
 			source = HEAD_TEXTURES[race_id]
 			region = HEAD_REGIONS[race_id][view]
 			key_mode = 1
+	elif part_id == "horse_tail":
+		source = CENTAUR_TAIL_BACK_TEXTURE if back_view else CENTAUR_TAIL_TEXTURE
+		region = CENTAUR_TAIL_BACK_REGION if back_view else Rect2(Vector2.ZERO,source.get_size())
+		key_mode = 1 if back_view else 0
 	else:
 		source = EXTREMITY_ATLAS
 		region = EXTREMITY_REGIONS.get(part_id, Rect2())
@@ -111,6 +118,8 @@ func _build_sprite() -> void:
 	_sprite.texture = atlas
 	_sprite.flip_h = part_id == "head" and not back_view and FLIPPED_FRONT_HEADS.get(race_id,false)
 	var fit := minf(target_size.x / region.size.x, target_size.y / region.size.y)
+	if part_id == "horse_tail" and back_view:
+		fit *= 1.18
 	_sprite.scale = Vector2.ONE * fit
 	_sprite.position = _part_offset()
 	var anatomy_tint: Color = CharacterCatalog.race(race_id).skin
@@ -121,6 +130,9 @@ func _build_sprite() -> void:
 func _part_offset() -> Vector2:
 	match part_id:
 		"head": return Vector2(0,-target_size.y*.32)
+		# The side-tail sheet is right-edge rooted; its node placement performs
+		# that alignment. The rear sheet is centered and needs to cancel it.
+		"horse_tail": return Vector2(target_size.x*.46,target_size.y*.30) if back_view else Vector2.ZERO
 		"hand_open", "hand_grip": return Vector2(target_size.x*.12,target_size.y*.08)
 		"foot", "hoof": return Vector2(target_size.x*.22,target_size.y*.04)
 	return Vector2.ZERO

@@ -18,5 +18,13 @@ func _initialize() -> void:
 		assert(extremity.has_sprite(), "%s has no authored base sprite" % part_id)
 		extremity.free()
 
-	print("PASS: 8 front/rear sprite heads and shared base extremities")
+	var centaur_tail: BaseAnatomyVisual = BaseAnatomy.new().setup("centaur","horse_tail",Vector2(62,66))
+	assert(centaur_tail.has_sprite(), "centaur has no authored horse tail sprite")
+	var side_tail_texture: Texture2D = centaur_tail.get_node("Sprite").texture
+	centaur_tail.set_back_view(true)
+	var climbing_tail_texture: Texture2D = centaur_tail.get_node("Sprite").texture
+	assert(side_tail_texture != climbing_tail_texture, "centaur tail does not switch to its rear climbing sprite")
+	centaur_tail.free()
+
+	print("PASS: 8 front/rear sprite heads, shared base extremities, and side/rear centaur tails")
 	quit()
