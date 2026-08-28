@@ -53,6 +53,19 @@ func _run() -> void:
 	if avatar._gear.weapon.get_parent() != avatar._bones.right_forearm or avatar._gear.offhand.get_parent() != avatar._bones.left_forearm or avatar._gear.offhand.shield_exterior:
 		_fail("right-facing equipment did not restore its original hand presentation")
 		return
+	for pole_weapon in ["spear","staff"]:
+		avatar.configure("human",{"weapon":pole_weapon})
+		avatar.play_motion(&"run")
+		for phase_index in Avatar.BIPED_RUN_CYCLE.size():
+			avatar._active_tween.custom_step(Avatar.RUN_FRAME_DURATION)
+			var pole: GearVisual = avatar._gear.weapon
+			pole.force_update_transform()
+			var pole_axis := pole.to_global(pole.reach_endpoint())-pole.global_position
+			if absf(pole_axis.x) > 1.0 or pole_axis.y >= 0.0:
+				_fail("running %s must remain vertically upright in every run phase" % pole_weapon)
+				return
+		avatar.stop_motion()
+	avatar.configure("human",{"weapon":"sword"})
 
 	for race_id in CharacterCatalog.race_ids():
 		avatar.configure(race_id, {})
@@ -90,6 +103,13 @@ func _run() -> void:
 		if avatar._bones.torso.rotation_degrees <= 0.0:
 			_fail("%s run pose leans its head and torso backward instead of into the run" % race_id)
 			return
+		if CharacterCatalog.race(race_id).topology != "centaur":
+			var torso_part: PartVisual = avatar._bones.torso.get_child(0)
+			var torso_waist: Vector2 = torso_part.to_global(Vector2(0,torso_part.size.y))
+			var leg_center: Vector2 = avatar._bones.hip.global_position
+			if torso_waist.distance_to(leg_center) > 1.0:
+				_fail("%s running torso must remain aligned with the center of its legs" % race_id)
+				return
 		var run_bone := "horse_leg_0" if CharacterCatalog.race(race_id).topology == "centaur" else "left_leg"
 		if is_equal_approx(avatar._bones[run_bone].rotation, avatar._rest[run_bone].rotation):
 			_fail("%s run loop did not move its legs" % race_id)

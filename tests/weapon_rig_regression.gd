@@ -56,7 +56,8 @@ func _run() -> void:
 	var offhand_socket := left_forearm.to_global(Vector2(0,float(profile.arm)*.48))
 	if shield_center.distance_to(offhand_socket) > .5:
 		_fail("idle shield grip must sit at the center of the shield")
-	var minimum_idle_shield_y: float = torso.global_position.y+float(profile.torso.y)*float(profile.scale)*.38
+	var torso_part: PartVisual = torso.get_child(0)
+	var minimum_idle_shield_y: float = torso_part.to_global(Vector2(0,float(profile.torso.y)*.38)).y
 	if shield_center.y < minimum_idle_shield_y:
 		_fail("idle shield guard must sit lower on the torso")
 	var maximum_shield_offset: float = profile.torso.x * profile.scale
@@ -85,6 +86,12 @@ func _run() -> void:
 			_fail("resting axe must be horizontal and perpendicular to the forearm")
 		if weapon_id in ["spear","staff"] and (absf(weapon_axis.x) > 1.0 or alignment < .98):
 			_fail("resting %s must be vertical" % weapon_id)
+		if weapon_id in ["spear","staff"]:
+			var pole_butt := weapon.to_global(GearVisual.POLE_BUTT)
+			var left_knee_y: float = avatar._bones.left_shin.global_position.y
+			var right_knee_y: float = avatar._bones.right_shin.global_position.y
+			if pole_butt.y <= maxf(left_knee_y,right_knee_y):
+				_fail("resting %s shaft must extend below both knees" % weapon_id)
 	avatar.equip(&"weapon","sword")
 
 	# Sample the same windup/strike angles used by the sword attack. A properly

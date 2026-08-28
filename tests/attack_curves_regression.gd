@@ -16,6 +16,7 @@ func _run() -> void:
 	var jab: Array = Avatar.ATTACK_CURVES.jab
 	var forehand: Array = Avatar.ATTACK_CURVES.forehand
 	var backhand: Array = Avatar.ATTACK_CURVES.backhand
+	var spear_jab: Array = Avatar.WEAPON_ATTACK_CURVES.spear.jab
 	var jab_chamber_angle: float = jab[0].upper + jab[0].forearm
 	var jab_strike_angle: float = jab[1].upper + jab[1].forearm
 	if absf(jab_chamber_angle) > 2.0 or absf(jab_strike_angle) > 2.0:
@@ -53,10 +54,43 @@ func _run() -> void:
 	if backhand[0].upper <= 0 or backhand[1].upper >= 0:
 		_fail("backhand must reverse from across the body to the weapon side")
 		return
+	if spear_jab.size() != 3:
+		_fail("spear jab must chamber, thrust, and recover upright")
+		return
+	for phase_index in [0,1]:
+		var phase: Dictionary = spear_jab[phase_index]
+		var world_spear_angle: float = fposmod(90.0+phase.torso+phase.upper+phase.forearm+phase.weapon_rotation,360.0)
+		if minf(world_spear_angle,360.0-world_spear_angle) > 2.0:
+			_fail("spear jab chamber and thrust must keep the shaft horizontal")
+			return
+	if spear_jab[0].upper < 80.0 or spear_jab[0].x > -25.0 or spear_jab[1].x < 35.0:
+		_fail("spear jab must attack from a deep low chamber with long extension")
+		return
+	if not is_equal_approx(float(spear_jab[2].weapon_rotation),180.0):
+		_fail("spear jab must return the shaft upright")
+		return
 
 	var avatar := Avatar.new()
 	root.add_child(avatar)
 	await process_frame
+	if not avatar.has_node("Rig/SlashTrail"):
+		_fail("weapon rig must include a procedural slash trail")
+		return
+	var slash_trail: Node = avatar.get_node("Rig/SlashTrail")
+	avatar.play_weapon_attack(&"forehand")
+	avatar._active_tween.custom_step(.34)
+	if not slash_trail.get("active"):
+		_fail("forehand must start its trail at the cutting phase")
+		return
+	avatar._active_tween.custom_step(.23)
+	if slash_trail.get("active"):
+		_fail("forehand trail must stop before the recovery pose")
+		return
+	avatar.play_weapon_attack(&"jab")
+	avatar._active_tween.custom_step(.4)
+	if slash_trail.get("active"):
+		_fail("jab must not produce a slash trail")
+		return
 	for attack in attacks:
 		avatar.play_weapon_attack(attack)
 		if avatar._active_tween == null or not avatar._active_tween.is_valid():

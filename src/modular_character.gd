@@ -9,6 +9,7 @@ signal facing_changed(direction: StringName)
 const Part := preload("res://src/part_visual.gd")
 const Gear := preload("res://src/gear_visual.gd")
 const BaseAnatomy := preload("res://src/base_anatomy_visual.gd")
+const SlashTrail := preload("res://src/slash_trail_visual.gd")
 
 const WEAPON_ATTACKS := [&"jab", &"forehand", &"backhand"]
 const MOTIONS := [&"idle", &"run", &"climb"]
@@ -52,6 +53,18 @@ const ATTACK_CURVES := {
 		{"upper": -120.0, "forearm": 30.0, "torso": -11.0, "x": -5.0, "duration": 0.17},
 	],
 }
+const WEAPON_ATTACK_CURVES := {
+	"spear": {
+		"jab": [
+			# Drop into a low, deep chamber while turning the upright spear flat.
+			{"upper": 85.0, "forearm": -85.0, "torso": 11.0, "x": -30.0, "weapon_rotation": 259.0, "duration": 0.22},
+			# Drive the point through a long, level thrust from below.
+			{"upper": -60.0, "forearm": 60.0, "torso": -16.0, "x": 42.0, "weapon_rotation": 286.0, "duration": 0.13},
+			# Withdraw and stand the spear upright before settling into idle.
+			{"upper": 15.0, "forearm": -15.0, "torso": 0.0, "x": 0.0, "weapon_rotation": 180.0, "duration": 0.18},
+		],
+	},
+}
 
 var race_id := "human"
 var loadout := {
@@ -75,6 +88,7 @@ var _horse_tail_base: BaseAnatomyVisual
 var _horse_body_visual: PartVisual
 var _horse_neck_visual: PartVisual
 var _pants_parts: Array[GearVisual] = []
+var _slash_trail: Node2D
 
 
 func _ready() -> void:
@@ -251,6 +265,10 @@ func _rebuild() -> void:
 	_pants_parts.clear()
 	_profile = CharacterCatalog.race(race_id)
 	var rig := Node2D.new(); rig.name = "Rig"; add_child(rig); _bones.rig = rig
+	_slash_trail = SlashTrail.new()
+	_slash_trail.name = "SlashTrail"
+	_slash_trail.z_index = 20
+	rig.add_child(_slash_trail)
 	var shadow := Part.new().setup("shadow", Vector2(118,24), Color.WHITE, Color.TRANSPARENT)
 	shadow.position = Vector2(0, 8); shadow.z_index = -20; add_child(shadow)
 	var scale_factor: float = _profile.scale
@@ -293,9 +311,14 @@ func _rebuild() -> void:
 		_bones.right_shin.rotation_degrees = -4.0
 
 	var torso_x := 30.0 if _profile.topology == "centaur" else 0.0
-	var torso_visual := _part(hip, "torso", "torso", torso_size, skin.darkened(.04), Vector2(torso_x,-torso_size.y), 0)
+	# Rotate the torso from its waist seam so leaning never pulls the body away
+	# from the hips. The painted torso and all upper-body sockets are offset back
+	# to their original screen positions beneath this new pivot.
+	var torso_visual := _part(hip, "torso", "torso", torso_size, skin.darkened(.04), Vector2(torso_x,0), 0)
 	var torso: Node2D = torso_visual.get_parent()
-	var head_visual := _part(torso, "head", "head", head_size, skin, Vector2(0,-head_size.y*.25), 4)
+	var torso_top_y := -torso_size.y
+	torso_visual.position.y = torso_top_y
+	var head_visual := _part(torso, "head", "head", head_size, skin, Vector2(0,torso_top_y-head_size.y*.25), 4)
 	_head_visual = head_visual
 	var head: Node2D = head_visual.get_parent()
 	_head_base = _base_sprite(head,"HeadSprite","head",head_size*1.45,Vector2(0,3),1)
@@ -314,9 +337,9 @@ func _rebuild() -> void:
 	# right. The full-rig mirror naturally reverses this when facing left. Keep
 	# the roots nearer the torso center so the bent weapon hand can still cross
 	# into its established screen-right resting guard.
-	_part(torso, "left_arm", "limb", Vector2(16,upper_arm_length), skin.darkened(.07), Vector2(torso_size.x*.28,8), -3)
+	_part(torso, "left_arm", "limb", Vector2(16,upper_arm_length), skin.darkened(.07), Vector2(torso_size.x*.28,torso_top_y+8), -3)
 	_part(_bones.left_arm, "left_forearm", "limb", Vector2(15,forearm_length), skin.darkened(.04), Vector2(0,upper_arm_length), -3)
-	_part(torso, "right_arm", "limb", Vector2(16,upper_arm_length), skin, Vector2(-torso_size.x*.28,8), 3)
+	_part(torso, "right_arm", "limb", Vector2(16,upper_arm_length), skin, Vector2(-torso_size.x*.28,torso_top_y+8), 3)
 	_part(_bones.right_arm, "right_forearm", "limb", Vector2(15,forearm_length), skin, Vector2(0,upper_arm_length), 3)
 	_left_hand_base = _base_sprite(_bones.left_forearm,"LeftHandSprite","hand_open",Vector2(25,23),Vector2(0,forearm_length),7,90.0)
 	_right_hand_base = _base_sprite(_bones.right_forearm,"RightHandSprite","hand_grip",Vector2(24,22),Vector2(0,forearm_length),7,90.0)
@@ -329,8 +352,8 @@ func _rebuild() -> void:
 	# elbow while leaving the grip transform free to orient each weapon class.
 	_bones.right_arm.rotation_degrees = 15; _bones.right_forearm.rotation_degrees = -15
 
-	_attach_gear("back", torso, Vector2(0,5), -6)
-	_attach_gear("armor", torso, Vector2.ZERO, 1)
+	_attach_gear("back", torso, Vector2(0,torso_top_y+5), -6)
+	_attach_gear("armor", torso, Vector2(0,torso_top_y), 1)
 	_attach_pants(hip,torso_x)
 	_attach_gear("head", head, Vector2.ZERO, 2)
 	_attach_gear("accessory", head, Vector2(0,4), 3)
@@ -392,11 +415,11 @@ func _place_gear_on_back(slot: String, visual: GearVisual) -> void:
 	visual.set_carried_on_back(true)
 	visual.set_shield_exterior(slot == "offhand")
 	if slot == "weapon":
-		visual.position = Vector2(18.0, float(_profile.torso.y) * .72)
+		visual.position = Vector2(18.0, -float(_profile.torso.y) * .28)
 		visual.rotation_degrees = 135.0
 		visual.z_index = 3
 	else:
-		visual.position = Vector2(0.0, float(_profile.torso.y) * .58)
+		visual.position = Vector2(0.0, -float(_profile.torso.y) * .42)
 		visual.rotation = 0.0
 		visual.z_index = 2
 
@@ -529,6 +552,8 @@ func _stop_active_animation() -> void:
 	if _active_tween and _active_tween.is_valid():
 		_active_tween.kill()
 	_active_tween = null
+	if _slash_trail:
+		_slash_trail.cancel()
 
 
 func _queue_motion_pose(rotations: Dictionary, rig_y: float, duration: float) -> void:
@@ -536,6 +561,11 @@ func _queue_motion_pose(rotations: Dictionary, rig_y: float, duration: float) ->
 	for bone_name in rotations:
 		if _bones.has(bone_name):
 			_active_tween.parallel().tween_property(_bones[bone_name], "rotation_degrees", rotations[bone_name], duration)
+	if current_motion == &"run" and loadout.weapon in ["spear","staff"]:
+		# Pole weapons stay upright in world space while their complete parent
+		# chain (torso, upper arm, and forearm) continues through the run cycle.
+		var parent_rotation: float = rotations.get("torso",0.0)+rotations.get("right_arm",0.0)+rotations.get("right_forearm",0.0)
+		_active_tween.parallel().tween_property(_gear.weapon,"rotation_degrees",180.0-parent_rotation,duration)
 
 
 func _build_run_loop() -> void:
@@ -583,16 +613,36 @@ func _swing(node: Node2D, windup: float, strike: float) -> void:
 func _animate_weapon_curve(curve_id: String) -> void:
 	var weapon_arm := _weapon_arm()
 	var weapon_forearm := _weapon_forearm()
-	for pose in ATTACK_CURVES[curve_id]:
+	var weapon_visual: GearVisual = _gear.get("weapon")
+	var weapon_curves: Dictionary = WEAPON_ATTACK_CURVES.get(loadout.weapon,{})
+	var curve: Array = weapon_curves.get(curve_id,ATTACK_CURVES[curve_id])
+	var uses_slash_trail: bool = curve_id in ["forehand","backhand"] and loadout.weapon in ["sword","axe","spear","staff"]
+	var slash_start_index := 2 if curve_id == "forehand" else 1
+	for pose_index in curve.size():
+		var pose: Dictionary = curve[pose_index]
+		if uses_slash_trail and pose_index == slash_start_index:
+			_active_tween.tween_callback(_start_slash_trail)
 		_active_tween.tween_property(weapon_arm, "rotation_degrees", pose.upper, pose.duration)
 		_active_tween.parallel().tween_property(weapon_forearm, "rotation_degrees", pose.forearm, pose.duration)
 		_active_tween.parallel().tween_property(_bones.torso, "rotation_degrees", pose.torso, pose.duration)
 		_active_tween.parallel().tween_property(_bones.rig, "position:x", pose.x, pose.duration)
+		if weapon_visual and pose.has("weapon_rotation"):
+			_active_tween.parallel().tween_property(weapon_visual, "rotation_degrees", pose.weapon_rotation, pose.duration)
+	if uses_slash_trail:
+		_active_tween.tween_callback(_slash_trail.stop)
 	_active_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	_active_tween.tween_property(weapon_arm, "rotation", _rest[weapon_arm.name].rotation, .24)
 	_active_tween.parallel().tween_property(weapon_forearm, "rotation", _rest[weapon_forearm.name].rotation, .24)
 	_active_tween.parallel().tween_property(_bones.torso, "rotation", _rest.torso.rotation, .24)
 	_active_tween.parallel().tween_property(_bones.rig, "position:x", _rest.rig.position.x, .24)
+	if weapon_visual:
+		_active_tween.parallel().tween_property(weapon_visual, "rotation_degrees", WEAPON_GRIP_ROTATIONS.get(loadout.weapon,0.0), .24)
+
+
+func _start_slash_trail() -> void:
+	var weapon_visual: GearVisual = _gear.get("weapon")
+	if weapon_visual:
+		_slash_trail.start(weapon_visual,Color("8edfff"),16.0 if loadout.weapon in ["spear","staff"] else 14.0)
 
 
 func _animate_slash() -> void: _animate_weapon_curve("forehand")

@@ -14,10 +14,11 @@ const REACH_ENDPOINTS := {
 	"axe": Vector2(30, 92),
 	"bow": Vector2(18, 80),
 	"spear": Vector2(0, 126),
-	"staff": Vector2(0, 120),
+	"staff": Vector2(0, 126),
 }
 
 const INK := Color("352b25")
+const POLE_BUTT := Vector2(0,-72)
 const SHIELD_CENTER := Vector2(0,-20)
 
 
@@ -74,11 +75,11 @@ func _draw() -> void:
 					draw_arc(Vector2(18,40), 40, PI/2, PI*1.5, 20, Color("8a5c34"), 5.0)
 					draw_line(Vector2(18,0), Vector2(18,80), Color("e8dcc6"), 2.0)
 				"spear":
-					draw_line(Vector2(0,-18), Vector2(0,110), Color("795033"), 6.0, true)
+					draw_line(POLE_BUTT, Vector2(0,110), Color("795033"), 6.0, true)
 					draw_colored_polygon(PackedVector2Array([Vector2(-8,105), Vector2(0,126), Vector2(8,105)]), metal)
 				"staff":
-					draw_line(Vector2(0,-18), Vector2(0,112), Color("6f4c31"), 7.0, true)
-					draw_circle(Vector2(0,120), 12, accent.lightened(.15))
+					draw_line(POLE_BUTT, Vector2(0,108), Color("6f4c31"), 7.0, true)
+					draw_circle(Vector2(0,114), 12, accent.lightened(.15))
 		"offhand":
 			match item:
 				"shield":
@@ -128,12 +129,12 @@ func _draw() -> void:
 			if pants_piece == "waist":
 				draw_rect(Rect2(-25,-2,50,15),pants_color,true)
 				draw_rect(Rect2(-25,-2,50,15),INK,false,2.2)
-				_outlined_polygon(PackedVector2Array([Vector2(-23,11),Vector2(23,11),Vector2(14,21),Vector2(5,17),Vector2(0,24),Vector2(-5,17),Vector2(-14,21)]),pants_color)
-				draw_line(Vector2(-25,11),Vector2(25,11),ink,3.0)
+				_outlined_polygon(PackedVector2Array([Vector2(-23,11),Vector2(23,11),Vector2(14,21),Vector2(5,17),Vector2(0,24),Vector2(-5,17),Vector2(-14,21)]),pants_color,1.4)
+				draw_line(Vector2(-25,11),Vector2(25,11),ink,1.5)
 			elif pants_piece in ["thigh","shin"]:
 				var width := 21.0 if pants_piece == "thigh" else 18.0
 				var covered_length := pants_length*.98
-				draw_line(Vector2.ZERO,Vector2(0,covered_length),INK,width+4.0,true)
+				draw_line(Vector2.ZERO,Vector2(0,covered_length),INK,width+2.0,true)
 				draw_line(Vector2.ZERO,Vector2(0,covered_length),pants_color,width,true)
 				draw_line(Vector2(-width*.42,covered_length*.82),Vector2(width*.42,covered_length*.82),pants_color.darkened(.18),2.0,true)
 				if item == "plate":
