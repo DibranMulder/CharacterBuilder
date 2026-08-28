@@ -21,12 +21,26 @@ func _run() -> void:
 	var right_forearm: Node2D = right_arm.get_node("right_forearm")
 	var left_arm: Node2D = avatar.get_node("Rig/Hip/torso/left_arm")
 	var left_forearm: Node2D = left_arm.get_node("left_forearm")
+	var torso: Node2D = avatar.get_node("Rig/Hip/torso")
 	var weapon: GearVisual = right_forearm.get_node("Weapon")
 	var shield: GearVisual = left_forearm.get_node("Offhand")
 	var hand_position := weapon.global_position
 	var sword_tip := weapon.to_global(weapon.reach_endpoint())
 	var shoulder_position := right_arm.global_position
 	var rest_weapon_vector := sword_tip - hand_position
+
+	if right_arm.global_position.x >= torso.global_position.x:
+		_fail("right-facing anatomical right shoulder must be drawn on screen-left")
+	if left_arm.global_position.x <= torso.global_position.x:
+		_fail("right-facing anatomical left shoulder must be drawn on screen-right")
+	avatar.set_facing(&"left")
+	right_arm.force_update_transform(); left_arm.force_update_transform(); torso.force_update_transform()
+	if right_arm.global_position.x <= torso.global_position.x:
+		_fail("left-facing anatomical right shoulder must be drawn on screen-right")
+	if left_arm.global_position.x >= torso.global_position.x:
+		_fail("left-facing anatomical left shoulder must be drawn on screen-left")
+	avatar.set_facing(&"right")
+	right_arm.force_update_transform(); left_arm.force_update_transform(); torso.force_update_transform()
 
 	if weapon.global_position.x <= avatar.global_position.x:
 		_fail("weapon must render on the screen-right hand")

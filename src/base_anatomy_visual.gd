@@ -36,6 +36,11 @@ const EXTREMITY_REGIONS := {
 	"hoof": Rect2(1380,320,230,280),
 }
 
+# Image generation followed the requested direction for every race except the
+# Bogkin. Keep that source-specific correction inside the atlas adapter so the
+# shared rig and facing interface remain uniform.
+const FLIPPED_FRONT_HEADS := {"bogkin": true}
+
 var race_id := "human"
 var part_id := "head"
 var target_size := Vector2(52,52)
@@ -97,6 +102,7 @@ func _build_sprite() -> void:
 	atlas.atlas = source
 	atlas.region = region
 	_sprite.texture = atlas
+	_sprite.flip_h = part_id == "head" and not back_view and FLIPPED_FRONT_HEADS.get(race_id,false)
 	var fit := minf(target_size.x / region.size.x, target_size.y / region.size.y)
 	_sprite.scale = Vector2.ONE * fit
 	_sprite.position = _part_offset()

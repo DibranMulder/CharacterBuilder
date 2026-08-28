@@ -255,9 +255,13 @@ func _rebuild() -> void:
 
 	var upper_arm_length := float(_profile.arm) * 0.52
 	var forearm_length := float(_profile.arm) - upper_arm_length
-	_part(torso, "left_arm", "limb", Vector2(16,upper_arm_length), skin.darkened(.07), Vector2(-torso_size.x*.48,8), -3)
+	# Three-quarter staging: anatomical right appears on screen-left while facing
+	# right. The full-rig mirror naturally reverses this when facing left. Keep
+	# the roots nearer the torso center so the bent weapon hand can still cross
+	# into its established screen-right resting guard.
+	_part(torso, "left_arm", "limb", Vector2(16,upper_arm_length), skin.darkened(.07), Vector2(torso_size.x*.28,8), -3)
 	_part(_bones.left_arm, "left_forearm", "limb", Vector2(15,forearm_length), skin.darkened(.04), Vector2(0,upper_arm_length), -3)
-	_part(torso, "right_arm", "limb", Vector2(16,upper_arm_length), skin, Vector2(torso_size.x*.48,8), 3)
+	_part(torso, "right_arm", "limb", Vector2(16,upper_arm_length), skin, Vector2(-torso_size.x*.28,8), 3)
 	_part(_bones.right_arm, "right_forearm", "limb", Vector2(15,forearm_length), skin, Vector2(0,upper_arm_length), 3)
 	_base_sprite(_bones.left_forearm,"LeftHandSprite","hand_open",Vector2(25,23),Vector2(0,forearm_length),7,90.0)
 	_base_sprite(_bones.right_forearm,"RightHandSprite","hand_grip",Vector2(24,22),Vector2(0,forearm_length),7,90.0)
