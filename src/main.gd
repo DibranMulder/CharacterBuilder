@@ -1,6 +1,7 @@
 extends Node2D
 
 const Avatar := preload("res://src/modular_character.gd")
+const Ladder := preload("res://src/ladder_visual.gd")
 
 var avatar: ModularCharacter
 var race_selector: OptionButton
@@ -10,13 +11,17 @@ var weapon_attack_box: HBoxContainer
 var race_ids: Array[String]
 var title_label: Label
 var tagline_label: Label
+var ladder: Node2D
 
 
 func _ready() -> void:
 	RenderingServer.set_default_clear_color(Color("111827"))
 	_build_background()
+	ladder=Ladder.new(); ladder.position=Vector2(790,480); ladder.z_index=-10; ladder.visible=false; add_child(ladder)
 	avatar = Avatar.new(); avatar.position = Vector2(790,505); avatar.scale = Vector2.ONE * 1.35; add_child(avatar)
+	avatar.motion_changed.connect(_motion_changed)
 	_build_ui()
+	_build_motion_controls()
 	_select_race(0)
 
 
@@ -43,9 +48,9 @@ func _panel_style(color: Color, radius := 12) -> StyleBoxFlat:
 func _build_ui() -> void:
 	var panel := PanelContainer.new(); panel.position=Vector2(28,16); panel.size=Vector2(390,616)
 	panel.add_theme_stylebox_override("panel",_panel_style(Color("202b3d"))); add_child(panel)
-	var column := VBoxContainer.new(); column.add_theme_constant_override("separation",6); panel.add_child(column)
+	var column := VBoxContainer.new(); column.add_theme_constant_override("separation",4); panel.add_child(column)
 	var heading := Label.new(); heading.text="LINEAGE FORGE"; heading.add_theme_font_size_override("font_size",28); heading.add_theme_color_override("font_color",Color("77d4cf")); column.add_child(heading)
-	var intro := Label.new(); intro.text="Build one rig. Combine every item. Animate by race."; intro.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART; intro.add_theme_color_override("font_color",Color("aebdd0")); column.add_child(intro)
+	var intro := Label.new(); intro.text="Build race, gear, and motion."; intro.add_theme_color_override("font_color",Color("aebdd0")); column.add_child(intro)
 	column.add_child(HSeparator.new())
 	column.add_child(_label("Race"))
 	race_selector=OptionButton.new(); race_ids=CharacterCatalog.race_ids()
@@ -68,6 +73,26 @@ func _build_ui() -> void:
 		attack_button.pressed.connect(avatar.play_weapon_attack.bind(attack)); weapon_attack_box.add_child(attack_button)
 	column.add_child(_label("Race gestures"))
 	gesture_box=HBoxContainer.new(); gesture_box.add_theme_constant_override("separation",6); column.add_child(gesture_box)
+
+
+func _build_motion_controls() -> void:
+	var panel := PanelContainer.new(); panel.position=Vector2(650,18); panel.size=Vector2(420,108)
+	panel.add_theme_stylebox_override("panel",_panel_style(Color("202b3d"),10)); add_child(panel)
+	var rows:=VBoxContainer.new(); rows.add_theme_constant_override("separation",5); panel.add_child(rows)
+	var row:=HBoxContainer.new(); row.add_theme_constant_override("separation",7); rows.add_child(row)
+	var label:=_label("Motion"); label.add_theme_color_override("font_color",Color("77d4cf")); row.add_child(label)
+	for motion in Avatar.MOTIONS:
+		var button:=Button.new(); button.text=String(motion).capitalize(); button.size_flags_horizontal=Control.SIZE_EXPAND_FILL
+		button.pressed.connect(avatar.play_motion.bind(motion)); row.add_child(button)
+	var facing_row:=HBoxContainer.new(); facing_row.add_theme_constant_override("separation",7); rows.add_child(facing_row)
+	var facing_label:=_label("Facing"); facing_label.add_theme_color_override("font_color",Color("77d4cf")); facing_row.add_child(facing_label)
+	for direction in [&"left", &"right"]:
+		var button:=Button.new(); button.text=String(direction).capitalize(); button.size_flags_horizontal=Control.SIZE_EXPAND_FILL
+		button.pressed.connect(avatar.set_facing.bind(direction)); facing_row.add_child(button)
+
+
+func _motion_changed(motion: StringName) -> void:
+	ladder.visible = motion == &"climb"
 
 
 func _label(text_: String) -> Label:

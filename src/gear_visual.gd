@@ -4,6 +4,8 @@ extends Node2D
 var slot := "weapon"
 var item := "none"
 var accent := Color("d7a54f")
+var carried_on_back := false
+var shield_exterior := false
 
 const REACH_ENDPOINTS := {
 	"sword": Vector2(0, 88),
@@ -25,6 +27,16 @@ func setup(p_slot: String, p_item: String, p_accent: Color) -> GearVisual:
 
 func reach_endpoint() -> Vector2:
 	return REACH_ENDPOINTS.get(item, Vector2.ZERO)
+
+
+func set_carried_on_back(enabled: bool) -> void:
+	carried_on_back = enabled
+	queue_redraw()
+
+
+func set_shield_exterior(enabled: bool) -> void:
+	shield_exterior = enabled
+	queue_redraw()
 
 
 func _draw() -> void:
@@ -53,18 +65,23 @@ func _draw() -> void:
 		"offhand":
 			match item:
 				"shield":
-					# The offhand is on the far side of the body, so the player sees
-					# the shield's darker inside face, arm straps, and grip.
 					var center := Vector2(0,-20)
-					draw_circle(center, 27, Color("68462f"))
-					draw_circle(center, 21, Color("815a3b"))
-					draw_arc(center, 27, 0, TAU, 24, metal.darkened(.12), 5.0)
-					# Bias the straps toward the exposed half because the torso overlaps
-					# the shield's screen-right side.
-					draw_line(center + Vector2(-20,-10), center + Vector2(3,8), Color("3e2b22"), 7.0, true)
-					draw_line(center + Vector2(-18,12), center + Vector2(3,-10), Color("ad7b4b"), 4.0, true)
-					for rivet in [Vector2(-17,-12), Vector2(17,-12), Vector2(-17,12), Vector2(17,12)]:
-						draw_circle(center + rivet, 2.5, metal)
+					if carried_on_back or shield_exterior:
+						# A back-mounted shield presents its exterior toward the rear camera.
+						draw_circle(center,27,Color("8f6337"))
+						draw_circle(center,20,Color("a87842"))
+						draw_arc(center,27,0,TAU,24,metal,5.0)
+						draw_circle(center,7,accent)
+					else:
+						# The wielded far-side shield presents its inside straps and grip.
+						draw_circle(center, 27, Color("68462f"))
+						draw_circle(center, 21, Color("815a3b"))
+						draw_arc(center, 27, 0, TAU, 24, metal.darkened(.12), 5.0)
+						# Bias straps toward the half exposed beyond the torso.
+						draw_line(center + Vector2(-20,-10), center + Vector2(3,8), Color("3e2b22"), 7.0, true)
+						draw_line(center + Vector2(-18,12), center + Vector2(3,-10), Color("ad7b4b"), 4.0, true)
+						for rivet in [Vector2(-17,-12), Vector2(17,-12), Vector2(-17,12), Vector2(17,12)]:
+							draw_circle(center + rivet, 2.5, metal)
 				"lantern":
 					draw_rect(Rect2(-13,-44,26,31), Color("f4b942"), true)
 					draw_rect(Rect2(-13,-44,26,31), ink, false, 4.0)
@@ -76,6 +93,15 @@ func _draw() -> void:
 			draw_colored_polygon(PackedVector2Array([Vector2(-31,4), Vector2(31,4), Vector2(23,64), Vector2(-23,64)]), armor_color)
 			draw_line(Vector2(-27,18), Vector2(27,18), ink, 3.0)
 			if item == "plate": draw_line(Vector2(0,6), Vector2(0,61), ink, 2.0)
+		"pants":
+			var pants_color: Color = {"cloth": accent.darkened(.2), "leather": Color("65412e"), "plate": metal.darkened(.1)}.get(item, accent)
+			draw_rect(Rect2(-25,-2,50,16),pants_color,true)
+			draw_colored_polygon(PackedVector2Array([Vector2(-24,10),Vector2(-2,10),Vector2(-4,30),Vector2(-22,30)]),pants_color)
+			draw_colored_polygon(PackedVector2Array([Vector2(2,10),Vector2(24,10),Vector2(22,30),Vector2(4,30)]),pants_color)
+			draw_line(Vector2(-25,11),Vector2(25,11),ink,3.0)
+			if item == "plate":
+				draw_line(Vector2(-20,24),Vector2(-5,24),ink,2.0)
+				draw_line(Vector2(5,24),Vector2(20,24),ink,2.0)
 		"head":
 			match item:
 				"hood":

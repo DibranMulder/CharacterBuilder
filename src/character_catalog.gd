@@ -2,12 +2,13 @@ class_name CharacterCatalog
 extends RefCounted
 
 
-const SLOT_ORDER := [&"weapon", &"offhand", &"armor", &"head", &"back", &"accessory"]
+const SLOT_ORDER := [&"weapon", &"offhand", &"armor", &"pants", &"head", &"back", &"accessory"]
 
 const EQUIPMENT := {
 	"weapon": ["none", "sword", "axe", "bow", "spear", "staff"],
 	"offhand": ["none", "shield", "lantern", "spellbook"],
 	"armor": ["none", "cloth", "leather", "plate"],
+	"pants": ["none", "cloth", "leather", "plate"],
 	"head": ["none", "hood", "helm", "crown"],
 	"back": ["none", "cape", "pack", "quiver"],
 	"accessory": ["none", "scarf", "amulet", "goggles"],
@@ -121,4 +122,3 @@ static func race(id: String) -> Dictionary:
 
 static func items_for(slot: StringName) -> Array:
 	return EQUIPMENT.get(String(slot), ["none"])
-

@@ -5,6 +5,7 @@ var kind := "torso"
 var size := Vector2(50, 70)
 var color := Color.WHITE
 var accent := Color("303846")
+var back_view := false
 
 
 func setup(p_kind: String, p_size: Vector2, p_color: Color, p_accent: Color) -> PartVisual:
@@ -14,6 +15,11 @@ func setup(p_kind: String, p_size: Vector2, p_color: Color, p_accent: Color) -> 
 	accent = p_accent
 	queue_redraw()
 	return self
+
+
+func set_back_view(enabled: bool) -> void:
+	back_view = enabled
+	queue_redraw()
 
 
 func _ellipse(center: Vector2, radii: Vector2, fill: Color) -> void:
@@ -29,9 +35,15 @@ func _draw() -> void:
 	match kind:
 		"head":
 			_ellipse(Vector2(0, -size.y * 0.35), size * 0.5, color)
-			draw_circle(Vector2(size.x * 0.18, -size.y * 0.42), 3.7, Color("f7f3df"))
-			draw_circle(Vector2(size.x * 0.2, -size.y * 0.42), 1.8, Color("18202b"))
-			draw_arc(Vector2(size.x * 0.1, -size.y * 0.27), 8.0, 0.15, 2.2, 8, accent.darkened(0.4), 1.5)
+			if back_view:
+				# A simple rear silhouette for the procedural prototype. Production
+				# races replace this with authored back-facing head attachments.
+				draw_arc(Vector2(0,-size.y*.43), size.x*.34, PI, TAU, 16, accent.darkened(.3), 7.0)
+				draw_line(Vector2(-size.x*.24,-size.y*.18),Vector2(size.x*.24,-size.y*.18),accent.darkened(.25),2.0)
+			else:
+				draw_circle(Vector2(size.x * 0.18, -size.y * 0.42), 3.7, Color("f7f3df"))
+				draw_circle(Vector2(size.x * 0.2, -size.y * 0.42), 1.8, Color("18202b"))
+				draw_arc(Vector2(size.x * 0.1, -size.y * 0.27), 8.0, 0.15, 2.2, 8, accent.darkened(0.4), 1.5)
 		"torso":
 			var pts := PackedVector2Array([
 				Vector2(-size.x * 0.48, 0), Vector2(size.x * 0.48, 0),
@@ -55,4 +67,3 @@ func _draw() -> void:
 			draw_polyline(ear + PackedVector2Array([ear[0]]), accent.darkened(.35), 2.0)
 		"shadow":
 			_ellipse(Vector2.ZERO, size * 0.5, Color(0.03, 0.06, 0.1, 0.32))
-
