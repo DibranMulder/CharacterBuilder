@@ -70,6 +70,13 @@ func set_back_view(enabled: bool) -> void:
 		_build_sprite()
 
 
+func set_part(p_part_id: String) -> void:
+	if part_id == p_part_id:
+		return
+	part_id = p_part_id
+	_build_sprite()
+
+
 func _build_sprite() -> void:
 	if _sprite:
 		remove_child(_sprite)

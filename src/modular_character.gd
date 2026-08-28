@@ -48,6 +48,8 @@ var current_motion: StringName = &"idle"
 var facing: StringName = &"right"
 var _head_visual: PartVisual
 var _head_base: BaseAnatomyVisual
+var _left_hand_base: BaseAnatomyVisual
+var _right_hand_base: BaseAnatomyVisual
 
 
 func _ready() -> void:
@@ -263,8 +265,8 @@ func _rebuild() -> void:
 	_part(_bones.left_arm, "left_forearm", "limb", Vector2(15,forearm_length), skin.darkened(.04), Vector2(0,upper_arm_length), -3)
 	_part(torso, "right_arm", "limb", Vector2(16,upper_arm_length), skin, Vector2(-torso_size.x*.28,8), 3)
 	_part(_bones.right_arm, "right_forearm", "limb", Vector2(15,forearm_length), skin, Vector2(0,upper_arm_length), 3)
-	_base_sprite(_bones.left_forearm,"LeftHandSprite","hand_open",Vector2(25,23),Vector2(0,forearm_length),7,90.0)
-	_base_sprite(_bones.right_forearm,"RightHandSprite","hand_grip",Vector2(24,22),Vector2(0,forearm_length),7,90.0)
+	_left_hand_base = _base_sprite(_bones.left_forearm,"LeftHandSprite","hand_open",Vector2(25,23),Vector2(0,forearm_length),7,90.0)
+	_right_hand_base = _base_sprite(_bones.right_forearm,"RightHandSprite","hand_grip",Vector2(24,22),Vector2(0,forearm_length),7,90.0)
 	# The far-side offhand crosses behind the torso so the shield appears on the
 	# same screen-right side as the weapon while its inside remains visible.
 	_bones.left_arm.rotation_degrees = -70; _bones.left_forearm.rotation_degrees = -20
@@ -333,11 +335,11 @@ func _place_gear_in_hand(slot: String, item_id: String, visual: GearVisual) -> v
 	if visual.get_parent() != offhand_forearm:
 		visual.reparent(offhand_forearm, false)
 	if item_id == "shield":
-		# Advance along the crossed forearm just enough to expose the inside face
-		# beyond the torso's screen-right edge.
+		# Keep the face centered near the wrist so its inner edge overlaps the
+		# torso instead of floating beyond the body silhouette.
 		# Negative local X moves the shield downward in this crossed-arm pose.
 		visual.position.x = -10.0
-		visual.position.y = forearm_length + 20.0
+		visual.position.y = forearm_length + 4.0
 		visual.z_index = -1
 	else:
 		visual.position.x = 0.0
@@ -406,6 +408,8 @@ func _set_back_view(enabled: bool) -> void:
 		_head_visual.set_back_view(enabled)
 	if _head_base:
 		_head_base.set_back_view(enabled)
+	if _left_hand_base:
+		_left_hand_base.set_part("hand_grip" if enabled else "hand_open")
 
 
 func _stop_active_animation() -> void:
@@ -447,13 +451,13 @@ func _build_climb_loop() -> void:
 	# alternating which arm is extended to the higher rung.
 	var reach_a := {
 		"torso": -3.0,
-		"left_arm": 170.0, "left_forearm": 10.0,
-		"right_arm": -145.0, "right_forearm": -25.0,
+		"left_arm": -145.0, "left_forearm": -20.0,
+		"right_arm": 108.0, "right_forearm": 59.0,
 	}
 	var reach_b := {
 		"torso": 3.0,
-		"left_arm": 145.0, "left_forearm": 25.0,
-		"right_arm": -170.0, "right_forearm": -10.0,
+		"left_arm": -108.0, "left_forearm": -59.0,
+		"right_arm": 145.0, "right_forearm": 20.0,
 	}
 	if _profile.topology == "centaur":
 		reach_a.merge({"horse_leg_0": -18.0, "horse_shin_0": 34.0, "horse_leg_1": 18.0, "horse_shin_1": -8.0, "horse_leg_2": 12.0, "horse_shin_2": -8.0, "horse_leg_3": -12.0, "horse_shin_3": 34.0})

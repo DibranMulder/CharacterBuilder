@@ -114,6 +114,10 @@ func _draw() -> void:
 			draw_colored_polygon(PackedVector2Array([pts[0],Vector2(0,0),Vector2(-size.x*.05,size.y),pts[3]]), color.darkened(.08))
 			draw_arc(Vector2(0,3),size.x*.14,0,PI,10,INK,2.0)
 		"limb":
+			# Explicit shoulder bulb: the lower half merges into the upper-arm
+			# capsule, leaving a clean half-circle at the shoulder end.
+			draw_circle(Vector2.ZERO,size.x*.64,INK)
+			draw_circle(Vector2.ZERO,size.x*.52,color.lightened(.03))
 			draw_line(Vector2.ZERO,Vector2(0,size.y),INK,size.x+4.5,true)
 			draw_line(Vector2.ZERO,Vector2(0,size.y),color,size.x,true)
 			draw_circle(Vector2(0,size.y),size.x*.53,INK)

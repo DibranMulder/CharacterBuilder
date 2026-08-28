@@ -16,6 +16,7 @@ func _run() -> void:
 		"offhand": "shield",
 	})
 	await process_frame
+	var profile := CharacterCatalog.race("bogkin")
 
 	var right_arm: Node2D = avatar.get_node("Rig/Hip/torso/right_arm")
 	var right_forearm: Node2D = right_arm.get_node("right_forearm")
@@ -46,6 +47,10 @@ func _run() -> void:
 		_fail("weapon must render on the screen-right hand")
 	if shield.global_position.x <= avatar.global_position.x:
 		_fail("cross-body shield must render on the same screen-right side as the weapon")
+	var shield_center := shield.to_global(Vector2(0,-20))
+	var maximum_shield_offset: float = profile.torso.x * profile.scale
+	if absf(shield_center.x - torso.global_position.x) > maximum_shield_offset:
+		_fail("shield face must overlap the torso silhouette instead of floating away from the body")
 	if shield.z_index >= 0:
 		_fail("shield must remain behind the far-side forearm and torso")
 	if shoulder_position.distance_to(sword_tip) <= shoulder_position.distance_to(hand_position):
@@ -66,7 +71,6 @@ func _run() -> void:
 	var windup_hand := weapon.global_position
 	var windup_tip := weapon.to_global(weapon.reach_endpoint())
 	var head: Node2D = avatar.get_node("Rig/Hip/torso/head")
-	var profile := CharacterCatalog.race("bogkin")
 	var face_left_x: float = head.global_position.x - profile.head.x * 0.5 * profile.scale
 	if windup_tip.x >= face_left_x:
 		_fail("forehand reach-back must carry the weapon beyond the screen-left side of the face")

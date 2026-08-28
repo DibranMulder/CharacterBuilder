@@ -65,6 +65,18 @@ func _run() -> void:
 			_fail("%s did not start its climb loop" % race_id)
 			return
 		avatar._active_tween.custom_step(.28)
+		var forearm_length: float = CharacterCatalog.race(race_id).arm * .48
+		var torso: Node2D = avatar._bones.torso
+		var left_pull_a := torso.to_local(avatar._bones.left_forearm.to_global(Vector2(0,forearm_length)))
+		var right_pull_a := torso.to_local(avatar._bones.right_forearm.to_global(Vector2(0,forearm_length)))
+		avatar._active_tween.custom_step(.28)
+		var left_pull_b := torso.to_local(avatar._bones.left_forearm.to_global(Vector2(0,forearm_length)))
+		var right_pull_b := torso.to_local(avatar._bones.right_forearm.to_global(Vector2(0,forearm_length)))
+		var left_pull_delta := left_pull_b.y-left_pull_a.y
+		var right_pull_delta := right_pull_b.y-right_pull_a.y
+		if absf(left_pull_delta) < 5.0 or absf(right_pull_delta) < 5.0 or left_pull_delta*right_pull_delta >= 0.0:
+			_fail("%s climb loop must alternate two meaningful opposing arm pulls" % race_id)
+			return
 		if not avatar._head_visual.back_view:
 			_fail("%s climb loop did not switch to the rear view" % race_id)
 			return
