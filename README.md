@@ -33,6 +33,10 @@ avatar.play_gesture(0)
 
 Gameplay and builder UI never manipulate bones or sprites directly. `ModularCharacter` owns topology, pivots, equipment draw order, and animation.
 
+## Procedural art direction
+
+The prototype translates the supplied illustration into reusable construction rules rather than copying a fixed pose: large expressive heads and eyes, warm dark outlines, hair-led silhouettes, rounded articulated limbs, boots, layered tunics, shoulder pieces, belts, split hems, shaped capes, and race-specific color profiles. These details remain separate from the skeleton and equipment sockets. Each race's `visual` profile controls hair style, hair/eye/boot colors, and exceptional facial structure, so future authored parts can replace the procedural drawings without changing animation or gameplay code.
+
 ## Asset contract
 
 Authored replacements should be transparent PNGs (or `Polygon2D` meshes) with a consistent pixels-per-unit scale. Each item needs only the views required by the game camera and attaches at its slot origin. Keep pivots and naming stable:

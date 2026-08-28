@@ -6,6 +6,9 @@ var size := Vector2(50, 70)
 var color := Color.WHITE
 var accent := Color("303846")
 var back_view := false
+var style: Dictionary = {}
+
+const INK := Color("352b25")
 
 
 func setup(p_kind: String, p_size: Vector2, p_color: Color, p_accent: Color) -> PartVisual:
@@ -22,48 +25,118 @@ func set_back_view(enabled: bool) -> void:
 	queue_redraw()
 
 
+func set_style(p_style: Dictionary) -> PartVisual:
+	style = p_style
+	queue_redraw()
+	return self
+
+
 func _ellipse(center: Vector2, radii: Vector2, fill: Color) -> void:
 	var points := PackedVector2Array()
 	for i in 24:
 		var angle := TAU * float(i) / 24.0
 		points.append(center + Vector2(cos(angle) * radii.x, sin(angle) * radii.y))
 	draw_colored_polygon(points, fill)
-	draw_polyline(points + PackedVector2Array([points[0]]), accent.darkened(0.35), 2.0, true)
+	draw_polyline(points + PackedVector2Array([points[0]]), INK, 2.4, true)
+
+
+func _outlined_polygon(points: PackedVector2Array, fill: Color, width := 2.4) -> void:
+	draw_colored_polygon(points, fill)
+	draw_polyline(points + PackedVector2Array([points[0]]), INK, width, true)
+
+
+func _draw_hair(center: Vector2, radii: Vector2) -> void:
+	var hair: Color = style.get("hair", accent.darkened(.45))
+	var hair_style: String = style.get("hair_style", "crop")
+	if hair_style == "none":
+		return
+	if hair_style in ["long", "ponytail", "braid"]:
+		var back_hair := PackedVector2Array([
+			center + Vector2(-radii.x*.8,-radii.y*.5), center + Vector2(radii.x*.55,-radii.y*.65),
+			center + Vector2(radii.x*.72,radii.y*.55), center + Vector2(radii.x*.45,radii.y*1.35),
+			center + Vector2(-radii.x*.62,radii.y*1.05),
+		])
+		_outlined_polygon(back_hair, hair, 2.6)
+	if hair_style == "ponytail":
+		draw_line(center + Vector2(-radii.x*.55,-radii.y*.45), center + Vector2(-radii.x*1.18,radii.y*.65), INK, radii.x*.48, true)
+		draw_line(center + Vector2(-radii.x*.55,-radii.y*.45), center + Vector2(-radii.x*1.18,radii.y*.65), hair, radii.x*.38, true)
+	elif hair_style == "braid":
+		for i in 4:
+			var bead := center + Vector2(-radii.x*.72-i*2.0, radii.y*(.25+i*.28))
+			draw_circle(bead, radii.x*.15, INK)
+			draw_circle(bead, radii.x*.11, hair)
 
 
 func _draw() -> void:
 	match kind:
 		"head":
+			var center := Vector2(0, -size.y * 0.35)
+			var radii := size * 0.5
+			_draw_hair(center, radii)
 			_ellipse(Vector2(0, -size.y * 0.35), size * 0.5, color)
+			var hair: Color = style.get("hair", accent.darkened(.45))
+			var hair_style: String = style.get("hair_style", "crop")
+			if hair_style != "none":
+				# A broad cap and separated fringe make hair part of the silhouette,
+				# matching the illustrated reference without baking it into equipment.
+				draw_arc(center + Vector2(0,-radii.y*.05), radii.x*.82, PI*1.06, TAU*1.02, 22, INK, radii.y*.40, true)
+				draw_arc(center + Vector2(0,-radii.y*.05), radii.x*.82, PI*1.06, TAU*1.02, 22, hair, radii.y*.31, true)
+				var fringe := PackedVector2Array([
+					center + Vector2(-radii.x*.62,-radii.y*.48), center + Vector2(radii.x*.62,-radii.y*.5),
+					center + Vector2(radii.x*.44,-radii.y*.05), center + Vector2(radii.x*.15,-radii.y*.25),
+					center + Vector2(-radii.x*.06,radii.y*.03), center + Vector2(-radii.x*.22,-radii.y*.25),
+					center + Vector2(-radii.x*.52,-radii.y*.02),
+				])
+				_outlined_polygon(fringe, hair, 2.0)
 			if back_view:
-				# A simple rear silhouette for the procedural prototype. Production
-				# races replace this with authored back-facing head attachments.
-				draw_arc(Vector2(0,-size.y*.43), size.x*.34, PI, TAU, 16, accent.darkened(.3), 7.0)
-				draw_line(Vector2(-size.x*.24,-size.y*.18),Vector2(size.x*.24,-size.y*.18),accent.darkened(.25),2.0)
+				draw_arc(center, radii.x*.72, PI*.08, PI*.92, 18, hair, radii.y*.28)
+				draw_line(Vector2(-size.x*.24,-size.y*.16),Vector2(size.x*.24,-size.y*.16),INK,2.0)
 			else:
-				draw_circle(Vector2(size.x * 0.18, -size.y * 0.42), 3.7, Color("f7f3df"))
-				draw_circle(Vector2(size.x * 0.2, -size.y * 0.42), 1.8, Color("18202b"))
-				draw_arc(Vector2(size.x * 0.1, -size.y * 0.27), 8.0, 0.15, 2.2, 8, accent.darkened(0.4), 1.5)
+				var eye := Vector2(size.x * 0.18, -size.y * 0.38)
+				var frog_face: bool = String(style.get("face", "")) == "frog"
+				var eye_radius := 7.0 if frog_face else 5.4
+				draw_circle(eye + Vector2(0,-2 if frog_face else 0), eye_radius, INK)
+				draw_circle(eye + Vector2(0,-2 if frog_face else 0), eye_radius-1.4, Color("fffaf0"))
+				draw_circle(eye + Vector2(1.0,-1.6 if frog_face else .4), 2.8 if frog_face else 2.5, style.get("eye", Color("50351f")))
+				draw_circle(eye + Vector2(1.7,-.8), .9, Color.WHITE)
+				if frog_face:
+					draw_circle(Vector2(size.x*.33,-size.y*.27),1.2,INK)
+					draw_arc(Vector2(size.x*.08,-size.y*.17),size.x*.27,.1,PI-.1,12,INK,2.0)
+				else:
+					draw_line(Vector2(size.x*.31,-size.y*.30),Vector2(size.x*.38,-size.y*.26),INK,1.5,true)
+					draw_arc(Vector2(size.x * 0.13, -size.y * 0.20), 7.0, 0.25, 2.15, 8, INK, 1.6)
+				draw_circle(Vector2(size.x*.31,-size.y*.16),3.2,Color(1.0,.42,.38,.16))
 		"torso":
 			var pts := PackedVector2Array([
 				Vector2(-size.x * 0.48, 0), Vector2(size.x * 0.48, 0),
 				Vector2(size.x * 0.34, size.y), Vector2(-size.x * 0.34, size.y)])
-			draw_colored_polygon(pts, color)
-			draw_polyline(pts + PackedVector2Array([pts[0]]), accent.darkened(0.4), 2.2, true)
+			_outlined_polygon(pts, color)
+			draw_colored_polygon(PackedVector2Array([pts[0],Vector2(0,0),Vector2(-size.x*.05,size.y),pts[3]]), color.darkened(.08))
+			draw_arc(Vector2(0,3),size.x*.14,0,PI,10,INK,2.0)
 		"limb":
-			draw_line(Vector2.ZERO, Vector2(0, size.y), color, size.x, true)
-			draw_circle(Vector2.ZERO, size.x * 0.5, color)
-			draw_circle(Vector2(0, size.y), size.x * 0.52, color)
-			draw_line(Vector2.ZERO, Vector2(0, size.y), accent.darkened(0.35), 2.0, true)
+			draw_line(Vector2.ZERO,Vector2(0,size.y),INK,size.x+4.5,true)
+			draw_line(Vector2.ZERO,Vector2(0,size.y),color,size.x,true)
+			draw_circle(Vector2(0,size.y),size.x*.53,INK)
+			draw_circle(Vector2(0,size.y),size.x*.40,color.lightened(.04))
+		"shin":
+			draw_line(Vector2.ZERO,Vector2(0,size.y),INK,size.x+4.5,true)
+			draw_line(Vector2.ZERO,Vector2(0,size.y),color,size.x,true)
+			var boot: Color = style.get("boot",Color("684733"))
+			draw_line(Vector2(0,size.y*.58),Vector2(0,size.y+4),INK,size.x+8.0,true)
+			draw_line(Vector2(0,size.y*.58),Vector2(0,size.y+3),boot,size.x+3.0,true)
+			draw_line(Vector2(-1,size.y+3),Vector2(size.x*.78,size.y+4),INK,size.x*.62,true)
+			draw_line(Vector2(0,size.y+2),Vector2(size.x*.72,size.y+3),boot.lightened(.05),size.x*.38,true)
 		"horse":
 			_ellipse(Vector2(0, 4), size * 0.5, color)
+			draw_arc(Vector2(size.x*.28,0),size.y*.30,-PI*.55,PI*.55,12,color.lightened(.08),5.0)
 		"wing":
-			var wing := PackedVector2Array([Vector2.ZERO, Vector2(size.x, -size.y * .65), Vector2(size.x * .72, size.y * .15), Vector2(size.x * .2, size.y)])
-			draw_colored_polygon(wing, Color(color, 0.58))
-			draw_polyline(wing + PackedVector2Array([wing[0]]), accent, 2.0, true)
+			var wing := PackedVector2Array([Vector2.ZERO, Vector2(size.x, -size.y * .65), Vector2(size.x * .78, size.y * .12), Vector2(size.x * .2, size.y)])
+			_outlined_polygon(wing,Color(color,.52),2.0)
+			draw_line(Vector2.ZERO,Vector2(size.x*.78,size.y*.12),Color(accent,.72),1.5)
+			draw_line(Vector2.ZERO,Vector2(size.x*.2,size.y),Color(accent,.72),1.5)
 		"ear":
 			var ear := PackedVector2Array([Vector2.ZERO, Vector2(size.x, -size.y * .5), Vector2(size.x * .15, size.y * .5)])
 			draw_colored_polygon(ear, color)
-			draw_polyline(ear + PackedVector2Array([ear[0]]), accent.darkened(.35), 2.0)
+			draw_polyline(ear + PackedVector2Array([ear[0]]), INK, 2.0)
 		"shadow":
 			_ellipse(Vector2.ZERO, size * 0.5, Color(0.03, 0.06, 0.1, 0.32))

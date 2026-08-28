@@ -176,6 +176,7 @@ func _part(parent: Node, name_: String, kind: String, size: Vector2, color: Colo
 	pivot.z_index = z
 	parent.add_child(pivot)
 	var visual := Part.new().setup(kind, size, color, _profile.accent)
+	visual.set_style(_profile.get("visual", {}))
 	pivot.add_child(visual)
 	_bones[name_] = pivot
 	return visual
@@ -211,14 +212,14 @@ func _rebuild() -> void:
 			var x := -52.0 + i * 34.0
 			var upper_name := "horse_leg_%d" % i
 			_part(hip, upper_name, "limb", Vector2(15,horse_upper_length), skin.darkened(.12), Vector2(x,38), -2 if i < 2 else 1)
-			_part(_bones[upper_name], "horse_shin_%d" % i, "limb", Vector2(14,horse_lower_length), skin.darkened(.08), Vector2(0,horse_upper_length), 0)
+			_part(_bones[upper_name], "horse_shin_%d" % i, "shin", Vector2(14,horse_lower_length), skin.darkened(.08), Vector2(0,horse_upper_length), 0)
 	else:
 		var thigh_length := float(_profile.leg) * .52
 		var shin_length := float(_profile.leg) - thigh_length
 		_part(hip, "left_leg", "limb", Vector2(18,thigh_length), skin.darkened(.08), Vector2(-torso_size.x*.23, 8), -2)
-		_part(_bones.left_leg, "left_shin", "limb", Vector2(17,shin_length), skin.darkened(.05), Vector2(0,thigh_length), 0)
+		_part(_bones.left_leg, "left_shin", "shin", Vector2(17,shin_length), skin.darkened(.05), Vector2(0,thigh_length), 0)
 		_part(hip, "right_leg", "limb", Vector2(18,thigh_length), skin, Vector2(torso_size.x*.23, 8), 1)
-		_part(_bones.right_leg, "right_shin", "limb", Vector2(17,shin_length), skin, Vector2(0,thigh_length), 0)
+		_part(_bones.right_leg, "right_shin", "shin", Vector2(17,shin_length), skin, Vector2(0,thigh_length), 0)
 		_bones.left_shin.rotation_degrees = 4.0
 		_bones.right_shin.rotation_degrees = -4.0
 
