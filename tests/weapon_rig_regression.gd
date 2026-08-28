@@ -29,6 +29,7 @@ func _run() -> void:
 	var sword_tip := weapon.to_global(weapon.reach_endpoint())
 	var shoulder_position := right_arm.global_position
 	var rest_weapon_vector := sword_tip - hand_position
+	var forearm_vector := hand_position-right_forearm.global_position
 
 	if right_arm.global_position.x >= torso.global_position.x:
 		_fail("right-facing anatomical right shoulder must be drawn on screen-left")
@@ -41,10 +42,14 @@ func _run() -> void:
 	if left_arm.global_position.x >= torso.global_position.x:
 		_fail("left-facing anatomical left shoulder must be drawn on screen-left")
 	avatar.set_facing(&"right")
-	right_arm.force_update_transform(); left_arm.force_update_transform(); torso.force_update_transform()
+	right_arm.force_update_transform(); right_forearm.force_update_transform()
+	left_arm.force_update_transform(); torso.force_update_transform()
 
-	if weapon.global_position.x <= avatar.global_position.x:
-		_fail("weapon must render on the screen-right hand")
+	if right_forearm.global_position.x >= right_arm.global_position.x:
+		_fail("idle weapon elbow must project outward from the anatomical right shoulder")
+
+	if sword_tip.x <= avatar.global_position.x:
+		_fail("resting weapon must extend toward screen-right")
 	if shield.global_position.x <= avatar.global_position.x:
 		_fail("cross-body shield must render on the same screen-right side as the weapon")
 	var shield_center := shield.to_global(Vector2(0,-20))
@@ -62,11 +67,23 @@ func _run() -> void:
 	if shoulder_position.distance_to(sword_tip) <= shoulder_position.distance_to(hand_position):
 		_fail("sword tip must extend beyond the hand from the shoulder pivot")
 	var rest_weapon_angle := rad_to_deg(rest_weapon_vector.angle())
-	if absf(rest_weapon_angle - 35.0) > 1.0 or rest_weapon_vector.x <= 0 or rest_weapon_vector.y <= 0:
-		_fail("resting sword must angle down toward screen-right alongside the body")
+	if absf(rest_weapon_angle) > 1.0 or rest_weapon_vector.x <= 0:
+		_fail("resting sword must be horizontal and point toward screen-right")
+	if absf(forearm_vector.normalized().dot(rest_weapon_vector.normalized())) > .02:
+		_fail("resting sword must be perpendicular to the forearm at the grip")
 	var interior_elbow_angle := 180.0 - absf(right_forearm.rotation_degrees)
 	if absf(interior_elbow_angle - 120.0) > 1.0:
 		_fail("resting elbow must have an approximately 120-degree interior angle")
+	for weapon_id in ["axe","spear","staff"]:
+		avatar.equip(&"weapon",weapon_id)
+		weapon.force_update_transform()
+		var weapon_axis := weapon.to_global(Vector2(0,80))-weapon.global_position
+		var alignment := absf(forearm_vector.normalized().dot(weapon_axis.normalized()))
+		if weapon_id == "axe" and (absf(weapon_axis.y) > 1.0 or alignment > .02):
+			_fail("resting axe must be horizontal and perpendicular to the forearm")
+		if weapon_id in ["spear","staff"] and (absf(weapon_axis.x) > 1.0 or alignment < .98):
+			_fail("resting %s must be vertical" % weapon_id)
+	avatar.equip(&"weapon","sword")
 
 	# Sample the same windup/strike angles used by the sword attack. A properly
 	# gripped weapon tip must describe a larger arc than the hand carrying it.

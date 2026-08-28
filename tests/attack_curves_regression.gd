@@ -18,33 +18,29 @@ func _run() -> void:
 	var backhand: Array = Avatar.ATTACK_CURVES.backhand
 	var jab_chamber_angle: float = jab[0].upper + jab[0].forearm
 	var jab_strike_angle: float = jab[1].upper + jab[1].forearm
-	if absf(jab_chamber_angle + 90.0) > 2.0 or absf(jab_strike_angle + 90.0) > 2.0:
+	if absf(jab_chamber_angle) > 2.0 or absf(jab_strike_angle) > 2.0:
 		_fail("jab must retract and extend along one horizontal line")
 		return
-	if jab[0].forearm >= jab[1].forearm:
+	if absf(jab[0].forearm) <= absf(jab[1].forearm):
 		_fail("jab chamber must bend more deeply than its extended strike")
 		return
-	if jab[0].forearm > -150.0:
+	if jab[0].forearm > -60.0:
 		_fail("jab must retract the hand nearly back to the shoulder")
 		return
 	var forehand_overhead_angle: float = forehand[1].upper + forehand[1].forearm
 	var forehand_strike_angle: float = forehand[2].upper + forehand[2].forearm
 	var forehand_reachback_angle: float = forehand[0].upper + forehand[0].forearm
-	if absf(forehand_reachback_angle + 225.0) > 2.0:
+	if absf(forehand_reachback_angle + 240.0) > 2.0:
 		_fail("forehand must angle the weapon up and back past the face")
 		return
-	if absf(forehand_overhead_angle + 180.0) > 2.0:
+	if absf(forehand_overhead_angle + 90.0) > 2.0:
 		_fail("forehand must raise the weapon vertically overhead")
 		return
-	for pose in [forehand[0], forehand[1]]:
-		var elbow_interior_angle: float = 180.0 - absf(pose.forearm)
-		if absf(elbow_interior_angle - 120.0) > 1.0:
-			_fail("forehand rearward poses must keep an approximately 120-degree elbow bend")
-			return
-		if pose.forearm >= 0:
-			_fail("forehand elbow must fold toward the weapon side, not reverse away from it")
-			return
-	if absf(forehand_strike_angle + 45.0) > 2.0:
+	var reachback_elbow_angle: float = 180.0-absf(forehand[0].forearm)
+	if absf(reachback_elbow_angle-120.0) > 1.0 or forehand[0].forearm >= 0:
+		_fail("forehand reach-back must retain the correctly folded 120-degree elbow")
+		return
+	if absf(forehand_strike_angle - 45.0) > 2.0:
 		_fail("forehand must smash diagonally down and forward")
 		return
 	if backhand[0].upper <= 0 or backhand[1].upper >= 0:

@@ -13,6 +13,13 @@ const BaseAnatomy := preload("res://src/base_anatomy_visual.gd")
 const WEAPON_ATTACKS := [&"jab", &"forehand", &"backhand"]
 const MOTIONS := [&"idle", &"run", &"climb"]
 const RUN_FRAME_DURATION := .085
+const WEAPON_GRIP_ROTATIONS := {
+	"sword": -90.0,
+	"axe": -90.0,
+	"spear": 180.0,
+	"staff": 180.0,
+	"bow": 0.0,
+}
 const BIPED_RUN_CYCLE := [
 	# Contact, compression, passing, and recovery for the lead leg, followed
 	# by the same four phases mirrored onto the opposite leg.
@@ -29,15 +36,15 @@ const ATTACK_CURVES := {
 	"jab": [
 		# Retract with a deeply bent elbow while keeping the blade horizontal,
 		# then extend the arm along that same line into the thrust.
-		{"upper": 70.0, "forearm": -160.0, "torso": 7.0, "x": -13.0, "duration": 0.18},
-		{"upper": -60.0, "forearm": -30.0, "torso": -8.0, "x": 22.0, "duration": 0.13},
+		{"upper": 70.0, "forearm": -70.0, "torso": 7.0, "x": -13.0, "duration": 0.18},
+		{"upper": -30.0, "forearm": 30.0, "torso": -8.0, "x": 22.0, "duration": 0.13},
 	],
 	"forehand": [
-		# Carry a consistently bent elbow behind the head, reach a vertical
-		# overhead weapon pose, then smash diagonally down and forward.
-		{"upper": -165.0, "forearm": -60.0, "torso": -8.0, "x": -7.0, "duration": 0.20},
-		{"upper": -120.0, "forearm": -60.0, "torso": -13.0, "x": -13.0, "duration": 0.15},
-		{"upper": -20.0, "forearm": -25.0, "torso": 11.0, "x": 12.0, "duration": 0.18},
+		# Reach high behind the head with a 120-degree elbow, turn the blade
+		# vertically overhead, then smash diagonally down and forward.
+		{"upper": -180.0, "forearm": -60.0, "torso": -8.0, "x": -7.0, "duration": 0.20},
+		{"upper": -150.0, "forearm": 60.0, "torso": -13.0, "x": -13.0, "duration": 0.15},
+		{"upper": -20.0, "forearm": 65.0, "torso": 11.0, "x": 12.0, "duration": 0.18},
 	],
 	"backhand": [
 		{"upper": 45.0, "forearm": -15.0, "torso": 11.0, "x": 7.0, "duration": 0.18},
@@ -316,11 +323,10 @@ func _rebuild() -> void:
 	# forearm across it. The wrist stays at the shield boss while the rear layer
 	# lets the inner half of the shield disappear behind the body.
 	_bones.left_arm.rotation_degrees = -10; _bones.left_forearm.rotation_degrees = -80
-	# Relative forearm rotation of -60 degrees produces an approximately
-	# 120-degree interior elbow angle. The slight inward upper-arm rotation
-	# keeps the weapon in a relaxed diagonal guard alongside the body instead
-	# of projecting it horizontally forward.
-	_bones.right_arm.rotation_degrees = 5; _bones.right_forearm.rotation_degrees = -60
+	# Cross the upper arm toward the body, then finish with a vertical forearm.
+	# The +60-degree relative bend preserves the requested 120-degree interior
+	# elbow while leaving the grip transform free to orient each weapon class.
+	_bones.right_arm.rotation_degrees = 60; _bones.right_forearm.rotation_degrees = -60
 
 	_attach_gear("back", torso, Vector2(0,5), -6)
 	_attach_gear("armor", torso, Vector2.ZERO, 1)
@@ -398,14 +404,15 @@ func _place_gear_in_hand(slot: String, item_id: String, visual: GearVisual) -> v
 	var forearm_length := float(_profile.arm) * .48
 	visual.set_carried_on_back(false)
 	visual.set_shield_exterior(slot == "offhand" and item_id == "shield" and facing == &"left")
-	visual.rotation = 0.0
 	if slot == "weapon":
 		var weapon_forearm := _weapon_forearm()
 		if visual.get_parent() != weapon_forearm:
 			visual.reparent(weapon_forearm, false)
 		visual.position = Vector2(0.0, forearm_length)
+		visual.rotation_degrees = WEAPON_GRIP_ROTATIONS.get(item_id,0.0)
 		visual.z_index = 6
 		return
+	visual.rotation = 0.0
 	var offhand_forearm := _offhand_forearm()
 	if visual.get_parent() != offhand_forearm:
 		visual.reparent(offhand_forearm, false)
