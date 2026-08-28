@@ -12,6 +12,7 @@ const BaseAnatomy := preload("res://src/base_anatomy_visual.gd")
 const SlashTrail := preload("res://src/slash_trail_visual.gd")
 
 const WEAPON_ATTACKS := [&"jab", &"forehand", &"backhand"]
+const BOW_ATTACKS := [&"fire_bow"]
 const MOTIONS := [&"idle", &"run", &"climb"]
 const RUN_FRAME_DURATION := .085
 const WEAPON_GRIP_ROTATIONS := {
@@ -19,7 +20,7 @@ const WEAPON_GRIP_ROTATIONS := {
 	"axe": -90.0,
 	"spear": 180.0,
 	"staff": 180.0,
-	"bow": 0.0,
+	"bow": 90.0,
 }
 const BIPED_RUN_CYCLE := [
 	# Contact, compression, passing, and recovery for the lead leg, followed
@@ -100,6 +101,8 @@ func configure(new_race_id: String, new_loadout: Dictionary = {}) -> void:
 	race_id = new_race_id if CharacterCatalog.RACES.has(new_race_id) else "human"
 	for slot in new_loadout:
 		if loadout.has(slot): loadout[slot] = new_loadout[slot]
+	if loadout.weapon == "bow":
+		loadout.offhand = "none"
 	_rebuild()
 
 
@@ -109,6 +112,13 @@ func equip(slot: StringName, item_id: String) -> bool:
 	if not supports_equipment_slot(slot):
 		return false
 	loadout[String(slot)] = item_id
+	if slot == &"weapon" and item_id == "bow" and loadout.offhand != "none":
+		loadout.offhand = "none"
+		var offhand_visual: GearVisual = _gear.get("offhand")
+		if offhand_visual:
+			offhand_visual.setup("offhand","none",_profile.accent)
+			_apply_gear_presentation("offhand","none",offhand_visual)
+		equipment_changed.emit(&"offhand","none")
 	if slot == &"pants":
 		for pants_visual in _pants_parts:
 			pants_visual.setup("pants",item_id,_profile.accent)
@@ -118,12 +128,18 @@ func equip(slot: StringName, item_id: String) -> bool:
 	if visual:
 		visual.setup(String(slot), item_id, _profile.accent)
 		_apply_gear_presentation(String(slot), item_id, visual)
+	if slot == &"weapon":
+		_apply_weapon_hand_parts()
 	equipment_changed.emit(slot, item_id)
 	return true
 
 
 func supports_equipment_slot(slot: StringName) -> bool:
-	return not (slot == &"pants" and _profile.topology == "centaur")
+	if slot == &"pants" and _profile.topology == "centaur":
+		return false
+	if slot == &"offhand" and loadout.weapon == "bow":
+		return false
+	return true
 
 
 func available_gestures() -> Array:
@@ -138,7 +154,7 @@ func play_gesture(index: int) -> void:
 
 
 func available_weapon_attacks() -> Array[StringName]:
-	return WEAPON_ATTACKS.duplicate()
+	return BOW_ATTACKS.duplicate() if loadout.weapon == "bow" else WEAPON_ATTACKS.duplicate()
 
 
 func available_motions() -> Array[StringName]:
@@ -191,7 +207,7 @@ func stop_motion() -> void:
 
 
 func play_weapon_attack(attack: StringName = &"forehand") -> void:
-	if not attack in WEAPON_ATTACKS:
+	if not attack in available_weapon_attacks():
 		return
 	_play_action("%s %s" % [String(loadout.weapon).capitalize(), String(attack).capitalize()], String(attack))
 
@@ -211,6 +227,7 @@ func _play_action(action_name: String, style: String) -> void:
 		"jab": _animate_weapon_curve("jab")
 		"forehand": _animate_weapon_curve("forehand")
 		"backhand": _animate_weapon_curve("backhand")
+		"fire_bow": _animate_fire_bow()
 		"slash": _animate_slash()
 		"thrust": _animate_thrust()
 		"cast": _animate_cast()
@@ -359,6 +376,9 @@ func _rebuild() -> void:
 	_attach_gear("accessory", head, Vector2(0,4), 3)
 	_attach_gear("weapon", _bones.right_forearm, Vector2(0,forearm_length), 6)
 	_attach_gear("offhand", _bones.left_forearm, Vector2(0,forearm_length), 5)
+	if loadout.weapon == "bow":
+		_place_gear_in_hand("weapon","bow",_gear.weapon)
+	_apply_weapon_hand_parts()
 	_capture_pose()
 	_apply_facing()
 
@@ -429,12 +449,14 @@ func _place_gear_in_hand(slot: String, item_id: String, visual: GearVisual) -> v
 	visual.set_carried_on_back(false)
 	visual.set_shield_exterior(slot == "offhand" and item_id == "shield" and facing == &"left")
 	if slot == "weapon":
-		var weapon_forearm := _weapon_forearm()
+		var weapon_forearm: Node2D = _bones.left_forearm if item_id == "bow" else _weapon_forearm()
 		if visual.get_parent() != weapon_forearm:
 			visual.reparent(weapon_forearm, false)
 		visual.position = Vector2(0.0, forearm_length)
 		visual.rotation_degrees = WEAPON_GRIP_ROTATIONS.get(item_id,0.0)
-		visual.z_index = 6
+		# The bow lives on the far-side arm, whose relative negative layers would
+		# otherwise place the entire weapon behind the torso and armor.
+		visual.z_index = 12 if item_id == "bow" else 6
 		return
 	visual.rotation = 0.0
 	var offhand_forearm := _offhand_forearm()
@@ -514,8 +536,13 @@ func _set_back_view(enabled: bool) -> void:
 		_head_visual.set_back_view(enabled)
 	if _head_base:
 		_head_base.set_back_view(enabled)
-	if _left_hand_base:
-		_left_hand_base.set_part("hand_grip" if enabled else "hand_open")
+	if enabled:
+		if _left_hand_base:
+			_left_hand_base.set_part("hand_grip")
+		if _right_hand_base:
+			_right_hand_base.set_part("hand_grip")
+	else:
+		_apply_weapon_hand_parts()
 	if _horse_tail_base:
 		_horse_tail_base.set_back_view(enabled)
 	if _horse_body_visual:
@@ -554,6 +581,10 @@ func _stop_active_animation() -> void:
 	_active_tween = null
 	if _slash_trail:
 		_slash_trail.cancel()
+	var weapon_visual: GearVisual = _gear.get("weapon")
+	if weapon_visual and weapon_visual.item == "bow":
+		weapon_visual.set_bow_draw(0.0)
+	_set_bow_drawing_hand(false)
 
 
 func _queue_motion_pose(rotations: Dictionary, rig_y: float, duration: float) -> void:
@@ -616,19 +647,22 @@ func _animate_weapon_curve(curve_id: String) -> void:
 	var weapon_visual: GearVisual = _gear.get("weapon")
 	var weapon_curves: Dictionary = WEAPON_ATTACK_CURVES.get(loadout.weapon,{})
 	var curve: Array = weapon_curves.get(curve_id,ATTACK_CURVES[curve_id])
-	var uses_slash_trail: bool = curve_id in ["forehand","backhand"] and loadout.weapon in ["sword","axe","spear","staff"]
+	var uses_slash_trail: bool = curve_id in ["jab","forehand","backhand"] and loadout.weapon in ["sword","axe","spear","staff"]
 	var slash_start_index := 2 if curve_id == "forehand" else 1
+	var slash_stop_index := 2 if curve_id == "jab" and curve.size() > 2 else curve.size()
 	for pose_index in curve.size():
 		var pose: Dictionary = curve[pose_index]
+		if uses_slash_trail and pose_index == slash_stop_index:
+			_active_tween.tween_callback(_slash_trail.stop)
 		if uses_slash_trail and pose_index == slash_start_index:
-			_active_tween.tween_callback(_start_slash_trail)
+			_active_tween.tween_callback(_start_slash_trail.bind(curve_id == "jab"))
 		_active_tween.tween_property(weapon_arm, "rotation_degrees", pose.upper, pose.duration)
 		_active_tween.parallel().tween_property(weapon_forearm, "rotation_degrees", pose.forearm, pose.duration)
 		_active_tween.parallel().tween_property(_bones.torso, "rotation_degrees", pose.torso, pose.duration)
 		_active_tween.parallel().tween_property(_bones.rig, "position:x", pose.x, pose.duration)
 		if weapon_visual and pose.has("weapon_rotation"):
 			_active_tween.parallel().tween_property(weapon_visual, "rotation_degrees", pose.weapon_rotation, pose.duration)
-	if uses_slash_trail:
+	if uses_slash_trail and slash_stop_index == curve.size():
 		_active_tween.tween_callback(_slash_trail.stop)
 	_active_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	_active_tween.tween_property(weapon_arm, "rotation", _rest[weapon_arm.name].rotation, .24)
@@ -639,10 +673,10 @@ func _animate_weapon_curve(curve_id: String) -> void:
 		_active_tween.parallel().tween_property(weapon_visual, "rotation_degrees", WEAPON_GRIP_ROTATIONS.get(loadout.weapon,0.0), .24)
 
 
-func _start_slash_trail() -> void:
+func _start_slash_trail(thrust_mode := false) -> void:
 	var weapon_visual: GearVisual = _gear.get("weapon")
 	if weapon_visual:
-		_slash_trail.start(weapon_visual,Color("8edfff"),16.0 if loadout.weapon in ["spear","staff"] else 14.0)
+		_slash_trail.start(weapon_visual,Color("8edfff"),16.0 if loadout.weapon in ["spear","staff"] else 14.0,thrust_mode)
 
 
 func _animate_slash() -> void: _animate_weapon_curve("forehand")
@@ -672,6 +706,74 @@ func _animate_shoot() -> void:
 	_active_tween.parallel().tween_property(_bones.right_forearm,"rotation_degrees",-12,.18)
 	_active_tween.tween_interval(.2)
 	_active_tween.tween_property(_bones.right_arm,"rotation_degrees",-25,.08)
+
+
+func _animate_fire_bow() -> void:
+	var bow: GearVisual = _gear.get("weapon")
+	if not bow or loadout.weapon != "bow":
+		return
+	bow.set_bow_draw(0.0)
+	_set_bow_drawing_hand(true)
+	# Present the centered grip and bring the free hand toward the string.
+	_active_tween.tween_property(_bones.left_arm,"rotation_degrees",-90.0,.16)
+	_active_tween.parallel().tween_property(_bones.left_forearm,"rotation_degrees",0.0,.16)
+	_active_tween.parallel().tween_property(bow,"rotation_degrees",90.0,.16)
+	_active_tween.parallel().tween_property(_bones.right_arm,"rotation_degrees",15.0,.16)
+	_active_tween.parallel().tween_property(_bones.right_forearm,"rotation_degrees",-15.0,.16)
+	# Pull the nock back toward the face while the bow hand stays locked.
+	_active_tween.tween_method(bow.set_bow_draw,0.0,24.0,.24)
+	_active_tween.parallel().tween_property(_bones.right_arm,"rotation_degrees",-25.0,.24)
+	_active_tween.parallel().tween_property(_bones.right_forearm,"rotation_degrees",-130.0,.24)
+	_active_tween.tween_interval(.08)
+	_active_tween.tween_callback(_fire_arrow)
+	_active_tween.tween_method(bow.set_bow_draw,24.0,0.0,.05)
+	_active_tween.parallel().tween_property(_bones.right_arm,"rotation_degrees",45.0,.08)
+	_active_tween.parallel().tween_property(_bones.right_forearm,"rotation_degrees",-45.0,.08)
+	_active_tween.tween_property(_bones.right_arm,"rotation",_rest.right_arm.rotation,.24)
+	_active_tween.parallel().tween_property(_bones.right_forearm,"rotation",_rest.right_forearm.rotation,.24)
+	_active_tween.parallel().tween_property(_bones.left_arm,"rotation",_rest.left_arm.rotation,.24)
+	_active_tween.parallel().tween_property(_bones.left_forearm,"rotation",_rest.left_forearm.rotation,.24)
+	_active_tween.parallel().tween_property(bow,"rotation_degrees",WEAPON_GRIP_ROTATIONS.bow,.24)
+	_active_tween.tween_callback(_set_bow_drawing_hand.bind(false))
+
+
+func _set_bow_drawing_hand(enabled: bool) -> void:
+	if not _right_hand_base:
+		return
+	_right_hand_base.set_part("hand_grip" if enabled or loadout.weapon != "bow" else "hand_open")
+	_right_hand_base.z_index = 20 if enabled else 7
+
+
+func _apply_weapon_hand_parts() -> void:
+	if _left_hand_base:
+		_left_hand_base.set_part("hand_grip" if loadout.weapon == "bow" else "hand_open")
+		_left_hand_base.z_index = 14 if loadout.weapon == "bow" else 7
+	if _right_hand_base:
+		_right_hand_base.set_part("hand_open" if loadout.weapon == "bow" else "hand_grip")
+
+
+func _fire_arrow() -> void:
+	var bow: GearVisual = _gear.get("weapon")
+	if not bow:
+		return
+	var arrow := Node2D.new()
+	arrow.name = "FiredArrow"
+	arrow.position = _bones.rig.to_local(bow.to_global(Vector2(20,0)))
+	arrow.z_index = 22
+	_bones.rig.add_child(arrow)
+	var shaft := Line2D.new()
+	shaft.width = 3.0
+	shaft.default_color = Color("d7c39b")
+	shaft.points = PackedVector2Array([Vector2(-20,0),Vector2(27,0)])
+	arrow.add_child(shaft)
+	var head := Polygon2D.new()
+	head.polygon = PackedVector2Array([Vector2(35,0),Vector2(25,-6),Vector2(25,6)])
+	head.color = Color("cbd4d8")
+	arrow.add_child(head)
+	var flight := arrow.create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	flight.tween_property(arrow,"position:x",arrow.position.x+300.0,.28)
+	flight.parallel().tween_property(arrow,"modulate:a",0.0,.28).set_delay(.18)
+	flight.tween_callback(arrow.queue_free)
 func _animate_leap() -> void:
 	_active_tween.tween_property(_bones.rig,"position:y",12.0,.1)
 	_active_tween.tween_property(_bones.rig,"position:y",-62.0,.24).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)

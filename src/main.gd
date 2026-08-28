@@ -20,6 +20,7 @@ func _ready() -> void:
 	ladder=Ladder.new(); ladder.position=Vector2(790,480); ladder.z_index=-10; ladder.visible=false; add_child(ladder)
 	avatar = Avatar.new(); avatar.position = Vector2(790,505); avatar.scale = Vector2.ONE * 1.35; add_child(avatar)
 	avatar.motion_changed.connect(_motion_changed)
+	avatar.equipment_changed.connect(_equipment_changed)
 	_build_ui()
 	_build_motion_controls()
 	_select_race(0)
@@ -68,9 +69,7 @@ func _build_ui() -> void:
 	column.add_child(HSeparator.new())
 	column.add_child(_label("Weapon attacks"))
 	weapon_attack_box=HBoxContainer.new(); weapon_attack_box.add_theme_constant_override("separation",6); column.add_child(weapon_attack_box)
-	for attack in Avatar.WEAPON_ATTACKS:
-		var attack_button:=Button.new(); attack_button.text=String(attack).capitalize(); attack_button.size_flags_horizontal=Control.SIZE_EXPAND_FILL
-		attack_button.pressed.connect(avatar.play_weapon_attack.bind(attack)); weapon_attack_box.add_child(attack_button)
+	_rebuild_weapon_attacks()
 	column.add_child(_label("Race gestures"))
 	gesture_box=HBoxContainer.new(); gesture_box.add_theme_constant_override("separation",6); column.add_child(gesture_box)
 
@@ -107,12 +106,34 @@ func _select_race(index: int) -> void:
 	for i in avatar.available_gestures().size():
 		var gesture: Dictionary=avatar.available_gestures()[i]; var button:=Button.new(); button.text=gesture.name; button.size_flags_horizontal=Control.SIZE_EXPAND_FILL; button.pressed.connect(avatar.play_gesture.bind(i)); gesture_box.add_child(button)
 	_sync_selectors()
+	_rebuild_weapon_attacks()
 
 
 func _equip_selected(index: int, slot: StringName, selector: OptionButton) -> void:
 	var items:=CharacterCatalog.items_for(slot)
 	if index >= 0 and index < items.size():
 		avatar.equip(slot,items[index])
+
+
+func _equipment_changed(slot: StringName, _item_id: String) -> void:
+	if slot in [&"weapon",&"offhand"]:
+		_sync_selectors()
+	if slot == &"weapon":
+		_rebuild_weapon_attacks()
+
+
+func _rebuild_weapon_attacks() -> void:
+	if not weapon_attack_box:
+		return
+	for child in weapon_attack_box.get_children():
+		weapon_attack_box.remove_child(child)
+		child.queue_free()
+	for attack in avatar.available_weapon_attacks():
+		var attack_button := Button.new()
+		attack_button.text = String(attack).capitalize()
+		attack_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		attack_button.pressed.connect(avatar.play_weapon_attack.bind(attack))
+		weapon_attack_box.add_child(attack_button)
 
 
 func _sync_selectors() -> void:

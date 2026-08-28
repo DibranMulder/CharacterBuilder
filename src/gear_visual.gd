@@ -8,11 +8,12 @@ var carried_on_back := false
 var shield_exterior := false
 var pants_piece := "full"
 var pants_length := 30.0
+var bow_draw := 0.0
 
 const REACH_ENDPOINTS := {
 	"sword": Vector2(0, 88),
 	"axe": Vector2(30, 92),
-	"bow": Vector2(18, 80),
+	"bow": Vector2(0, 40),
 	"spear": Vector2(0, 126),
 	"staff": Vector2(0, 126),
 }
@@ -20,6 +21,8 @@ const REACH_ENDPOINTS := {
 const INK := Color("352b25")
 const POLE_BUTT := Vector2(0,-72)
 const SHIELD_CENTER := Vector2(0,-20)
+const BOW_TOP := Vector2(-40,-40)
+const BOW_BOTTOM := Vector2(-40,40)
 
 
 func _outlined_polygon(points: PackedVector2Array, fill: Color, width := 2.5) -> void:
@@ -31,6 +34,7 @@ func setup(p_slot: String, p_item: String, p_accent: Color) -> GearVisual:
 	slot = p_slot
 	item = p_item
 	accent = p_accent
+	bow_draw = 0.0
 	visible = item != "none"
 	queue_redraw()
 	return self
@@ -57,6 +61,11 @@ func set_pants_piece(piece: String, length := 30.0) -> GearVisual:
 	return self
 
 
+func set_bow_draw(amount: float) -> void:
+	bow_draw = amount
+	queue_redraw()
+
+
 func _draw() -> void:
 	var ink := INK
 	var metal := Color("cbd4d8")
@@ -72,8 +81,15 @@ func _draw() -> void:
 					draw_line(Vector2.ZERO, Vector2(0, 82), Color("70472b"), 8.0, true)
 					draw_colored_polygon(PackedVector2Array([Vector2(0,80), Vector2(30,92), Vector2(27,65), Vector2(0,62)]), metal)
 				"bow":
-					draw_arc(Vector2(18,40), 40, PI/2, PI*1.5, 20, Color("8a5c34"), 5.0)
-					draw_line(Vector2(18,0), Vector2(18,80), Color("e8dcc6"), 2.0)
+					# The local origin is the wooden handle. The stave bulges toward
+					# the target while the string stays behind it toward the archer.
+					draw_arc(Vector2(-40,0),40,-PI/2,PI/2,20,Color("8a5c34"),5.0)
+					var nock := Vector2(-40-bow_draw,0)
+					draw_line(BOW_TOP,nock,Color("e8dcc6"),2.0)
+					draw_line(nock,BOW_BOTTOM,Color("e8dcc6"),2.0)
+					if bow_draw > 1.0:
+						draw_line(nock,Vector2(52,0),Color("d7c39b"),3.0,true)
+						draw_colored_polygon(PackedVector2Array([Vector2(58,0),Vector2(48,-5),Vector2(48,5)]),metal)
 				"spear":
 					draw_line(POLE_BUTT, Vector2(0,110), Color("795033"), 6.0, true)
 					draw_colored_polygon(PackedVector2Array([Vector2(-8,105), Vector2(0,126), Vector2(8,105)]), metal)

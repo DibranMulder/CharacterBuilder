@@ -92,6 +92,37 @@ func _run() -> void:
 			var right_knee_y: float = avatar._bones.right_shin.global_position.y
 			if pole_butt.y <= maxf(left_knee_y,right_knee_y):
 				_fail("resting %s shaft must extend below both knees" % weapon_id)
+	avatar.equip(&"weapon","bow")
+	weapon.force_update_transform()
+	if weapon.get_parent() != left_forearm:
+		_fail("bow must be wielded by the anatomical left hand")
+	var bow_effective_z: int = weapon.z_index+left_forearm.z_index+left_arm.z_index
+	var armor_effective_z: int = avatar._gear.armor.z_index+torso.z_index
+	if bow_effective_z <= armor_effective_z:
+		_fail("wielded bow must render in front of the character armor")
+	var bow_hand_effective_z: int = avatar._left_hand_base.z_index+left_forearm.z_index+left_arm.z_index
+	if bow_hand_effective_z <= bow_effective_z:
+		_fail("bow gripping hand must remain visible in front of the bow")
+	var bow_top := weapon.to_global(GearVisual.BOW_TOP)
+	var bow_bottom := weapon.to_global(GearVisual.BOW_BOTTOM)
+	var right_string_center := (bow_top+bow_bottom)*.5
+	if right_string_center.distance_to(weapon.global_position) < 30.0:
+		_fail("bow hand must grip the wooden curve rather than the string midpoint")
+	if right_string_center.x >= weapon.global_position.x:
+		_fail("right-facing bowstring must sit behind the wooden grip toward the archer")
+	avatar.set_facing(&"left")
+	weapon.force_update_transform()
+	var left_string_center := (weapon.to_global(GearVisual.BOW_TOP)+weapon.to_global(GearVisual.BOW_BOTTOM))*.5
+	if left_string_center.x <= weapon.global_position.x:
+		_fail("left-facing bowstring must mirror behind the wooden grip toward the archer")
+	avatar.set_facing(&"right")
+	avatar.equip(&"weapon","sword")
+	avatar.equip(&"offhand","shield")
+	avatar.equip(&"weapon","bow")
+	if avatar.loadout.offhand != "none" or shield.visible:
+		_fail("equipping a bow must remove an equipped shield")
+	if avatar.equip(&"offhand","shield"):
+		_fail("shield must be rejected while a bow is equipped")
 	avatar.equip(&"weapon","sword")
 
 	# Sample the same windup/strike angles used by the sword attack. A properly

@@ -87,10 +87,45 @@ func _run() -> void:
 		_fail("forehand trail must stop before the recovery pose")
 		return
 	avatar.play_weapon_attack(&"jab")
-	avatar._active_tween.custom_step(.4)
-	if slash_trail.get("active"):
-		_fail("jab must not produce a slash trail")
+	avatar._active_tween.custom_step(.23)
+	if not slash_trail.get("active"):
+		_fail("jab must start a straight trail during its forward extension")
 		return
+	avatar._active_tween.custom_step(.13)
+	if slash_trail.get("active"):
+		_fail("jab trail must stop before weapon recovery")
+		return
+	avatar.equip(&"weapon","spear")
+	avatar.play_weapon_attack(&"jab")
+	avatar._active_tween.custom_step(.23)
+	if not slash_trail.get("active"):
+		_fail("spear jab must trail its horizontal thrust")
+		return
+	avatar._active_tween.custom_step(.14)
+	if slash_trail.get("active"):
+		_fail("spear jab trail must stop before the spear rotates upright")
+		return
+	avatar.equip(&"weapon","bow")
+	if avatar.available_weapon_attacks() != [&"fire_bow"]:
+		_fail("bow must expose its dedicated Fire Bow attack")
+		return
+	avatar.play_weapon_attack(&"fire_bow")
+	avatar._active_tween.custom_step(.30)
+	if avatar._gear.weapon.bow_draw <= 1.0:
+		_fail("Fire Bow must visibly pull the bowstring")
+		return
+	avatar._active_tween.custom_step(.10)
+	var bow: GearVisual = avatar._gear.weapon
+	var drawn_nock: Vector2 = bow.to_global(Vector2(-40.0-bow.bow_draw,0))
+	var drawing_hand: Vector2 = avatar._bones.right_forearm.to_global(Vector2(0,float(avatar._profile.arm)*.48))
+	if drawn_nock.distance_to(drawing_hand) > 10.0:
+		_fail("Fire Bow offhand must meet the drawn nock beside the face")
+		return
+	avatar._active_tween.custom_step(.10)
+	if not avatar._bones.rig.has_node("FiredArrow"):
+		_fail("Fire Bow must release a visible arrow")
+		return
+	avatar.equip(&"weapon","spear")
 	for attack in attacks:
 		avatar.play_weapon_attack(attack)
 		if avatar._active_tween == null or not avatar._active_tween.is_valid():
