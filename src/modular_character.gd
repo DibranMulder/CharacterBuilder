@@ -8,6 +8,7 @@ signal facing_changed(direction: StringName)
 
 const Part := preload("res://src/part_visual.gd")
 const Gear := preload("res://src/gear_visual.gd")
+const BaseAnatomy := preload("res://src/base_anatomy_visual.gd")
 
 const WEAPON_ATTACKS := [&"jab", &"forehand", &"backhand"]
 const MOTIONS := [&"idle", &"run", &"climb"]
@@ -46,6 +47,7 @@ var _gesturing := false
 var current_motion: StringName = &"idle"
 var facing: StringName = &"right"
 var _head_visual: PartVisual
+var _head_base: BaseAnatomyVisual
 
 
 func _ready() -> void:
@@ -182,6 +184,16 @@ func _part(parent: Node, name_: String, kind: String, size: Vector2, color: Colo
 	return visual
 
 
+func _base_sprite(parent: Node2D, name_: String, part: String, size: Vector2, position_: Vector2, z: int, rotation_degrees_ := 0.0) -> BaseAnatomyVisual:
+	var visual := BaseAnatomy.new().setup(race_id,part,size)
+	visual.name = name_
+	visual.position = position_
+	visual.z_index = z
+	visual.rotation_degrees = rotation_degrees_
+	parent.add_child(visual)
+	return visual
+
+
 func _rebuild() -> void:
 	_stop_active_animation()
 	current_motion = &"idle"
@@ -213,6 +225,7 @@ func _rebuild() -> void:
 			var upper_name := "horse_leg_%d" % i
 			_part(hip, upper_name, "limb", Vector2(15,horse_upper_length), skin.darkened(.12), Vector2(x,38), -2 if i < 2 else 1)
 			_part(_bones[upper_name], "horse_shin_%d" % i, "shin", Vector2(14,horse_lower_length), skin.darkened(.08), Vector2(0,horse_upper_length), 0)
+			_base_sprite(_bones["horse_shin_%d" % i],"HoofSprite%d" % i,"hoof",Vector2(28,24),Vector2(0,horse_lower_length),3)
 	else:
 		var thigh_length := float(_profile.leg) * .52
 		var shin_length := float(_profile.leg) - thigh_length
@@ -220,6 +233,8 @@ func _rebuild() -> void:
 		_part(_bones.left_leg, "left_shin", "shin", Vector2(17,shin_length), skin.darkened(.05), Vector2(0,thigh_length), 0)
 		_part(hip, "right_leg", "limb", Vector2(18,thigh_length), skin, Vector2(torso_size.x*.23, 8), 1)
 		_part(_bones.right_leg, "right_shin", "shin", Vector2(17,shin_length), skin, Vector2(0,thigh_length), 0)
+		_base_sprite(_bones.left_shin,"LeftFootSprite","foot",Vector2(28,20),Vector2(0,shin_length),4)
+		_base_sprite(_bones.right_shin,"RightFootSprite","foot",Vector2(28,20),Vector2(0,shin_length),4)
 		_bones.left_shin.rotation_degrees = 4.0
 		_bones.right_shin.rotation_degrees = -4.0
 
@@ -228,8 +243,10 @@ func _rebuild() -> void:
 	var head_visual := _part(torso, "head", "head", head_size, skin, Vector2(0,-head_size.y*.25), 4)
 	_head_visual = head_visual
 	var head: Node2D = head_visual.get_parent()
+	_head_base = _base_sprite(head,"HeadSprite","head",head_size*1.45,Vector2(0,3),1)
+	_head_visual.visible = not _head_base.has_sprite()
 	var ear_scale := 1.0 if race_id in ["goblin", "frost_troll"] else .55
-	if race_id in ["goblin", "frost_troll", "fae"]:
+	if not _head_base.has_sprite() and race_id in ["goblin", "frost_troll", "fae"]:
 		var ear_l := Part.new().setup("ear", Vector2(28,30)*ear_scale, skin, _profile.accent); ear_l.position=Vector2(-head_size.x*.42,-head_size.y*.42); ear_l.z_index=-1; head.add_child(ear_l)
 		var ear_r := Part.new().setup("ear", Vector2(-28,30)*ear_scale, skin, _profile.accent); ear_r.position=Vector2(head_size.x*.42,-head_size.y*.42); ear_r.z_index=-1; head.add_child(ear_r)
 	if _profile.topology == "winged":
@@ -242,6 +259,8 @@ func _rebuild() -> void:
 	_part(_bones.left_arm, "left_forearm", "limb", Vector2(15,forearm_length), skin.darkened(.04), Vector2(0,upper_arm_length), -3)
 	_part(torso, "right_arm", "limb", Vector2(16,upper_arm_length), skin, Vector2(torso_size.x*.48,8), 3)
 	_part(_bones.right_arm, "right_forearm", "limb", Vector2(15,forearm_length), skin, Vector2(0,upper_arm_length), 3)
+	_base_sprite(_bones.left_forearm,"LeftHandSprite","hand_open",Vector2(25,23),Vector2(0,forearm_length),7,90.0)
+	_base_sprite(_bones.right_forearm,"RightHandSprite","hand_grip",Vector2(24,22),Vector2(0,forearm_length),7,90.0)
 	# The far-side offhand crosses behind the torso so the shield appears on the
 	# same screen-right side as the weapon while its inside remains visible.
 	_bones.left_arm.rotation_degrees = -70; _bones.left_forearm.rotation_degrees = -20
@@ -381,6 +400,8 @@ func _apply_facing() -> void:
 func _set_back_view(enabled: bool) -> void:
 	if _head_visual:
 		_head_visual.set_back_view(enabled)
+	if _head_base:
+		_head_base.set_back_view(enabled)
 
 
 func _stop_active_animation() -> void:

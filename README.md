@@ -35,7 +35,7 @@ Gameplay and builder UI never manipulate bones or sprites directly. `ModularChar
 
 ## Procedural art direction
 
-The prototype translates the supplied illustration into reusable construction rules rather than copying a fixed pose: large expressive heads and eyes, warm dark outlines, hair-led silhouettes, rounded articulated limbs, boots, layered tunics, shoulder pieces, belts, split hems, shaped capes, and race-specific color profiles. These details remain separate from the skeleton and equipment sockets. Each race's `visual` profile controls hair style, hair/eye/boot colors, and exceptional facial structure, so future authored parts can replace the procedural drawings without changing animation or gameplay code.
+The prototype translates the supplied illustration into reusable construction rules rather than copying a fixed pose. Authored raster sprites now provide the base heads, hands, biped feet, and centaur hooves through the deep `BaseAnatomyVisual` module. It owns atlas crops, front/rear view switching, fitting, and procedural fallback behind `setup(race_id, part_id, target_size)` and `set_back_view(enabled)`. Layered tunics, pants, headgear, shoulder pieces, belts, capes, shields, weapons, and accessories remain independent equipment visuals on stable sockets; no equipment combination is baked into a base sprite.
 
 ## Asset contract
 

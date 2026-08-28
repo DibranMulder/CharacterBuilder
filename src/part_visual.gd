@@ -121,11 +121,8 @@ func _draw() -> void:
 		"shin":
 			draw_line(Vector2.ZERO,Vector2(0,size.y),INK,size.x+4.5,true)
 			draw_line(Vector2.ZERO,Vector2(0,size.y),color,size.x,true)
-			var boot: Color = style.get("boot",Color("684733"))
-			draw_line(Vector2(0,size.y*.58),Vector2(0,size.y+4),INK,size.x+8.0,true)
-			draw_line(Vector2(0,size.y*.58),Vector2(0,size.y+3),boot,size.x+3.0,true)
-			draw_line(Vector2(-1,size.y+3),Vector2(size.x*.78,size.y+4),INK,size.x*.62,true)
-			draw_line(Vector2(0,size.y+2),Vector2(size.x*.72,size.y+3),boot.lightened(.05),size.x*.38,true)
+			draw_circle(Vector2(0,size.y),size.x*.50,INK)
+			draw_circle(Vector2(0,size.y),size.x*.36,color)
 		"horse":
 			_ellipse(Vector2(0, 4), size * 0.5, color)
 			draw_arc(Vector2(size.x*.28,0),size.y*.30,-PI*.55,PI*.55,12,color.lightened(.08),5.0)
