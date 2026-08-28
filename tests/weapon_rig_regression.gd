@@ -72,8 +72,10 @@ func _run() -> void:
 	if absf(forearm_vector.normalized().dot(rest_weapon_vector.normalized())) > .02:
 		_fail("resting sword must be perpendicular to the forearm at the grip")
 	var interior_elbow_angle := 180.0 - absf(right_forearm.rotation_degrees)
-	if absf(interior_elbow_angle - 120.0) > 1.0:
-		_fail("resting elbow must have an approximately 120-degree interior angle")
+	if absf(right_arm.rotation_degrees - 15.0) > 1.0:
+		_fail("resting upper weapon arm must hang almost vertically")
+	if absf(interior_elbow_angle - 165.0) > 1.0:
+		_fail("resting elbow must retain a slight outward bend")
 	for weapon_id in ["axe","spear","staff"]:
 		avatar.equip(&"weapon",weapon_id)
 		weapon.force_update_transform()
@@ -97,14 +99,22 @@ func _run() -> void:
 	var face_left_x: float = head.global_position.x - profile.head.x * 0.5 * profile.scale
 	if windup_tip.x >= face_left_x:
 		_fail("forehand reach-back must carry the weapon beyond the screen-left side of the face")
-	var forehand_strike: Dictionary = forehand.back()
-	right_arm.rotation_degrees = forehand_strike.upper
-	right_forearm.rotation_degrees = forehand_strike.forearm
-	weapon.force_update_transform()
-	var strike_hand := weapon.global_position
-	var strike_tip := weapon.to_global(weapon.reach_endpoint())
-	if windup_tip.distance_to(strike_tip) <= windup_hand.distance_to(strike_hand) * 1.5:
-		_fail("sword tip must sweep a substantially wider attack arc than the hand")
+	var hand_path := 0.0
+	var tip_path := 0.0
+	var previous_hand := windup_hand
+	var previous_tip := windup_tip
+	for pose in forehand.slice(1):
+		right_arm.rotation_degrees = pose.upper
+		right_forearm.rotation_degrees = pose.forearm
+		weapon.force_update_transform()
+		var next_hand := weapon.global_position
+		var next_tip := weapon.to_global(weapon.reach_endpoint())
+		hand_path += previous_hand.distance_to(next_hand)
+		tip_path += previous_tip.distance_to(next_tip)
+		previous_hand = next_hand
+		previous_tip = next_tip
+	if tip_path <= hand_path * 1.35:
+		_fail("sword tip must sweep a substantially wider full slash arc than the hand")
 
 	if failed:
 		quit(1)

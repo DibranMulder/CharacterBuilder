@@ -24,24 +24,31 @@ func _run() -> void:
 	if absf(jab[0].forearm) <= absf(jab[1].forearm):
 		_fail("jab chamber must bend more deeply than its extended strike")
 		return
-	if jab[0].forearm > -60.0:
-		_fail("jab must retract the hand nearly back to the shoulder")
+	if jab[0].forearm > -100.0 or jab[1].upper > -50.0:
+		_fail("jab must use a deep chamber and a long forward extension")
 		return
 	var forehand_overhead_angle: float = forehand[1].upper + forehand[1].forearm
 	var forehand_strike_angle: float = forehand[2].upper + forehand[2].forearm
 	var forehand_reachback_angle: float = forehand[0].upper + forehand[0].forearm
-	if absf(forehand_reachback_angle + 240.0) > 2.0:
+	var forehand_followthrough_angle: float = forehand[3].upper + forehand[3].forearm
+	if absf(forehand_reachback_angle + 260.0) > 2.0:
 		_fail("forehand must angle the weapon up and back past the face")
 		return
-	if absf(forehand_overhead_angle + 90.0) > 2.0:
-		_fail("forehand must raise the weapon vertically overhead")
+	if absf(forehand_overhead_angle + 110.0) > 2.0:
+		_fail("forehand must load the weapon into a high diagonal guard")
 		return
 	var reachback_elbow_angle: float = 180.0-absf(forehand[0].forearm)
-	if absf(reachback_elbow_angle-120.0) > 1.0 or forehand[0].forearm >= 0:
-		_fail("forehand reach-back must retain the correctly folded 120-degree elbow")
+	if absf(reachback_elbow_angle-110.0) > 1.0 or forehand[0].forearm >= 0:
+		_fail("forehand reach-back must retain a strongly folded elbow")
 		return
-	if absf(forehand_strike_angle - 45.0) > 2.0:
-		_fail("forehand must smash diagonally down and forward")
+	if absf(forehand_strike_angle - 30.0) > 2.0:
+		_fail("forehand must slash diagonally through the target")
+		return
+	if absf(forehand_followthrough_angle - 80.0) > 2.0:
+		_fail("forehand must continue beyond the target into its follow-through")
+		return
+	if forehand_strike_angle-forehand_overhead_angle < 130.0 or forehand[2].duration > 0.13:
+		_fail("forehand cutting phase must be broad and fast")
 		return
 	if backhand[0].upper <= 0 or backhand[1].upper >= 0:
 		_fail("backhand must reverse from across the body to the weapon side")

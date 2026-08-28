@@ -34,17 +34,18 @@ const BIPED_RUN_CYCLE := [
 ]
 const ATTACK_CURVES := {
 	"jab": [
-		# Retract with a deeply bent elbow while keeping the blade horizontal,
-		# then extend the arm along that same line into the thrust.
-		{"upper": 70.0, "forearm": -70.0, "torso": 7.0, "x": -13.0, "duration": 0.18},
-		{"upper": -30.0, "forearm": 30.0, "torso": -8.0, "x": 22.0, "duration": 0.13},
+		# Pull the elbow well behind the torso, then drive the shoulder, hand,
+		# and horizontal blade through a long straight thrust.
+		{"upper": 105.0, "forearm": -105.0, "torso": 13.0, "x": -24.0, "duration": 0.22},
+		{"upper": -55.0, "forearm": 55.0, "torso": -15.0, "x": 36.0, "duration": 0.12},
 	],
 	"forehand": [
-		# Reach high behind the head with a 120-degree elbow, turn the blade
-		# vertically overhead, then smash diagonally down and forward.
-		{"upper": -180.0, "forearm": -60.0, "torso": -8.0, "x": -7.0, "duration": 0.20},
-		{"upper": -150.0, "forearm": 60.0, "torso": -13.0, "x": -13.0, "duration": 0.15},
-		{"upper": -20.0, "forearm": 65.0, "torso": 11.0, "x": 12.0, "duration": 0.18},
+		# Open into a high reach-back, snap through a broad diagonal cutting
+		# line, and carry the blade beyond the target into a visible follow-through.
+		{"upper": -190.0, "forearm": -70.0, "torso": -13.0, "x": -16.0, "duration": 0.23},
+		{"upper": -155.0, "forearm": 45.0, "torso": -17.0, "x": -20.0, "duration": 0.10},
+		{"upper": -55.0, "forearm": 85.0, "torso": 18.0, "x": 24.0, "duration": 0.12},
+		{"upper": 15.0, "forearm": 65.0, "torso": 12.0, "x": 18.0, "duration": 0.10},
 	],
 	"backhand": [
 		{"upper": 45.0, "forearm": -15.0, "torso": 11.0, "x": 7.0, "duration": 0.18},
@@ -326,7 +327,7 @@ func _rebuild() -> void:
 	# Cross the upper arm toward the body, then finish with a vertical forearm.
 	# The +60-degree relative bend preserves the requested 120-degree interior
 	# elbow while leaving the grip transform free to orient each weapon class.
-	_bones.right_arm.rotation_degrees = 60; _bones.right_forearm.rotation_degrees = -60
+	_bones.right_arm.rotation_degrees = 15; _bones.right_forearm.rotation_degrees = -15
 
 	_attach_gear("back", torso, Vector2(0,5), -6)
 	_attach_gear("armor", torso, Vector2.ZERO, 1)
