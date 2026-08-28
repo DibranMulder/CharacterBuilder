@@ -35,7 +35,7 @@ Gameplay and builder UI never manipulate bones or sprites directly. `ModularChar
 
 ## Procedural art direction
 
-The prototype translates the supplied illustration into reusable construction rules rather than copying a fixed pose. Authored raster sprites now provide the base heads, hands, biped feet, and centaur hooves through the deep `BaseAnatomyVisual` module. It owns atlas crops, front/rear view switching, fitting, and procedural fallback behind `setup(race_id, part_id, target_size)` and `set_back_view(enabled)`. Layered tunics, pants, headgear, shoulder pieces, belts, capes, shields, weapons, and accessories remain independent equipment visuals on stable sockets; no equipment combination is baked into a base sprite.
+The prototype translates the supplied illustration into reusable construction rules rather than copying a fixed pose. Authored raster sprites now provide the base heads, hands, biped feet, and centaur hooves through the deep `BaseAnatomyVisual` module. It owns atlas crops, front/rear view switching, fitting, and procedural fallback behind `setup(race_id, part_id, target_size)` and `set_back_view(enabled)`. Layered tunics, pants, headgear, shoulder pieces, belts, capes, shields, weapons, and accessories remain independent equipment visuals on stable sockets; no equipment combination is baked into a base sprite. Biped pants are a five-piece garment attached at the waist, both thighs, and both shins so they articulate through the knee. Centaurs do not support the pants slot, and the builder disables it for that topology.
 
 ## Asset contract
 
@@ -47,7 +47,7 @@ Authored replacements should be transparent PNGs (or `Polygon2D` meshes) with a 
 | rear arm/leg | shoulder/hip | -3 to -2 |
 | torso/body | hip chain | 0 |
 | armor | torso | 1 |
-| pants | hip/upper legs | 2 |
+| pants | biped hip + paired thigh/shin sockets | 2–5 |
 | head | neck | 4 |
 | main/off hand | wrist | 5 to 6 |
 | head/accessory | head | 2 to 3 |

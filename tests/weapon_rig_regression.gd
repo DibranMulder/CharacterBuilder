@@ -48,6 +48,12 @@ func _run() -> void:
 	if shield.global_position.x <= avatar.global_position.x:
 		_fail("cross-body shield must render on the same screen-right side as the weapon")
 	var shield_center := shield.to_global(Vector2(0,-20))
+	var offhand_socket := left_forearm.to_global(Vector2(0,float(profile.arm)*.48))
+	if shield_center.distance_to(offhand_socket) > .5:
+		_fail("idle shield grip must sit at the center of the shield")
+	var minimum_idle_shield_y: float = torso.global_position.y+float(profile.torso.y)*float(profile.scale)*.38
+	if shield_center.y < minimum_idle_shield_y:
+		_fail("idle shield guard must sit lower on the torso")
 	var maximum_shield_offset: float = profile.torso.x * profile.scale
 	if absf(shield_center.x - torso.global_position.x) > maximum_shield_offset:
 		_fail("shield face must overlap the torso silhouette instead of floating away from the body")

@@ -13,7 +13,10 @@ func _initialize() -> void:
 		assert(avatar.available_gestures().size() == 3)
 		for slot in CharacterCatalog.SLOT_ORDER:
 			for item in CharacterCatalog.items_for(slot):
-				assert(avatar.equip(slot, item), "%s rejected %s" % [slot, item])
+				if avatar.supports_equipment_slot(slot):
+					assert(avatar.equip(slot, item), "%s rejected %s" % [slot, item])
+				else:
+					assert(not avatar.equip(slot,item), "%s accepted unsupported %s" % [race_id,slot])
 		for gesture_index in avatar.available_gestures().size():
 			avatar.play_gesture(gesture_index)
 	print("PASS: 8 races, 7 equipment slots, all items, and 24 gestures")

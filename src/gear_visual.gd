@@ -6,6 +6,8 @@ var item := "none"
 var accent := Color("d7a54f")
 var carried_on_back := false
 var shield_exterior := false
+var pants_piece := "full"
+var pants_length := 30.0
 
 const REACH_ENDPOINTS := {
 	"sword": Vector2(0, 88),
@@ -16,6 +18,7 @@ const REACH_ENDPOINTS := {
 }
 
 const INK := Color("352b25")
+const SHIELD_CENTER := Vector2(0,-20)
 
 
 func _outlined_polygon(points: PackedVector2Array, fill: Color, width := 2.5) -> void:
@@ -46,6 +49,13 @@ func set_shield_exterior(enabled: bool) -> void:
 	queue_redraw()
 
 
+func set_pants_piece(piece: String, length := 30.0) -> GearVisual:
+	pants_piece = piece
+	pants_length = length
+	queue_redraw()
+	return self
+
+
 func _draw() -> void:
 	var ink := INK
 	var metal := Color("cbd4d8")
@@ -72,7 +82,7 @@ func _draw() -> void:
 		"offhand":
 			match item:
 				"shield":
-					var center := Vector2(0,-20)
+					var center := SHIELD_CENTER
 					if carried_on_back or shield_exterior:
 						# A back-mounted shield presents its exterior toward the rear camera.
 						draw_circle(center,27,Color("8f6337"))
@@ -115,14 +125,22 @@ func _draw() -> void:
 				draw_arc(Vector2(0,20),19,0,PI,12,Color("f6fbfa"),1.5)
 		"pants":
 			var pants_color: Color = {"cloth": accent.darkened(.2), "leather": Color("65412e"), "plate": metal.darkened(.1)}.get(item, accent)
-			draw_rect(Rect2(-25,-2,50,16),pants_color,true)
-			draw_rect(Rect2(-25,-2,50,16),INK,false,2.2)
-			_outlined_polygon(PackedVector2Array([Vector2(-24,10),Vector2(-2,10),Vector2(-4,30),Vector2(-22,30),Vector2(-27,21)]),pants_color)
-			_outlined_polygon(PackedVector2Array([Vector2(2,10),Vector2(24,10),Vector2(27,21),Vector2(22,30),Vector2(4,30)]),pants_color)
-			draw_line(Vector2(-25,11),Vector2(25,11),ink,3.0)
-			if item == "plate":
-				draw_line(Vector2(-20,24),Vector2(-5,24),ink,2.0)
-				draw_line(Vector2(5,24),Vector2(20,24),ink,2.0)
+			if pants_piece == "waist":
+				draw_rect(Rect2(-25,-2,50,15),pants_color,true)
+				draw_rect(Rect2(-25,-2,50,15),INK,false,2.2)
+				_outlined_polygon(PackedVector2Array([Vector2(-23,11),Vector2(23,11),Vector2(14,21),Vector2(5,17),Vector2(0,24),Vector2(-5,17),Vector2(-14,21)]),pants_color)
+				draw_line(Vector2(-25,11),Vector2(25,11),ink,3.0)
+			elif pants_piece in ["thigh","shin"]:
+				var width := 21.0 if pants_piece == "thigh" else 18.0
+				var covered_length := pants_length*.98
+				draw_line(Vector2.ZERO,Vector2(0,covered_length),INK,width+4.0,true)
+				draw_line(Vector2.ZERO,Vector2(0,covered_length),pants_color,width,true)
+				draw_line(Vector2(-width*.42,covered_length*.82),Vector2(width*.42,covered_length*.82),pants_color.darkened(.18),2.0,true)
+				if item == "plate":
+					draw_line(Vector2(-width*.32,4),Vector2(-width*.32,covered_length-3),Color("f5faf9"),1.5,true)
+			else:
+				draw_rect(Rect2(-25,-2,50,16),pants_color,true)
+				draw_rect(Rect2(-25,-2,50,16),INK,false,2.2)
 		"head":
 			match item:
 				"hood":

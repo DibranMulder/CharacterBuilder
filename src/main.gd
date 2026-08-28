@@ -118,4 +118,6 @@ func _equip_selected(index: int, slot: StringName, selector: OptionButton) -> vo
 func _sync_selectors() -> void:
 	for slot in gear_selectors:
 		var selector: OptionButton=gear_selectors[slot]; var items:=CharacterCatalog.items_for(slot)
+		selector.disabled = not avatar.supports_equipment_slot(slot)
+		selector.tooltip_text = "Not used by this race" if selector.disabled else ""
 		selector.select(items.find(avatar.loadout[slot]))

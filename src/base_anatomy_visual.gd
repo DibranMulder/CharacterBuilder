@@ -43,6 +43,9 @@ const EXTREMITY_REGIONS := {
 # Bogkin. Keep that source-specific correction inside the atlas adapter so the
 # shared rig and facing interface remain uniform.
 const FLIPPED_FRONT_HEADS := {"bogkin": true}
+# Source crops do not all end at the same anatomical point. The centaur sheet's
+# painted neck ends slightly high, so lower it enough to overlap the torso seam.
+const HEAD_VERTICAL_ADJUSTMENTS := {"centaur": 3.0}
 
 var race_id := "human"
 var part_id := "head"
@@ -129,7 +132,7 @@ func _build_sprite() -> void:
 
 func _part_offset() -> Vector2:
 	match part_id:
-		"head": return Vector2(0,-target_size.y*.32)
+		"head": return Vector2(0,-target_size.y*.32+HEAD_VERTICAL_ADJUSTMENTS.get(race_id,0.0))
 		# The side-tail sheet is right-edge rooted; its node placement performs
 		# that alignment. The rear sheet is centered and needs to cancel it.
 		"horse_tail": return Vector2(target_size.x*.46,target_size.y*.30) if back_view else Vector2.ZERO

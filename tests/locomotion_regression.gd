@@ -11,6 +11,19 @@ func _run() -> void:
 	if Avatar.MOTIONS != [&"idle", &"run", &"climb"]:
 		_fail("expected idle, run, and climb motions")
 		return
+	if Avatar.BIPED_RUN_CYCLE.size() != 8:
+		_fail("biped run must use the reference's eight-phase cadence")
+		return
+	for phase_index in [0,3,4,7]:
+		var stride: Dictionary = Avatar.BIPED_RUN_CYCLE[phase_index].rotations
+		if absf(stride.left_leg-stride.right_leg) < 80.0:
+			_fail("biped run phase %d lacks the reference's extended stride" % phase_index)
+			return
+	for phase_index in [2,6]:
+		var recovery: Dictionary = Avatar.BIPED_RUN_CYCLE[phase_index].rotations
+		if maxf(absf(recovery.left_shin),absf(recovery.right_shin)) < 70.0:
+			_fail("biped run phase %d lacks a tucked recovery knee" % phase_index)
+			return
 	var avatar := Avatar.new()
 	root.add_child(avatar)
 	await process_frame
@@ -44,6 +57,20 @@ func _run() -> void:
 	for race_id in CharacterCatalog.race_ids():
 		avatar.configure(race_id, {})
 		if CharacterCatalog.race(race_id).topology == "centaur":
+			if avatar._gear.pants.visible:
+				_fail("centaur must not render biped pants")
+				return
+		else:
+			if not avatar._bones.left_leg.has_node("LeftPantsThigh") or not avatar._bones.right_leg.has_node("RightPantsThigh"):
+				_fail("%s pants must have separate thigh pieces attached to the animated legs" % race_id)
+				return
+			if not avatar._bones.left_shin.has_node("LeftPantsShin") or not avatar._bones.right_shin.has_node("RightPantsShin"):
+				_fail("%s pants must articulate across the knee joints" % race_id)
+				return
+		if CharacterCatalog.race(race_id).topology == "centaur":
+			if avatar._head_base.get_node("Sprite").position.y < -22.5:
+				_fail("centaur authored head must overlap the torso socket instead of floating above it")
+				return
 			if not avatar._bones.has("horse_neck") or not avatar._bones.has("horse_tail"):
 				_fail("centaur must have distinct equine neck/withers and tail parts")
 				return
@@ -58,7 +85,8 @@ func _run() -> void:
 		if avatar.current_motion != &"run" or avatar._active_tween == null:
 			_fail("%s did not start its run loop" % race_id)
 			return
-		avatar._active_tween.custom_step(.16)
+		var run_sample_time := .16 if CharacterCatalog.race(race_id).topology == "centaur" else Avatar.RUN_FRAME_DURATION*3.0
+		avatar._active_tween.custom_step(run_sample_time)
 		if avatar._bones.torso.rotation_degrees <= 0.0:
 			_fail("%s run pose leans its head and torso backward instead of into the run" % race_id)
 			return

@@ -12,6 +12,19 @@ const BaseAnatomy := preload("res://src/base_anatomy_visual.gd")
 
 const WEAPON_ATTACKS := [&"jab", &"forehand", &"backhand"]
 const MOTIONS := [&"idle", &"run", &"climb"]
+const RUN_FRAME_DURATION := .085
+const BIPED_RUN_CYCLE := [
+	# Contact, compression, passing, and recovery for the lead leg, followed
+	# by the same four phases mirrored onto the opposite leg.
+	{"y": -2.0, "rotations": {"torso": 9.0, "head": -2.0, "left_arm": -35.0, "left_forearm": -80.0, "right_arm": 30.0, "right_forearm": -95.0, "left_leg": -62.0, "left_shin": 5.0, "right_leg": 55.0, "right_shin": -5.0}},
+	{"y": 3.0, "rotations": {"torso": 12.0, "head": -3.0, "left_arm": -30.0, "left_forearm": -85.0, "right_arm": 20.0, "right_forearm": -100.0, "left_leg": -32.0, "left_shin": 42.0, "right_leg": 28.0, "right_shin": 25.0}},
+	{"y": 5.0, "rotations": {"torso": 14.0, "head": -4.0, "left_arm": -15.0, "left_forearm": -95.0, "right_arm": 5.0, "right_forearm": -90.0, "left_leg": 4.0, "left_shin": 72.0, "right_leg": 4.0, "right_shin": 12.0}},
+	{"y": -4.0, "rotations": {"torso": 12.0, "head": -3.0, "left_arm": 15.0, "left_forearm": -105.0, "right_arm": -25.0, "right_forearm": -75.0, "left_leg": 45.0, "left_shin": -5.0, "right_leg": -55.0, "right_shin": 5.0}},
+	{"y": -2.0, "rotations": {"torso": 9.0, "head": -2.0, "left_arm": 30.0, "left_forearm": -95.0, "right_arm": -35.0, "right_forearm": -80.0, "left_leg": 38.0, "left_shin": -8.0, "right_leg": -46.0, "right_shin": 10.0}},
+	{"y": 3.0, "rotations": {"torso": 12.0, "head": -3.0, "left_arm": 20.0, "left_forearm": -100.0, "right_arm": -30.0, "right_forearm": -85.0, "left_leg": 28.0, "left_shin": 25.0, "right_leg": -32.0, "right_shin": 42.0}},
+	{"y": 5.0, "rotations": {"torso": 14.0, "head": -4.0, "left_arm": 5.0, "left_forearm": -90.0, "right_arm": -15.0, "right_forearm": -95.0, "left_leg": 4.0, "left_shin": 12.0, "right_leg": 4.0, "right_shin": 72.0}},
+	{"y": -4.0, "rotations": {"torso": 12.0, "head": -3.0, "left_arm": -25.0, "left_forearm": -75.0, "right_arm": 15.0, "right_forearm": -105.0, "left_leg": -55.0, "left_shin": 5.0, "right_leg": 45.0, "right_shin": -5.0}},
+]
 const ATTACK_CURVES := {
 	"jab": [
 		# Retract with a deeply bent elbow while keeping the blade horizontal,
@@ -53,6 +66,7 @@ var _right_hand_base: BaseAnatomyVisual
 var _horse_tail_base: BaseAnatomyVisual
 var _horse_body_visual: PartVisual
 var _horse_neck_visual: PartVisual
+var _pants_parts: Array[GearVisual] = []
 
 
 func _ready() -> void:
@@ -70,13 +84,24 @@ func configure(new_race_id: String, new_loadout: Dictionary = {}) -> void:
 func equip(slot: StringName, item_id: String) -> bool:
 	if not slot in CharacterCatalog.SLOT_ORDER or not item_id in CharacterCatalog.items_for(slot):
 		return false
+	if not supports_equipment_slot(slot):
+		return false
 	loadout[String(slot)] = item_id
+	if slot == &"pants":
+		for pants_visual in _pants_parts:
+			pants_visual.setup("pants",item_id,_profile.accent)
+		equipment_changed.emit(slot,item_id)
+		return true
 	var visual: GearVisual = _gear.get(String(slot))
 	if visual:
 		visual.setup(String(slot), item_id, _profile.accent)
 		_apply_gear_presentation(String(slot), item_id, visual)
 	equipment_changed.emit(slot, item_id)
 	return true
+
+
+func supports_equipment_slot(slot: StringName) -> bool:
+	return not (slot == &"pants" and _profile.topology == "centaur")
 
 
 func available_gestures() -> Array:
@@ -215,6 +240,7 @@ func _rebuild() -> void:
 	_horse_tail_base = null
 	_horse_body_visual = null
 	_horse_neck_visual = null
+	_pants_parts.clear()
 	_profile = CharacterCatalog.race(race_id)
 	var rig := Node2D.new(); rig.name = "Rig"; add_child(rig); _bones.rig = rig
 	var shadow := Part.new().setup("shadow", Vector2(118,24), Color.WHITE, Color.TRANSPARENT)
@@ -286,9 +312,10 @@ func _rebuild() -> void:
 	_part(_bones.right_arm, "right_forearm", "limb", Vector2(15,forearm_length), skin, Vector2(0,upper_arm_length), 3)
 	_left_hand_base = _base_sprite(_bones.left_forearm,"LeftHandSprite","hand_open",Vector2(25,23),Vector2(0,forearm_length),7,90.0)
 	_right_hand_base = _base_sprite(_bones.right_forearm,"RightHandSprite","hand_grip",Vector2(24,22),Vector2(0,forearm_length),7,90.0)
-	# The far-side offhand crosses behind the torso so the shield appears on the
-	# same screen-right side as the weapon while its inside remains visible.
-	_bones.left_arm.rotation_degrees = -70; _bones.left_forearm.rotation_degrees = -20
+	# Idle shield guard: drop the far-side elbow beside the torso, then bend the
+	# forearm across it. The wrist stays at the shield boss while the rear layer
+	# lets the inner half of the shield disappear behind the body.
+	_bones.left_arm.rotation_degrees = -10; _bones.left_forearm.rotation_degrees = -80
 	# Relative forearm rotation of -60 degrees produces an approximately
 	# 120-degree interior elbow angle. The slight inward upper-arm rotation
 	# keeps the weapon in a relaxed diagonal guard alongside the body instead
@@ -297,7 +324,7 @@ func _rebuild() -> void:
 
 	_attach_gear("back", torso, Vector2(0,5), -6)
 	_attach_gear("armor", torso, Vector2.ZERO, 1)
-	_attach_gear("pants", hip, Vector2(torso_x,2), 2)
+	_attach_pants(hip,torso_x)
 	_attach_gear("head", head, Vector2.ZERO, 2)
 	_attach_gear("accessory", head, Vector2(0,4), 3)
 	_attach_gear("weapon", _bones.right_forearm, Vector2(0,forearm_length), 6)
@@ -311,6 +338,35 @@ func _attach_gear(slot: String, parent: Node2D, at: Vector2, z: int) -> void:
 	visual.name = slot.capitalize(); visual.position = at; visual.z_index = z
 	parent.add_child(visual); _gear[slot] = visual
 	_apply_gear_presentation(slot, loadout[slot], visual)
+
+
+func _attach_pants(hip: Node2D, torso_x: float) -> void:
+	var waist := Gear.new().setup("pants",loadout.pants,_profile.accent)
+	waist.name = "Pants"
+	waist.position = Vector2(torso_x,2)
+	waist.z_index = 2
+	hip.add_child(waist)
+	_gear.pants = waist
+	_pants_parts.append(waist)
+	if _profile.topology == "centaur":
+		waist.visible = false
+		return
+	waist.set_pants_piece("waist")
+	var thigh_length := float(_profile.leg)*.52
+	var shin_length := float(_profile.leg)-thigh_length
+	_attach_pants_piece(_bones.left_leg,"LeftPantsThigh","thigh",thigh_length,3)
+	_attach_pants_piece(_bones.right_leg,"RightPantsThigh","thigh",thigh_length,3)
+	_attach_pants_piece(_bones.left_shin,"LeftPantsShin","shin",shin_length,3)
+	_attach_pants_piece(_bones.right_shin,"RightPantsShin","shin",shin_length,3)
+
+
+func _attach_pants_piece(parent: Node2D, name_: String, piece: String, length: float, z: int) -> void:
+	var visual := Gear.new().setup("pants",loadout.pants,_profile.accent)
+	visual.name = name_
+	visual.set_pants_piece(piece,length)
+	visual.z_index = z
+	parent.add_child(visual)
+	_pants_parts.append(visual)
 
 
 func _apply_gear_presentation(slot: String, item_id: String, visual: GearVisual) -> void:
@@ -354,11 +410,9 @@ func _place_gear_in_hand(slot: String, item_id: String, visual: GearVisual) -> v
 	if visual.get_parent() != offhand_forearm:
 		visual.reparent(offhand_forearm, false)
 	if item_id == "shield":
-		# Keep the face centered near the wrist so its inner edge overlaps the
-		# torso instead of floating beyond the body silhouette.
-		# Negative local X moves the shield downward in this crossed-arm pose.
-		visual.position.x = -10.0
-		visual.position.y = forearm_length + 4.0
+		# Offset the visual origin by the inverse of its painted center so the
+		# offhand wrist/grip lands exactly on the shield boss.
+		visual.position = Vector2(0.0,forearm_length)-Gear.SHIELD_CENTER
 		visual.z_index = -1
 	else:
 		visual.position.x = 0.0
@@ -477,24 +531,16 @@ func _queue_motion_pose(rotations: Dictionary, rig_y: float, duration: float) ->
 
 
 func _build_run_loop() -> void:
-	var stride_a := {
-		"torso": 10.0, "head": -2.0,
-		"left_arm": -78.0, "left_forearm": -14.0,
-		"right_arm": 13.0, "right_forearm": -66.0,
-	}
-	var stride_b := {
-		"torso": 10.0, "head": -2.0,
-		"left_arm": -62.0, "left_forearm": -27.0,
-		"right_arm": -3.0, "right_forearm": -53.0,
-	}
 	if _profile.topology == "centaur":
+		var stride_a := {"torso": 10.0, "head": -2.0, "left_arm": -78.0, "left_forearm": -14.0, "right_arm": 13.0, "right_forearm": -66.0}
+		var stride_b := {"torso": 10.0, "head": -2.0, "left_arm": -62.0, "left_forearm": -27.0, "right_arm": -3.0, "right_forearm": -53.0}
 		stride_a.merge({"horse_tail": -12.0, "horse_leg_0": -31.0, "horse_shin_0": 60.0, "horse_leg_1": 28.0, "horse_shin_1": -20.0, "horse_leg_2": 28.0, "horse_shin_2": -20.0, "horse_leg_3": -31.0, "horse_shin_3": 60.0})
 		stride_b.merge({"horse_tail": 10.0, "horse_leg_0": 28.0, "horse_shin_0": -20.0, "horse_leg_1": -31.0, "horse_shin_1": 60.0, "horse_leg_2": -31.0, "horse_shin_2": 60.0, "horse_leg_3": 28.0, "horse_shin_3": -20.0})
+		_queue_motion_pose(stride_a, -5.0, .16)
+		_queue_motion_pose(stride_b, 1.0, .16)
 	else:
-		stride_a.merge({"left_leg": -35.0, "left_shin": 68.0, "right_leg": 30.0, "right_shin": -18.0})
-		stride_b.merge({"left_leg": 30.0, "left_shin": -18.0, "right_leg": -35.0, "right_shin": 68.0})
-	_queue_motion_pose(stride_a, -5.0, .16)
-	_queue_motion_pose(stride_b, 1.0, .16)
+		for pose in BIPED_RUN_CYCLE:
+			_queue_motion_pose(pose.rotations,pose.y,RUN_FRAME_DURATION)
 
 
 func _build_climb_loop() -> void:
