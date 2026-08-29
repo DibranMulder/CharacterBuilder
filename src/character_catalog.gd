@@ -57,9 +57,10 @@ const RACES := {
 	"fae": {
 		"name": "Fae", "tagline": "Airborne keepers of wild magic",
 		"skin": Color("f2c29b"), "accent": Color("e05b52"),
-		"visual": {"hair_style": "ponytail", "hair": Color("24272a"), "eye": Color("47301e"), "boot": Color("ded4bf")},
-		"scale": 0.86, "head": Vector2(45, 50), "torso": Vector2(45, 66),
-		"arm": 56.0, "leg": 54.0, "topology": "winged",
+		"visual": {"hair_style": "ponytail", "hair": Color("24272a"), "eye": Color("47301e"), "boot": Color("ded4bf"), "body_shape": "slender"},
+		"scale": 0.86, "head": Vector2(45, 50), "torso": Vector2(40, 66),
+		"arm": 57.0, "leg": 59.0, "limb_width": 14.0, "leg_width": 16.0,
+		"shoulder_spread": 0.30, "extremity_scale": 0.90, "topology": "winged",
 		"gestures": [
 			{"name": "Wand Arc", "style": "slash"},
 			{"name": "Gale Step", "style": "leap"},
@@ -69,9 +70,11 @@ const RACES := {
 	"frost_troll": {
 		"name": "Frost Troll", "tagline": "Mountain-born breakers",
 		"skin": Color("7195a9"), "accent": Color("687047"),
-		"visual": {"hair_style": "long", "hair": Color("d7e0df"), "eye": Color("243e54"), "boot": Color("4b4238")},
-		"scale": 1.18, "head": Vector2(62, 58), "torso": Vector2(82, 88),
-		"arm": 76.0, "leg": 58.0, "topology": "biped",
+		"visual": {"hair_style": "crest", "hair": Color("343b3e"), "eye": Color("332c25"), "boot": Color("4b4238"), "body_shape": "top_heavy", "skin_pattern": "mottled"},
+		"scale": 1.16, "head": Vector2(70, 64), "torso": Vector2(108, 84),
+		"arm": 86.0, "leg": 54.0, "limb_width": 25.0, "leg_width": 25.0,
+		"shoulder_spread": 0.40, "extremity_scale": 1.85, "head_sprite_scale": 1.58, "head_y_adjust": 4.0,
+		"armor_width_scale": 1.45, "pants_width_scale": 1.35, "topology": "biped",
 		"gestures": [
 			{"name": "Glacier Cleave", "style": "smash"},
 			{"name": "Boulder Rush", "style": "thrust"},
@@ -93,9 +96,10 @@ const RACES := {
 	"duneborn": {
 		"name": "Duneborn", "tagline": "Disciplined travelers of the glass sea",
 		"skin": Color("bf825d"), "accent": Color("8d493d"),
-		"visual": {"hair_style": "braid", "hair": Color("302823"), "eye": Color("32251d"), "boot": Color("6b4a35")},
-		"scale": 0.96, "head": Vector2(47, 53), "torso": Vector2(54, 74),
-		"arm": 62.0, "leg": 62.0, "topology": "biped",
+		"visual": {"hair_style": "none", "hair": Color("302823"), "eye": Color("9b6b2e"), "boot": Color("6b4a35"), "body_shape": "lean"},
+		"scale": 0.94, "head": Vector2(50, 56), "torso": Vector2(48, 74),
+		"arm": 61.0, "leg": 64.0, "limb_width": 15.0, "leg_width": 17.0,
+		"shoulder_spread": 0.30, "head_sprite_scale": 1.52, "topology": "biped",
 		"gestures": [
 			{"name": "Sirocco Thrust", "style": "thrust"},
 			{"name": "Crescent Guard", "style": "slash"},
@@ -105,9 +109,10 @@ const RACES := {
 	"frostling": {
 		"name": "Frostling", "tagline": "Small mystics of the aurora",
 		"skin": Color("8795a7"), "accent": Color("37658b"),
-		"visual": {"hair_style": "crop", "hair": Color("dce8ed"), "eye": Color("274c68"), "boot": Color("3b5366")},
-		"scale": 0.76, "head": Vector2(55, 52), "torso": Vector2(48, 58),
-		"arm": 48.0, "leg": 42.0, "topology": "biped",
+		"visual": {"hair_style": "shaggy", "hair": Color("e3e7e5"), "eye": Color("73c9ef"), "boot": Color("3b5366"), "body_shape": "compact"},
+		"scale": 0.78, "head": Vector2(61, 57), "torso": Vector2(54, 55),
+		"arm": 47.0, "leg": 39.0, "limb_width": 17.0, "leg_width": 20.0,
+		"shoulder_spread": 0.32, "extremity_scale": 1.08, "head_sprite_scale": 1.55, "head_y_adjust": 2.0, "topology": "biped",
 		"gestures": [
 			{"name": "Crystal Jab", "style": "thrust"},
 			{"name": "Aurora Pulse", "style": "cast"},

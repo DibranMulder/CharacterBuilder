@@ -9,6 +9,7 @@ var shield_exterior := false
 var pants_piece := "full"
 var pants_length := 30.0
 var bow_draw := 0.0
+var two_handed := false
 
 const REACH_ENDPOINTS := {
 	"sword": Vector2(0, 88),
@@ -23,6 +24,7 @@ const POLE_BUTT := Vector2(0,-72)
 const SHIELD_CENTER := Vector2(0,-20)
 const BOW_TOP := Vector2(-40,-40)
 const BOW_BOTTOM := Vector2(-40,40)
+const TWO_HANDED_AXE_SECOND_GRIP := Vector2(0,90)
 
 
 func _outlined_polygon(points: PackedVector2Array, fill: Color, width := 2.5) -> void:
@@ -35,12 +37,15 @@ func setup(p_slot: String, p_item: String, p_accent: Color) -> GearVisual:
 	item = p_item
 	accent = p_accent
 	bow_draw = 0.0
+	two_handed = false
 	visible = item != "none"
 	queue_redraw()
 	return self
 
 
 func reach_endpoint() -> Vector2:
+	if item == "axe" and two_handed:
+		return Vector2(58,156)
 	return REACH_ENDPOINTS.get(item, Vector2.ZERO)
 
 
@@ -66,6 +71,11 @@ func set_bow_draw(amount: float) -> void:
 	queue_redraw()
 
 
+func set_two_handed(enabled: bool) -> void:
+	two_handed = enabled
+	queue_redraw()
+
+
 func _draw() -> void:
 	var ink := INK
 	var metal := Color("cbd4d8")
@@ -78,8 +88,16 @@ func _draw() -> void:
 					draw_line(Vector2(-13,8), Vector2(13,8), accent, 6.0, true)
 					draw_line(Vector2.ZERO, Vector2(0,-12), Color("70472b"), 7.0, true)
 				"axe":
-					draw_line(Vector2.ZERO, Vector2(0, 82), Color("70472b"), 8.0, true)
-					draw_colored_polygon(PackedVector2Array([Vector2(0,80), Vector2(30,92), Vector2(27,65), Vector2(0,62)]), metal)
+					if two_handed:
+						# Oversized double-headed great axe: the long haft and broad,
+						# heavy blades match the Frost Troll's larger silhouette.
+						draw_line(Vector2(0,-32),Vector2(0,148),Color("70472b"),11.0,true)
+						draw_line(Vector2(-16,132),Vector2(16,132),accent.darkened(.22),9.0,true)
+						_outlined_polygon(PackedVector2Array([Vector2(0,108),Vector2(50,96),Vector2(62,130),Vector2(51,151),Vector2(32,158),Vector2(0,144)]),metal,3.2)
+						_outlined_polygon(PackedVector2Array([Vector2(0,108),Vector2(-50,96),Vector2(-62,130),Vector2(-51,151),Vector2(-32,158),Vector2(0,144)]),metal,3.2)
+					else:
+						draw_line(Vector2.ZERO, Vector2(0, 82), Color("70472b"), 8.0, true)
+						draw_colored_polygon(PackedVector2Array([Vector2(0,80), Vector2(30,92), Vector2(27,65), Vector2(0,62)]), metal)
 				"bow":
 					# The local origin is the wooden handle. The stave bulges toward
 					# the target while the string stays behind it toward the archer.

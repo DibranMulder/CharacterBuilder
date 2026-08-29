@@ -154,6 +154,49 @@ func _run() -> void:
 	if tip_path <= hand_path * 1.35:
 		_fail("sword tip must sweep a substantially wider full slash arc than the hand")
 
+	var troll := Avatar.new()
+	root.add_child(troll)
+	troll.configure("frost_troll",{"weapon":"axe","offhand":"shield"})
+	await process_frame
+	if troll.loadout.offhand != "none" or troll.supports_equipment_slot(&"offhand"):
+		_fail("Frost Troll's two-handed axe must occupy the offhand slot")
+	var troll_axe: GearVisual = troll._gear.weapon
+	if not troll_axe.two_handed:
+		_fail("Frost Troll axe did not switch to its long double-headed presentation")
+	if troll_axe.reach_endpoint().length() < 165.0:
+		_fail("Frost Troll's two-handed axe must retain its oversized great-axe silhouette")
+	if troll._left_hand_base.part_id != "hand_grip":
+		_fail("Frost Troll's second axe hand must use the gripping sprite")
+	troll.call("_update_two_handed_axe_grip")
+	_assert_weapon_elbow_outward(troll,&"right")
+	_assert_two_handed_elbow(troll,"idle")
+	var second_hand_socket: Vector2 = troll._bones.left_forearm.to_global(Vector2(0,float(troll._profile.arm)*.48))
+	var second_grip: Vector2 = troll_axe.to_global(GearVisual.TWO_HANDED_AXE_SECOND_GRIP)
+	if second_hand_socket.distance_to(second_grip) > 1.0:
+		_fail("Frost Troll's second hand does not meet the axe shaft at idle")
+	troll.set_facing(&"left")
+	troll.call("_update_two_handed_axe_grip")
+	_assert_weapon_elbow_outward(troll,&"left")
+	troll.set_facing(&"right")
+	troll.call("_update_two_handed_axe_grip")
+	troll.play_motion(&"run")
+	troll._active_tween.custom_step(.18)
+	troll.call("_update_two_handed_axe_grip")
+	_assert_two_handed_elbow(troll,"run")
+	second_hand_socket = troll._bones.left_forearm.to_global(Vector2(0,float(troll._profile.arm)*.48))
+	second_grip = troll_axe.to_global(GearVisual.TWO_HANDED_AXE_SECOND_GRIP)
+	if second_hand_socket.distance_to(second_grip) > 1.0:
+		_fail("Frost Troll's second hand detached from the axe while running")
+	troll.stop_motion()
+	troll.play_weapon_attack(&"forehand")
+	troll._active_tween.custom_step(.27)
+	troll.call("_update_two_handed_axe_grip")
+	_assert_two_handed_elbow(troll,"forehand")
+	second_hand_socket = troll._bones.left_forearm.to_global(Vector2(0,float(troll._profile.arm)*.48))
+	second_grip = troll_axe.to_global(GearVisual.TWO_HANDED_AXE_SECOND_GRIP)
+	if second_hand_socket.distance_to(second_grip) > 1.0:
+		_fail("Frost Troll's second hand detached during an axe attack")
+
 	if failed:
 		quit(1)
 		return
@@ -164,3 +207,19 @@ func _run() -> void:
 func _fail(message: String) -> void:
 	failed = true
 	printerr("FAIL: ", message)
+
+
+func _assert_two_handed_elbow(troll: ModularCharacter, phase: String) -> void:
+	var bend: float = troll._bones.left_forearm.rotation_degrees
+	if bend >= -10.0:
+		_fail("Frost Troll support elbow must use the outward bend branch during %s (was %.1f degrees)" % [phase,bend])
+	if bend < -165.0:
+		_fail("Frost Troll support elbow must not overfold during %s (was %.1f degrees)" % [phase,bend])
+
+
+func _assert_weapon_elbow_outward(troll: ModularCharacter, direction: StringName) -> void:
+	var shoulder_x: float = troll._bones.right_arm.global_position.x
+	var elbow_x: float = troll._bones.right_forearm.global_position.x
+	var points_outward := elbow_x < shoulder_x if direction == &"right" else elbow_x > shoulder_x
+	if not points_outward:
+		_fail("Frost Troll anatomical-right elbow must project outward while facing %s (shoulder %.1f, elbow %.1f)" % [direction,shoulder_x,elbow_x])

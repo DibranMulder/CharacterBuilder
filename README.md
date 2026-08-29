@@ -54,6 +54,8 @@ Authored replacements should be transparent PNGs (or `Polygon2D` meshes) with a 
 
 The shield is a deliberate exception to the general offhand layer: the far-side arm crosses behind the torso so the shield appears on the same screen-right side as the weapon, with its inside face and straps toward the viewer. Lanterns and spellbooks remain on the normal foreground hand layer.
 
+The Frost Troll presents the Axe as a lineage-specific two-handed great axe. Equipping it clears and disables the offhand slot, swaps in the long double-headed rendering, and uses two-bone IK to keep the second gripping hand on the shaft during idle, running, and attacks. Climbing moves the axe to the back and releases both arms for the ladder. Other lineages retain the regular one-handed Axe presentation, so equipment remains swappable rather than being baked into troll anatomy.
+
 For production, put definitions in custom `.tres` resources rather than hard-coded dictionaries. Godot Resources are Inspector-editable, typed, version-control-friendly data containers. Atlas related textures, but keep logical items independent so downloads and cosmetics can be managed without rebuilding every character.
 
 ## Animation plan

@@ -65,6 +65,20 @@ const WEAPON_ATTACK_CURVES := {
 			{"upper": 15.0, "forearm": -15.0, "torso": 0.0, "x": 0.0, "weapon_rotation": 180.0, "duration": 0.18},
 		],
 	},
+	"two_handed_axe": {
+		"forehand": [
+			# Both grips remain reachable while the long shaft rotates from a
+			# rear overhead load through a diagonal strike and low follow-through.
+			{"upper": -120.0, "forearm": 60.0, "torso": -10.0, "x": -12.0, "duration": 0.22},
+			{"upper": -100.0, "forearm": 70.0, "torso": -14.0, "x": -8.0, "duration": 0.10},
+			{"upper": -100.0, "forearm": 130.0, "torso": 16.0, "x": 22.0, "duration": 0.13},
+			{"upper": -120.0, "forearm": 165.0, "torso": 12.0, "x": 16.0, "duration": 0.12},
+		],
+		"backhand": [
+			{"upper": -100.0, "forearm": 140.0, "torso": 10.0, "x": 8.0, "duration": 0.19},
+			{"upper": -60.0, "forearm": 30.0, "torso": -10.0, "x": -6.0, "duration": 0.18},
+		],
+	},
 }
 
 var race_id := "human"
@@ -101,7 +115,7 @@ func configure(new_race_id: String, new_loadout: Dictionary = {}) -> void:
 	race_id = new_race_id if CharacterCatalog.RACES.has(new_race_id) else "human"
 	for slot in new_loadout:
 		if loadout.has(slot): loadout[slot] = new_loadout[slot]
-	if loadout.weapon == "bow":
+	if loadout.weapon == "bow" or _has_two_handed_axe_loadout():
 		loadout.offhand = "none"
 	_rebuild()
 
@@ -111,14 +125,20 @@ func equip(slot: StringName, item_id: String) -> bool:
 		return false
 	if not supports_equipment_slot(slot):
 		return false
+	var had_two_handed_axe := _has_two_handed_axe_loadout()
 	loadout[String(slot)] = item_id
-	if slot == &"weapon" and item_id == "bow" and loadout.offhand != "none":
+	if slot == &"weapon" and (item_id == "bow" or _has_two_handed_axe_loadout()) and loadout.offhand != "none":
 		loadout.offhand = "none"
 		var offhand_visual: GearVisual = _gear.get("offhand")
 		if offhand_visual:
 			offhand_visual.setup("offhand","none",_profile.accent)
 			_apply_gear_presentation("offhand","none",offhand_visual)
-		equipment_changed.emit(&"offhand","none")
+			equipment_changed.emit(&"offhand","none")
+	var has_two_handed_axe := _has_two_handed_axe_loadout()
+	if had_two_handed_axe != has_two_handed_axe:
+		_rebuild()
+		equipment_changed.emit(slot,item_id)
+		return true
 	if slot == &"pants":
 		for pants_visual in _pants_parts:
 			pants_visual.setup("pants",item_id,_profile.accent)
@@ -137,9 +157,17 @@ func equip(slot: StringName, item_id: String) -> bool:
 func supports_equipment_slot(slot: StringName) -> bool:
 	if slot == &"pants" and _profile.topology == "centaur":
 		return false
-	if slot == &"offhand" and loadout.weapon == "bow":
+	if slot == &"offhand" and (loadout.weapon == "bow" or _has_two_handed_axe_loadout()):
 		return false
 	return true
+
+
+func _has_two_handed_axe_loadout() -> bool:
+	return race_id == "frost_troll" and loadout.weapon == "axe"
+
+
+func _uses_two_handed_axe() -> bool:
+	return _has_two_handed_axe_loadout() and current_motion != &"climb"
 
 
 func available_gestures() -> Array:
@@ -241,6 +269,8 @@ func _process(delta: float) -> void:
 	_elapsed += delta
 	if not _gesturing and _bones.has("rig"):
 		_bones.rig.position.y = sin(_elapsed * 3.0) * 2.2
+	if _uses_two_handed_axe():
+		_update_two_handed_axe_grip()
 
 
 func _part(parent: Node, name_: String, kind: String, size: Vector2, color: Color, position_: Vector2, z := 0) -> PartVisual:
@@ -293,6 +323,9 @@ func _rebuild() -> void:
 	var torso_size: Vector2 = _profile.torso
 	var head_size: Vector2 = _profile.head
 	var skin: Color = _profile.skin
+	var limb_width := float(_profile.get("limb_width",16.0))
+	var leg_width := float(_profile.get("leg_width",18.0))
+	var extremity_scale := float(_profile.get("extremity_scale",1.0))
 	var hip_y := -float(_profile.leg)
 	var hip := Node2D.new(); hip.name = "Hip"; hip.position = Vector2(0, hip_y); rig.add_child(hip); _bones.hip = hip
 
@@ -318,12 +351,12 @@ func _rebuild() -> void:
 	else:
 		var thigh_length := float(_profile.leg) * .52
 		var shin_length := float(_profile.leg) - thigh_length
-		_part(hip, "left_leg", "limb", Vector2(18,thigh_length), skin.darkened(.08), Vector2(-torso_size.x*.23, 8), -2)
-		_part(_bones.left_leg, "left_shin", "shin", Vector2(17,shin_length), skin.darkened(.05), Vector2(0,thigh_length), 0)
-		_part(hip, "right_leg", "limb", Vector2(18,thigh_length), skin, Vector2(torso_size.x*.23, 8), 1)
-		_part(_bones.right_leg, "right_shin", "shin", Vector2(17,shin_length), skin, Vector2(0,thigh_length), 0)
-		_base_sprite(_bones.left_shin,"LeftFootSprite","foot",Vector2(28,20),Vector2(0,shin_length),4)
-		_base_sprite(_bones.right_shin,"RightFootSprite","foot",Vector2(28,20),Vector2(0,shin_length),4)
+		_part(hip, "left_leg", "limb", Vector2(leg_width,thigh_length), skin.darkened(.08), Vector2(-torso_size.x*.23, 8), -2)
+		_part(_bones.left_leg, "left_shin", "shin", Vector2(leg_width*.94,shin_length), skin.darkened(.05), Vector2(0,thigh_length), 0)
+		_part(hip, "right_leg", "limb", Vector2(leg_width,thigh_length), skin, Vector2(torso_size.x*.23, 8), 1)
+		_part(_bones.right_leg, "right_shin", "shin", Vector2(leg_width*.94,shin_length), skin, Vector2(0,thigh_length), 0)
+		_base_sprite(_bones.left_shin,"LeftFootSprite","foot",Vector2(28,20)*extremity_scale,Vector2(0,shin_length),4)
+		_base_sprite(_bones.right_shin,"RightFootSprite","foot",Vector2(28,20)*extremity_scale,Vector2(0,shin_length),4)
 		_bones.left_shin.rotation_degrees = 4.0
 		_bones.right_shin.rotation_degrees = -4.0
 
@@ -335,18 +368,20 @@ func _rebuild() -> void:
 	var torso: Node2D = torso_visual.get_parent()
 	var torso_top_y := -torso_size.y
 	torso_visual.position.y = torso_top_y
-	var head_visual := _part(torso, "head", "head", head_size, skin, Vector2(0,torso_top_y-head_size.y*.25), 4)
+	var head_y_adjust := float(_profile.get("head_y_adjust",0.0))
+	var head_visual := _part(torso, "head", "head", head_size, skin, Vector2(0,torso_top_y-head_size.y*.25+head_y_adjust), 4)
 	_head_visual = head_visual
 	var head: Node2D = head_visual.get_parent()
-	_head_base = _base_sprite(head,"HeadSprite","head",head_size*1.45,Vector2(0,3),1)
+	var head_sprite_scale := float(_profile.get("head_sprite_scale",1.45))
+	_head_base = _base_sprite(head,"HeadSprite","head",head_size*head_sprite_scale,Vector2(0,3),1)
 	_head_visual.visible = not _head_base.has_sprite()
 	var ear_scale := 1.0 if race_id in ["goblin", "frost_troll"] else .55
 	if not _head_base.has_sprite() and race_id in ["goblin", "frost_troll", "fae"]:
 		var ear_l := Part.new().setup("ear", Vector2(28,30)*ear_scale, skin, _profile.accent); ear_l.position=Vector2(-head_size.x*.42,-head_size.y*.42); ear_l.z_index=-1; head.add_child(ear_l)
 		var ear_r := Part.new().setup("ear", Vector2(-28,30)*ear_scale, skin, _profile.accent); ear_r.position=Vector2(head_size.x*.42,-head_size.y*.42); ear_r.z_index=-1; head.add_child(ear_r)
 	if _profile.topology == "winged":
-		var wl := Part.new().setup("wing",Vector2(-65,72),Color("a8e8de"),_profile.accent); wl.position=Vector2(-16,20); wl.z_index=-5; torso.add_child(wl)
-		var wr := Part.new().setup("wing",Vector2(65,72),Color("a8e8de"),_profile.accent); wr.position=Vector2(16,20); wr.z_index=-5; torso.add_child(wr)
+		var wl := Part.new().setup("wing",Vector2(-62,68),Color("b8eee5"),_profile.accent); wl.position=Vector2(-10,torso_top_y+18); wl.z_index=-5; torso.add_child(wl)
+		var wr := Part.new().setup("wing",Vector2(62,68),Color("b8eee5"),_profile.accent); wr.position=Vector2(10,torso_top_y+18); wr.z_index=-5; torso.add_child(wr)
 
 	var upper_arm_length := float(_profile.arm) * 0.52
 	var forearm_length := float(_profile.arm) - upper_arm_length
@@ -354,12 +389,13 @@ func _rebuild() -> void:
 	# right. The full-rig mirror naturally reverses this when facing left. Keep
 	# the roots nearer the torso center so the bent weapon hand can still cross
 	# into its established screen-right resting guard.
-	_part(torso, "left_arm", "limb", Vector2(16,upper_arm_length), skin.darkened(.07), Vector2(torso_size.x*.28,torso_top_y+8), -3)
-	_part(_bones.left_arm, "left_forearm", "limb", Vector2(15,forearm_length), skin.darkened(.04), Vector2(0,upper_arm_length), -3)
-	_part(torso, "right_arm", "limb", Vector2(16,upper_arm_length), skin, Vector2(-torso_size.x*.28,torso_top_y+8), 3)
-	_part(_bones.right_arm, "right_forearm", "limb", Vector2(15,forearm_length), skin, Vector2(0,upper_arm_length), 3)
-	_left_hand_base = _base_sprite(_bones.left_forearm,"LeftHandSprite","hand_open",Vector2(25,23),Vector2(0,forearm_length),7,90.0)
-	_right_hand_base = _base_sprite(_bones.right_forearm,"RightHandSprite","hand_grip",Vector2(24,22),Vector2(0,forearm_length),7,90.0)
+	var shoulder_spread := float(_profile.get("shoulder_spread",.28))
+	_part(torso, "left_arm", "limb", Vector2(limb_width,upper_arm_length), skin.darkened(.07), Vector2(torso_size.x*shoulder_spread,torso_top_y+8), -3)
+	_part(_bones.left_arm, "left_forearm", "limb", Vector2(limb_width*.94,forearm_length), skin.darkened(.04), Vector2(0,upper_arm_length), -3)
+	_part(torso, "right_arm", "limb", Vector2(limb_width,upper_arm_length), skin, Vector2(-torso_size.x*shoulder_spread,torso_top_y+8), 3)
+	_part(_bones.right_arm, "right_forearm", "limb", Vector2(limb_width*.94,forearm_length), skin, Vector2(0,upper_arm_length), 3)
+	_left_hand_base = _base_sprite(_bones.left_forearm,"LeftHandSprite","hand_open",Vector2(25,23)*extremity_scale,Vector2(0,forearm_length),7,90.0)
+	_right_hand_base = _base_sprite(_bones.right_forearm,"RightHandSprite","hand_grip",Vector2(24,22)*extremity_scale,Vector2(0,forearm_length),7,90.0)
 	# Idle shield guard: drop the far-side elbow beside the torso, then bend the
 	# forearm across it. The wrist stays at the shield boss while the rear layer
 	# lets the inner half of the shield disappear behind the body.
@@ -368,6 +404,12 @@ func _rebuild() -> void:
 	# The +60-degree relative bend preserves the requested 120-degree interior
 	# elbow while leaving the grip transform free to orient each weapon class.
 	_bones.right_arm.rotation_degrees = 15; _bones.right_forearm.rotation_degrees = -15
+	if _has_two_handed_axe_loadout():
+		# Keep the anatomical-right elbow outside its shoulder while the forearm
+		# returns the primary grip inward. Mirroring the whole rig preserves this
+		# outward bend for the opposite facing direction.
+		_bones.right_arm.rotation_degrees = 30
+		_bones.right_forearm.rotation_degrees = -30
 
 	_attach_gear("back", torso, Vector2(0,torso_top_y+5), -6)
 	_attach_gear("armor", torso, Vector2(0,torso_top_y), 1)
@@ -379,6 +421,8 @@ func _rebuild() -> void:
 	if loadout.weapon == "bow":
 		_place_gear_in_hand("weapon","bow",_gear.weapon)
 	_apply_weapon_hand_parts()
+	if _uses_two_handed_axe():
+		_update_two_handed_axe_grip()
 	_capture_pose()
 	_apply_facing()
 
@@ -386,6 +430,8 @@ func _rebuild() -> void:
 func _attach_gear(slot: String, parent: Node2D, at: Vector2, z: int) -> void:
 	var visual := Gear.new().setup(slot, loadout[slot], _profile.accent)
 	visual.name = slot.capitalize(); visual.position = at; visual.z_index = z
+	if slot == "armor":
+		visual.scale.x = float(_profile.get("armor_width_scale",1.0))
 	parent.add_child(visual); _gear[slot] = visual
 	_apply_gear_presentation(slot, loadout[slot], visual)
 
@@ -395,6 +441,7 @@ func _attach_pants(hip: Node2D, torso_x: float) -> void:
 	waist.name = "Pants"
 	waist.position = Vector2(torso_x,2)
 	waist.z_index = 2
+	waist.scale.x = float(_profile.get("pants_width_scale",1.0))
 	hip.add_child(waist)
 	_gear.pants = waist
 	_pants_parts.append(waist)
@@ -422,6 +469,8 @@ func _attach_pants_piece(parent: Node2D, name_: String, piece: String, length: f
 func _apply_gear_presentation(slot: String, item_id: String, visual: GearVisual) -> void:
 	if slot not in ["weapon", "offhand"]:
 		return
+	if slot == "weapon":
+		visual.set_two_handed(_has_two_handed_axe_loadout() and item_id == "axe")
 	var should_carry := current_motion == &"climb" and item_id != "none" and (slot == "weapon" or item_id == "shield")
 	if should_carry:
 		_place_gear_on_back(slot, visual)
@@ -433,6 +482,8 @@ func _place_gear_on_back(slot: String, visual: GearVisual) -> void:
 	if visual.get_parent() != _bones.torso:
 		visual.reparent(_bones.torso, false)
 	visual.set_carried_on_back(true)
+	if slot == "weapon":
+		visual.set_two_handed(_has_two_handed_axe_loadout() and visual.item == "axe")
 	visual.set_shield_exterior(slot == "offhand")
 	if slot == "weapon":
 		visual.position = Vector2(18.0, -float(_profile.torso.y) * .28)
@@ -497,6 +548,29 @@ func _weapon_forearm() -> Node2D:
 
 func _offhand_forearm() -> Node2D:
 	return _bones.left_forearm
+
+
+func _update_two_handed_axe_grip() -> void:
+	if not _uses_two_handed_axe() or not _gear.has("weapon") or not _bones.has("torso"):
+		return
+	var weapon: GearVisual = _gear.weapon
+	var upper_arm: Node2D = _bones.left_arm
+	var forearm: Node2D = _bones.left_forearm
+	var target: Vector2 = _bones.torso.to_local(weapon.to_global(Gear.TWO_HANDED_AXE_SECOND_GRIP))
+	var delta: Vector2 = target-upper_arm.position
+	var upper_length := float(_profile.arm)*.52
+	var lower_length := float(_profile.arm)-upper_length
+	var distance := clampf(delta.length(),absf(upper_length-lower_length)+.01,upper_length+lower_length-.01)
+	var elbow_cosine := clampf((distance*distance-upper_length*upper_length-lower_length*lower_length)/(2.0*upper_length*lower_length),-1.0,1.0)
+	# Two-bone IK has two equally valid solutions. The support arm must use the
+	# negative/outward branch so its elbow cannot flip across the axe shaft.
+	var elbow_angle := -acos(elbow_cosine)
+	var target_angle := atan2(delta.y,delta.x)
+	var shoulder_offset := atan2(lower_length*sin(elbow_angle),upper_length+lower_length*cos(elbow_angle))
+	# Part limbs point down their local +Y axis, hence the quarter-turn from
+	# the conventional +X-axis two-bone solution.
+	upper_arm.rotation = target_angle-shoulder_offset-PI*.5
+	forearm.rotation = elbow_angle
 
 
 func _capture_pose() -> void:
@@ -645,7 +719,8 @@ func _animate_weapon_curve(curve_id: String) -> void:
 	var weapon_arm := _weapon_arm()
 	var weapon_forearm := _weapon_forearm()
 	var weapon_visual: GearVisual = _gear.get("weapon")
-	var weapon_curves: Dictionary = WEAPON_ATTACK_CURVES.get(loadout.weapon,{})
+	var curve_family: String = "two_handed_axe" if _has_two_handed_axe_loadout() else loadout.weapon
+	var weapon_curves: Dictionary = WEAPON_ATTACK_CURVES.get(curve_family,{})
 	var curve: Array = weapon_curves.get(curve_id,ATTACK_CURVES[curve_id])
 	var uses_slash_trail: bool = curve_id in ["jab","forehand","backhand"] and loadout.weapon in ["sword","axe","spear","staff"]
 	var slash_start_index := 2 if curve_id == "forehand" else 1
@@ -746,8 +821,9 @@ func _set_bow_drawing_hand(enabled: bool) -> void:
 
 func _apply_weapon_hand_parts() -> void:
 	if _left_hand_base:
-		_left_hand_base.set_part("hand_grip" if loadout.weapon == "bow" else "hand_open")
-		_left_hand_base.z_index = 14 if loadout.weapon == "bow" else 7
+		var left_hand_grips: bool = loadout.weapon == "bow" or _has_two_handed_axe_loadout()
+		_left_hand_base.set_part("hand_grip" if left_hand_grips else "hand_open")
+		_left_hand_base.z_index = 18 if _has_two_handed_axe_loadout() else (14 if loadout.weapon == "bow" else 7)
 	if _right_hand_base:
 		_right_hand_base.set_part("hand_open" if loadout.weapon == "bow" else "hand_grip")
 

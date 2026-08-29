@@ -6,6 +6,7 @@ extends Node2D
 # source-background cleanup, and fallback state remain private to this module.
 
 const EXTREMITY_ATLAS := preload("res://assets/base_sprites/extremities.png")
+const FROST_TROLL_EXTREMITY_ATLAS := preload("res://assets/base_sprites/frost_troll_extremities.png")
 const CENTAUR_TAIL_TEXTURE := preload("res://assets/base_sprites/centaur_tail.png")
 const CENTAUR_TAIL_BACK_TEXTURE := preload("res://assets/base_sprites/centaur_tail_back.png")
 const CENTAUR_TAIL_BACK_REGION := Rect2(350,135,420,1140)
@@ -15,10 +16,10 @@ const HEAD_TEXTURES := {
 	"human": preload("res://assets/base_sprites/human_heads.png"),
 	"centaur": preload("res://assets/base_sprites/centaur_heads.png"),
 	"fae": preload("res://assets/base_sprites/fae_heads.png"),
-	"frost_troll": preload("res://assets/base_sprites/frost_troll_heads.png"),
+	"frost_troll": preload("res://assets/base_sprites/frost_troll_heads_v2.png"),
 	"goblin": preload("res://assets/base_sprites/goblin_heads.png"),
-	"duneborn": preload("res://assets/base_sprites/duneborn_heads.png"),
-	"frostling": preload("res://assets/base_sprites/frostling_heads.png"),
+	"duneborn": preload("res://assets/base_sprites/duneborn_heads_v2.png"),
+	"frostling": preload("res://assets/base_sprites/frostling_heads_v2.png"),
 }
 
 const HEAD_REGIONS := {
@@ -26,10 +27,10 @@ const HEAD_REGIONS := {
 	"human": {"front": Rect2(94,346,504,531), "back": Rect2(663,345,506,531)},
 	"centaur": {"front": Rect2(62,306,565,605), "back": Rect2(627,333,566,618)},
 	"fae": {"front": Rect2(14,364,605,495), "back": Rect2(672,365,568,515)},
-	"frost_troll": {"front": Rect2(51,325,560,566), "back": Rect2(663,338,547,581)},
+	"frost_troll": {"front": Rect2(65,332,527,592), "back": Rect2(653,325,554,557)},
 	"goblin": {"front": Rect2(14,343,606,552), "back": Rect2(647,343,594,545)},
-	"duneborn": {"front": Rect2(143,321,456,560), "back": Rect2(724,324,402,592)},
-	"frostling": {"front": Rect2(80,396,505,466), "back": Rect2(646,396,513,465)},
+	"duneborn": {"front": Rect2(90,302,513,636), "back": Rect2(702,310,462,635)},
+	"frostling": {"front": Rect2(76,310,506,548), "back": Rect2(683,314,490,544)},
 }
 
 const EXTREMITY_REGIONS := {
@@ -37,6 +38,14 @@ const EXTREMITY_REGIONS := {
 	"hand_grip": Rect2(585,340,260,245),
 	"foot": Rect2(980,335,300,255),
 	"hoof": Rect2(1380,320,230,280),
+}
+
+const FROST_TROLL_EXTREMITY_REGIONS := {
+	"hand_open": Rect2(20,470,405,310),
+	"hand_grip": Rect2(455,480,335,300),
+	# Crop through the upright ankle below the generated oval opening. The top
+	# edge becomes a flat 2D shin seam instead of presenting a hollow 3D socket.
+	"foot": Rect2(810,535,425,260),
 }
 
 # Image generation followed the requested direction for every race except the
@@ -106,8 +115,12 @@ func _build_sprite() -> void:
 		region = CENTAUR_TAIL_BACK_REGION if back_view else Rect2(Vector2.ZERO,source.get_size())
 		key_mode = 1 if back_view else 0
 	else:
-		source = EXTREMITY_ATLAS
-		region = EXTREMITY_REGIONS.get(part_id, Rect2())
+		if race_id == "frost_troll" and FROST_TROLL_EXTREMITY_REGIONS.has(part_id):
+			source = FROST_TROLL_EXTREMITY_ATLAS
+			region = FROST_TROLL_EXTREMITY_REGIONS[part_id]
+		else:
+			source = EXTREMITY_ATLAS
+			region = EXTREMITY_REGIONS.get(part_id, Rect2())
 		key_mode = 1
 
 	_available = source != null and region.size.x > 0.0 and region.size.y > 0.0
@@ -126,7 +139,8 @@ func _build_sprite() -> void:
 	_sprite.scale = Vector2.ONE * fit
 	_sprite.position = _part_offset()
 	var anatomy_tint: Color = CharacterCatalog.race(race_id).skin
-	var tint_strength := .72 if part_id in ["hand_open","hand_grip","foot"] else 0.0
+	var authored_troll_extremity := race_id == "frost_troll" and FROST_TROLL_EXTREMITY_REGIONS.has(part_id)
+	var tint_strength := .72 if part_id in ["hand_open","hand_grip","foot"] and not authored_troll_extremity else 0.0
 	_sprite.material = _key_material(key_mode,anatomy_tint,tint_strength)
 
 

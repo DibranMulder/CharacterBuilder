@@ -45,6 +45,20 @@ func _outlined_polygon(points: PackedVector2Array, fill: Color, width := 2.4) ->
 	draw_polyline(points + PackedVector2Array([points[0]]), INK, width, true)
 
 
+func _draw_membrane_lobe(tip: Vector2, half_width: float, fill: Color, vein: Color) -> void:
+	var normal := Vector2(-tip.y,tip.x).normalized()
+	var points := PackedVector2Array([Vector2.ZERO])
+	for i in range(1,13):
+		var t := float(i)/12.0
+		points.append(tip*t+normal*sin(t*PI)*half_width)
+	for i in range(12,0,-1):
+		var t := float(i)/12.0
+		points.append(tip*t-normal*sin(t*PI)*half_width)
+	_outlined_polygon(points,fill,1.8)
+	draw_line(Vector2.ZERO,tip,vein,1.25,true)
+	draw_line(tip*.34+normal*half_width*.55,tip*.70,vein,1.0,true)
+
+
 func _draw_hair(center: Vector2, radii: Vector2) -> void:
 	var hair: Color = style.get("hair", accent.darkened(.45))
 	var hair_style: String = style.get("hair_style", "crop")
@@ -107,12 +121,30 @@ func _draw() -> void:
 					draw_arc(Vector2(size.x * 0.13, -size.y * 0.20), 7.0, 0.25, 2.15, 8, INK, 1.6)
 				draw_circle(Vector2(size.x*.31,-size.y*.16),3.2,Color(1.0,.42,.38,.16))
 		"torso":
+			var body_shape: String = style.get("body_shape", "balanced")
+			var shoulder_ratio := 0.48
+			var waist_ratio := 0.34
+			if body_shape == "slender":
+				shoulder_ratio = 0.44
+				waist_ratio = 0.27
+			elif body_shape == "lean":
+				shoulder_ratio = 0.46
+				waist_ratio = 0.30
+			elif body_shape == "top_heavy":
+				shoulder_ratio = 0.58
+				waist_ratio = 0.38
+			elif body_shape == "compact":
+				shoulder_ratio = 0.52
+				waist_ratio = 0.43
 			var pts := PackedVector2Array([
-				Vector2(-size.x * 0.48, 0), Vector2(size.x * 0.48, 0),
-				Vector2(size.x * 0.34, size.y), Vector2(-size.x * 0.34, size.y)])
+				Vector2(-size.x * shoulder_ratio, 0), Vector2(size.x * shoulder_ratio, 0),
+				Vector2(size.x * waist_ratio, size.y), Vector2(-size.x * waist_ratio, size.y)])
 			_outlined_polygon(pts, color)
 			draw_colored_polygon(PackedVector2Array([pts[0],Vector2(0,0),Vector2(-size.x*.05,size.y),pts[3]]), color.darkened(.08))
 			draw_arc(Vector2(0,3),size.x*.14,0,PI,10,INK,2.0)
+			if style.get("skin_pattern", "") == "mottled":
+				draw_circle(Vector2(-size.x*.27,size.y*.25),size.x*.065,color.darkened(.15))
+				draw_circle(Vector2(size.x*.31,size.y*.40),size.x*.045,color.darkened(.13))
 		"limb":
 			# Explicit shoulder bulb: the lower half merges into the upper-arm
 			# capsule, leaving a clean half-circle at the shoulder end.
@@ -122,6 +154,9 @@ func _draw() -> void:
 			draw_line(Vector2.ZERO,Vector2(0,size.y),color,size.x,true)
 			draw_circle(Vector2(0,size.y),size.x*.53,INK)
 			draw_circle(Vector2(0,size.y),size.x*.40,color.lightened(.04))
+			if style.get("skin_pattern", "") == "mottled":
+				draw_circle(Vector2(size.x*.12,size.y*.32),size.x*.15,color.darkened(.14))
+				draw_circle(Vector2(-size.x*.08,size.y*.58),size.x*.10,color.darkened(.12))
 		"shin":
 			draw_line(Vector2.ZERO,Vector2(0,size.y),INK,size.x+4.5,true)
 			draw_line(Vector2.ZERO,Vector2(0,size.y),color,size.x,true)
@@ -158,10 +193,12 @@ func _draw() -> void:
 			else:
 				draw_arc(Vector2(size.x*.08,size.y*.62),size.x*.30,-PI*.82,PI*.42,14,color.lightened(.08),5.0)
 		"wing":
-			var wing := PackedVector2Array([Vector2.ZERO, Vector2(size.x, -size.y * .65), Vector2(size.x * .78, size.y * .12), Vector2(size.x * .2, size.y)])
-			_outlined_polygon(wing,Color(color,.52),2.0)
-			draw_line(Vector2.ZERO,Vector2(size.x*.78,size.y*.12),Color(accent,.72),1.5)
-			draw_line(Vector2.ZERO,Vector2(size.x*.2,size.y),Color(accent,.72),1.5)
+			# Two overlapping insect-like membranes echo the Fae reference while
+			# remaining anatomical and therefore independent of equipped armor.
+			var side := signf(size.x)
+			var vein := Color(accent,.58)
+			_draw_membrane_lobe(Vector2(size.x*.92,-size.y*.42),13.0*side,Color(color,.43),vein)
+			_draw_membrane_lobe(Vector2(size.x*.58,size.y*.80),11.0*side,Color(color,.34),vein)
 		"ear":
 			var ear := PackedVector2Array([Vector2.ZERO, Vector2(size.x, -size.y * .5), Vector2(size.x * .15, size.y * .5)])
 			draw_colored_polygon(ear, color)
