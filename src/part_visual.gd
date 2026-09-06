@@ -7,8 +7,13 @@ var color := Color.WHITE
 var accent := Color("303846")
 var back_view := false
 var style: Dictionary = {}
+var authored_skin := false
 
 const INK := Color("352b25")
+const STORYBOOK_FAE_WING_RIGHT := preload("res://assets/base_sprites/fae_wing_storybook.png")
+const STORYBOOK_FAE_WING_LEFT := preload("res://assets/base_sprites/fae_wing_storybook_left.png")
+const FAE_WING_ROOT_RIGHT := Vector2(2,52)
+const FAE_WING_ROOT_LEFT := Vector2(82,52)
 
 
 func setup(p_kind: String, p_size: Vector2, p_color: Color, p_accent: Color) -> PartVisual:
@@ -22,11 +27,20 @@ func setup(p_kind: String, p_size: Vector2, p_color: Color, p_accent: Color) -> 
 
 func set_back_view(enabled: bool) -> void:
 	back_view = enabled
+	if has_node("AuthoredAnatomy"):
+		var authored_anatomy: BaseAnatomyVisual = get_node("AuthoredAnatomy")
+		authored_anatomy.set_back_view(enabled)
 	queue_redraw()
 
 
 func set_style(p_style: Dictionary) -> PartVisual:
 	style = p_style
+	queue_redraw()
+	return self
+
+
+func set_authored_skin(enabled: bool) -> PartVisual:
+	authored_skin = enabled
 	queue_redraw()
 	return self
 
@@ -45,7 +59,7 @@ func _outlined_polygon(points: PackedVector2Array, fill: Color, width := 2.4) ->
 	draw_polyline(points + PackedVector2Array([points[0]]), INK, width, true)
 
 
-func _draw_membrane_lobe(tip: Vector2, half_width: float, fill: Color, vein: Color) -> void:
+func _draw_membrane_lobe(tip: Vector2, half_width: float, fill: Color, vein: Color, outline: Color) -> void:
 	var normal := Vector2(-tip.y,tip.x).normalized()
 	var points := PackedVector2Array([Vector2.ZERO])
 	for i in range(1,13):
@@ -54,9 +68,13 @@ func _draw_membrane_lobe(tip: Vector2, half_width: float, fill: Color, vein: Col
 	for i in range(12,0,-1):
 		var t := float(i)/12.0
 		points.append(tip*t-normal*sin(t*PI)*half_width)
-	_outlined_polygon(points,fill,1.8)
-	draw_line(Vector2.ZERO,tip,vein,1.25,true)
-	draw_line(tip*.34+normal*half_width*.55,tip*.70,vein,1.0,true)
+	draw_colored_polygon(points,fill)
+	draw_polyline(points+PackedVector2Array([points[0]]),outline,1.55,true)
+	draw_line(Vector2.ZERO,tip,vein,1.2,true)
+	# Two softly branching ribs keep the large transparent cells readable at
+	# gameplay scale without turning the membrane into a dark equipment plate.
+	draw_line(tip*.18,tip*.62+normal*half_width*.58,vein,1.0,true)
+	draw_line(tip*.30,tip*.76-normal*half_width*.44,vein,1.0,true)
 
 
 func _draw_hair(center: Vector2, radii: Vector2) -> void:
@@ -82,6 +100,8 @@ func _draw_hair(center: Vector2, radii: Vector2) -> void:
 
 
 func _draw() -> void:
+	if authored_skin:
+		return
 	match kind:
 		"head":
 			var center := Vector2(0, -size.y * 0.35)
@@ -193,12 +213,11 @@ func _draw() -> void:
 			else:
 				draw_arc(Vector2(size.x*.08,size.y*.62),size.x*.30,-PI*.82,PI*.42,14,color.lightened(.08),5.0)
 		"wing":
-			# Two overlapping insect-like membranes echo the Fae reference while
-			# remaining anatomical and therefore independent of equipped armor.
-			var side := signf(size.x)
-			var vein := Color(accent,.58)
-			_draw_membrane_lobe(Vector2(size.x*.92,-size.y*.42),13.0*side,Color(color,.43),vein)
-			_draw_membrane_lobe(Vector2(size.x*.58,size.y*.80),11.0*side,Color(color,.34),vein)
+			# Authored true-alpha membranes replace the former flat polygons while
+			# preserving this node as the waist-rooted animation/pivot contract.
+			var wing_texture := STORYBOOK_FAE_WING_LEFT if size.x < 0.0 else STORYBOOK_FAE_WING_RIGHT
+			var wing_root := FAE_WING_ROOT_LEFT if size.x < 0.0 else FAE_WING_ROOT_RIGHT
+			draw_texture(wing_texture,-wing_root)
 		"ear":
 			var ear := PackedVector2Array([Vector2.ZERO, Vector2(size.x, -size.y * .5), Vector2(size.x * .15, size.y * .5)])
 			draw_colored_polygon(ear, color)

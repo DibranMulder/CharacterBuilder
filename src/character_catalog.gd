@@ -2,16 +2,32 @@ class_name CharacterCatalog
 extends RefCounted
 
 
-const SLOT_ORDER := [&"weapon", &"offhand", &"armor", &"pants", &"head", &"back", &"accessory"]
+const SLOT_ORDER := [&"weapon", &"offhand", &"armor", &"pants", &"boots", &"head", &"back", &"accessory"]
+const SHIELD_ITEMS := ["shield", "marsh_shield", "dune_shield"]
 
 const EQUIPMENT := {
-	"weapon": ["none", "sword", "axe", "bow", "spear", "staff"],
-	"offhand": ["none", "shield", "lantern", "spellbook"],
-	"armor": ["none", "cloth", "leather", "plate"],
-	"pants": ["none", "cloth", "leather", "plate"],
+	"weapon": ["none", "sword", "axe", "bow", "crossbow", "spear", "staff", "branch_staff"],
+	"offhand": ["none", "shield", "marsh_shield", "dune_shield", "lantern", "spellbook"],
+	"armor": ["none", "cloth", "marsh_tunic", "leather", "woodland_harness", "troll_jerkin", "fur_coat", "fae_tunic", "lamellar", "plate"],
+	"pants": ["none", "cloth", "ranger", "baggy", "leather", "plate"],
+	"boots": ["none", "wraps", "leather", "plate"],
 	"head": ["none", "hood", "helm", "crown"],
-	"back": ["none", "cape", "pack", "quiver"],
+	"back": ["none", "cape", "long_cape", "pack", "quiver"],
 	"accessory": ["none", "scarf", "amulet", "goggles"],
+}
+
+# Full-slot modular presets reconstructed from the two supplied lineage
+# paintings. Keeping them in the catalog makes the authored designs available
+# in the actual builder, while every piece remains independently swappable.
+const REFERENCE_LOADOUTS := {
+	"bogkin": {"weapon":"sword", "offhand":"marsh_shield", "armor":"marsh_tunic", "pants":"cloth", "boots":"none", "head":"none", "back":"none", "accessory":"scarf"},
+	"human": {"weapon":"sword", "offhand":"shield", "armor":"marsh_tunic", "pants":"ranger", "boots":"leather", "head":"none", "back":"long_cape", "accessory":"scarf"},
+	"centaur": {"weapon":"bow", "offhand":"none", "armor":"woodland_harness", "pants":"none", "boots":"none", "head":"none", "back":"quiver", "accessory":"none"},
+	"fae": {"weapon":"branch_staff", "offhand":"none", "armor":"fae_tunic", "pants":"baggy", "boots":"wraps", "head":"none", "back":"none", "accessory":"none"},
+	"frost_troll": {"weapon":"axe", "offhand":"none", "armor":"troll_jerkin", "pants":"leather", "boots":"none", "head":"none", "back":"none", "accessory":"none"},
+	"goblin": {"weapon":"crossbow", "offhand":"none", "armor":"leather", "pants":"leather", "boots":"leather", "head":"none", "back":"pack", "accessory":"goggles"},
+	"duneborn": {"weapon":"spear", "offhand":"dune_shield", "armor":"lamellar", "pants":"cloth", "boots":"leather", "head":"none", "back":"cape", "accessory":"none"},
+	"frostling": {"weapon":"staff", "offhand":"none", "armor":"fur_coat", "pants":"cloth", "boots":"leather", "head":"hood", "back":"pack", "accessory":"none"},
 }
 
 # Working names derived from the two supplied concept illustrations. Rename freely;
@@ -22,8 +38,14 @@ const RACES := {
 		"tagline": "Spring-legged marsh wardens",
 		"skin": Color("42b9a5"), "accent": Color("f2a65a"),
 		"visual": {"face": "frog", "hair_style": "none", "eye": Color("b8892e"), "boot": Color("795238")},
-		"scale": 0.78, "head": Vector2(54, 46), "torso": Vector2(48, 58),
-		"arm": 48.0, "leg": 43.0, "topology": "biped",
+		# The light-lineage sheet places the frogfolk at roughly two-thirds of the
+		# Human's standing height. Preserve a broad spring-loaded construction
+		# inside that compact scale: wide short trunk, compact limbs, oversized
+		# webbed extremities, and a head that dominates the upper silhouette.
+		"scale": 0.74, "head": Vector2(58, 49), "torso": Vector2(64, 54),
+		"arm": 46.0, "leg": 38.0, "limb_width": 19.0, "leg_width": 23.0,
+		"shoulder_spread": 0.34, "extremity_scale": 1.22, "head_sprite_scale": 1.52,
+		"armor_width_scale": 1.12, "pants_width_scale": 1.10, "topology": "biped",
 		"gestures": [
 			{"name": "Tongue Snap", "style": "thrust"},
 			{"name": "Lily Leap", "style": "leap"},
@@ -58,7 +80,10 @@ const RACES := {
 		"name": "Fae", "tagline": "Airborne keepers of wild magic",
 		"skin": Color("f2c29b"), "accent": Color("e05b52"),
 		"visual": {"hair_style": "ponytail", "hair": Color("24272a"), "eye": Color("47301e"), "boot": Color("ded4bf"), "body_shape": "slender"},
-		"scale": 0.86, "head": Vector2(45, 50), "torso": Vector2(40, 66),
+		# The reference's poised winged figure is approximately Human-height, not
+		# a miniature fairy. A slightly taller global scale retains the slender
+		# anatomy while letting staff, wings, and wind-pulled garments read clearly.
+		"scale": 1.02, "head": Vector2(45, 50), "torso": Vector2(40, 66),
 		"arm": 57.0, "leg": 59.0, "limb_width": 14.0, "leg_width": 16.0,
 		"shoulder_spread": 0.30, "extremity_scale": 0.90, "topology": "winged",
 		"gestures": [
@@ -110,7 +135,7 @@ const RACES := {
 		"name": "Frostling", "tagline": "Small mystics of the aurora",
 		"skin": Color("8795a7"), "accent": Color("37658b"),
 		"visual": {"hair_style": "shaggy", "hair": Color("e3e7e5"), "eye": Color("73c9ef"), "boot": Color("3b5366"), "body_shape": "compact"},
-		"scale": 0.78, "head": Vector2(61, 57), "torso": Vector2(54, 55),
+		"scale": 0.84, "head": Vector2(61, 57), "torso": Vector2(54, 55),
 		"arm": 47.0, "leg": 39.0, "limb_width": 17.0, "leg_width": 20.0,
 		"shoulder_spread": 0.32, "extremity_scale": 1.08, "head_sprite_scale": 1.55, "head_y_adjust": 2.0, "topology": "biped",
 		"gestures": [
@@ -135,3 +160,11 @@ static func race(id: String) -> Dictionary:
 
 static func items_for(slot: StringName) -> Array:
 	return EQUIPMENT.get(String(slot), ["none"])
+
+
+static func is_shield(item_id: String) -> bool:
+	return item_id in SHIELD_ITEMS
+
+
+static func reference_loadout(race_id: String) -> Dictionary:
+	return REFERENCE_LOADOUTS.get(race_id,REFERENCE_LOADOUTS["human"]).duplicate()

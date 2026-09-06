@@ -2,6 +2,7 @@ extends Node2D
 
 const Avatar := preload("res://src/modular_character.gd")
 const Ladder := preload("res://src/ladder_visual.gd")
+const Staircase := preload("res://src/staircase_visual.gd")
 
 var avatar: ModularCharacter
 var race_selector: OptionButton
@@ -12,12 +13,14 @@ var race_ids: Array[String]
 var title_label: Label
 var tagline_label: Label
 var ladder: Node2D
+var staircase: Node2D
 
 
 func _ready() -> void:
 	RenderingServer.set_default_clear_color(Color("111827"))
 	_build_background()
-	ladder=Ladder.new(); ladder.position=Vector2(790,480); ladder.z_index=-10; ladder.visible=false; add_child(ladder)
+	ladder=Ladder.new(); ladder.name="LadderPreview"; ladder.position=Vector2(790,480); ladder.z_index=-10; ladder.visible=false; add_child(ladder)
+	staircase=Staircase.new(); staircase.name="StaircasePreview"; staircase.position=Vector2(790,505); staircase.z_index=-12; staircase.visible=false; add_child(staircase)
 	avatar = Avatar.new(); avatar.position = Vector2(790,505); avatar.scale = Vector2.ONE * 1.35; add_child(avatar)
 	avatar.motion_changed.connect(_motion_changed)
 	avatar.equipment_changed.connect(_equipment_changed)
@@ -47,9 +50,10 @@ func _panel_style(color: Color, radius := 12) -> StyleBoxFlat:
 
 
 func _build_ui() -> void:
-	var panel := PanelContainer.new(); panel.position=Vector2(28,16); panel.size=Vector2(390,616)
+	var panel := PanelContainer.new(); panel.position=Vector2(28,12); panel.size=Vector2(390,624)
+	panel.name = "BuilderPanel"
 	panel.add_theme_stylebox_override("panel",_panel_style(Color("202b3d"))); add_child(panel)
-	var column := VBoxContainer.new(); column.add_theme_constant_override("separation",4); panel.add_child(column)
+	var column := VBoxContainer.new(); column.add_theme_constant_override("separation",2); panel.add_child(column)
 	var heading := Label.new(); heading.text="LINEAGE FORGE"; heading.add_theme_font_size_override("font_size",28); heading.add_theme_color_override("font_color",Color("77d4cf")); column.add_child(heading)
 	var intro := Label.new(); intro.text="Build race, gear, and motion."; intro.add_theme_color_override("font_color",Color("aebdd0")); column.add_child(intro)
 	column.add_child(HSeparator.new())
@@ -60,7 +64,7 @@ func _build_ui() -> void:
 	title_label=_label(""); title_label.add_theme_font_size_override("font_size",20); title_label.add_theme_color_override("font_color",Color("f3c969")); column.add_child(title_label)
 	tagline_label=_label(""); tagline_label.add_theme_color_override("font_color",Color("91a4bb")); column.add_child(tagline_label)
 	column.add_child(HSeparator.new())
-	var grid := GridContainer.new(); grid.columns=2; grid.add_theme_constant_override("h_separation",12); grid.add_theme_constant_override("v_separation",7); column.add_child(grid)
+	var grid := GridContainer.new(); grid.columns=2; grid.add_theme_constant_override("h_separation",12); grid.add_theme_constant_override("v_separation",3); column.add_child(grid)
 	for slot in CharacterCatalog.SLOT_ORDER:
 		grid.add_child(_label(String(slot).capitalize()))
 		var selector := OptionButton.new(); selector.custom_minimum_size.x=205
@@ -75,13 +79,14 @@ func _build_ui() -> void:
 
 
 func _build_motion_controls() -> void:
-	var panel := PanelContainer.new(); panel.position=Vector2(650,18); panel.size=Vector2(420,108)
+	var panel := PanelContainer.new(); panel.position=Vector2(610,18); panel.size=Vector2(480,108)
+	panel.name = "MotionPanel"
 	panel.add_theme_stylebox_override("panel",_panel_style(Color("202b3d"),10)); add_child(panel)
 	var rows:=VBoxContainer.new(); rows.add_theme_constant_override("separation",5); panel.add_child(rows)
 	var row:=HBoxContainer.new(); row.add_theme_constant_override("separation",7); rows.add_child(row)
 	var label:=_label("Motion"); label.add_theme_color_override("font_color",Color("77d4cf")); row.add_child(label)
 	for motion in Avatar.MOTIONS:
-		var button:=Button.new(); button.text=String(motion).capitalize(); button.size_flags_horizontal=Control.SIZE_EXPAND_FILL
+		var button:=Button.new(); button.text="Ladder" if motion == &"climb" else String(motion).capitalize(); button.size_flags_horizontal=Control.SIZE_EXPAND_FILL
 		button.pressed.connect(avatar.play_motion.bind(motion)); row.add_child(button)
 	var facing_row:=HBoxContainer.new(); facing_row.add_theme_constant_override("separation",7); rows.add_child(facing_row)
 	var facing_label:=_label("Facing"); facing_label.add_theme_color_override("font_color",Color("77d4cf")); facing_row.add_child(facing_label)
@@ -92,6 +97,7 @@ func _build_motion_controls() -> void:
 
 func _motion_changed(motion: StringName) -> void:
 	ladder.visible = motion == &"climb"
+	staircase.visible = motion == &"stairs"
 
 
 func _label(text_: String) -> Label:
@@ -100,7 +106,10 @@ func _label(text_: String) -> Label:
 
 func _select_race(index: int) -> void:
 	if index < 0 or index >= race_ids.size(): return
-	var id := race_ids[index]; avatar.configure(id, avatar.loadout)
+	var id := race_ids[index]
+	# Selecting a lineage starts from the reference painting's complete modular
+	# kit. The selectors below can still replace every supported piece.
+	avatar.configure(id,CharacterCatalog.reference_loadout(id))
 	var profile:=CharacterCatalog.race(id); title_label.text=profile.name; tagline_label.text=profile.tagline
 	for child in gesture_box.get_children(): child.queue_free()
 	for i in avatar.available_gestures().size():
