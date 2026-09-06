@@ -385,6 +385,8 @@ func equip(slot: StringName, item_id: String) -> bool:
 	if slot == &"pants":
 		for pants_visual in _pants_parts:
 			pants_visual.setup("pants",item_id,_profile.accent)
+		if race_id == "human":
+			_update_human_trousers()
 		equipment_changed.emit(slot,item_id)
 		return true
 	if slot == &"boots":
@@ -397,8 +399,10 @@ func equip(slot: StringName, item_id: String) -> bool:
 	if visual:
 		visual.setup(String(slot), item_id, _profile.accent)
 		_apply_gear_presentation(String(slot), item_id, visual)
-	if slot == &"weapon":
+	if slot == &"weapon" or (race_id == "human" and slot == &"offhand"):
 		_apply_weapon_hand_parts()
+	if slot == &"armor" and race_id == "human":
+		_update_human_sleeves()
 	equipment_changed.emit(slot, item_id)
 	return true
 
@@ -606,7 +610,7 @@ func _part(parent: Node, name_: String, kind: String, size: Vector2, color: Colo
 	visual.set_style(_profile.get("visual", {}))
 	pivot.add_child(visual)
 	var authored_part := _authored_anatomy_part(name_)
-	if not authored_part.is_empty():
+	if not authored_part.is_empty() and race_id != "human":
 		visual.set_authored_skin(true)
 		var anatomy_size := size
 		var anatomy_center_y := size.y*.5
@@ -785,6 +789,15 @@ func _rebuild() -> void:
 		_bones.right_forearm.rotation_degrees = -30
 
 	_attach_gear("back", torso, Vector2(0,torso_top_y+5), -6)
+	if race_id == "human":
+		_build_human_limb_surfaces(limb_width, leg_width, skin)
+		torso_visual.hide()
+		var body := preload("res://src/human_torso_surface.gd").new()
+		body.name = "HumanTorsoSurface"
+		body.size = torso_size
+		body.skin = skin
+		body.hip = hip
+		torso.add_child(body)
 	_attach_gear("armor", torso, Vector2(0,torso_top_y), 1)
 	_attach_pants(hip,torso_x)
 	_attach_boots(hip,extremity_scale)
@@ -803,6 +816,38 @@ func _rebuild() -> void:
 	_apply_facing()
 
 
+func _build_human_limb_surfaces(arm_width: float, leg_width: float, skin: Color) -> void:
+	for side in ["left", "right"]:
+		for limb in ["arm", "leg"]:
+			var upper: Node2D = _bones[side + "_" + limb]
+			var lower: Node2D = _bones[side + ("_forearm" if limb == "arm" else "_shin")]
+			# Hide only the old art, never the pivots or their equipment children.
+			upper.get_child(0).hide()
+			lower.get_child(0).hide()
+			var surface := preload("res://src/human_limb_surface.gd").new()
+			surface.name = "HumanLimbSurface"
+			upper.add_child(surface)
+			var lower_length := float(_profile.arm if limb == "arm" else _profile.leg) * .48
+			surface.setup(lower, lower_length, arm_width if limb == "arm" else leg_width, skin.darkened(.06) if side == "left" else skin, limb == "leg")
+	_update_human_sleeves()
+
+
+func _update_human_sleeves() -> void:
+	for side in ["left", "right"]:
+		var surface = _bones[side + "_arm"].get_node("HumanLimbSurface")
+		surface.armor = loadout.armor
+		surface.accent = _profile.accent
+		surface.queue_redraw()
+
+
+func _update_human_trousers() -> void:
+	for side in ["left", "right"]:
+		var surface = _bones[side + "_leg"].get_node("HumanLimbSurface")
+		surface.pants = loadout.pants
+		surface.accent = _profile.accent
+		surface.queue_redraw()
+
+
 func _attach_gear(slot: String, parent: Node2D, at: Vector2, z: int) -> void:
 	var visual := Gear.new().setup(slot, loadout[slot], _profile.accent)
 	visual.name = slot.capitalize(); visual.position = at; visual.z_index = z
@@ -811,6 +856,10 @@ func _attach_gear(slot: String, parent: Node2D, at: Vector2, z: int) -> void:
 	elif slot == "offhand" and loadout[slot] == "lantern":
 		visual.scale = Vector2.ONE*Gear.LANTERN_DISPLAY_SCALE
 	parent.add_child(visual); _gear[slot] = visual
+	if race_id == "human" and slot == "armor":
+		visual.bind_garment(_bones.hip, _bones.left_leg, _bones.right_leg, _bones.left_arm, _bones.right_arm)
+	if race_id == "human" and slot in ["back", "accessory"]:
+		visual.fitted_cloth = true
 	_apply_gear_presentation(slot, loadout[slot], visual)
 
 
@@ -827,6 +876,12 @@ func _attach_pants(hip: Node2D, torso_x: float) -> void:
 		waist.visible = false
 		return
 	waist.set_pants_piece("waist")
+	if race_id == "human":
+		waist.fitted_waist = true
+		waist.material = null
+		waist.z_index = 0
+		_update_human_trousers()
+		return
 	var thigh_length := float(_profile.leg)*.52
 	var shin_length := float(_profile.leg)-thigh_length
 	_attach_pants_piece(_bones.left_leg,"LeftPantsThigh","thigh",thigh_length,3)
@@ -910,7 +965,7 @@ func _place_gear_on_back(slot: String, visual: GearVisual) -> void:
 			visual.z_index = 4
 		else:
 			visual.position = Vector2(0.0, -float(_profile.torso.y) * .42)
-			visual.z_index = 2
+			visual.z_index = 4 if race_id == "human" else 2
 		visual.rotation = 0.0
 
 
@@ -944,7 +999,7 @@ func _place_gear_in_hand(slot: String, item_id: String, visual: GearVisual) -> v
 		# Offset the visual origin by the inverse of its painted center so the
 		# offhand wrist/grip lands exactly on the shield boss.
 		visual.position = Vector2(0.0,forearm_length)-Gear.SHIELD_CENTER
-		visual.z_index = -1
+		visual.z_index = 4 if race_id == "human" else -1
 	else:
 		visual.position.x = 0.0
 		visual.position.y = forearm_length
@@ -1059,6 +1114,15 @@ func _apply_facing() -> void:
 
 
 func _set_back_view(enabled: bool) -> void:
+	if race_id == "human" and _bones.has("torso") and _bones.torso.has_node("HumanTorsoSurface"):
+		_bones.torso.get_node("HumanTorsoSurface").back_view = enabled
+		var back: GearVisual = _gear.get("back")
+		if back:
+			# Rear-facing equipment is between the torso and stowed weapons.
+			back.z_index = 3 if enabled else -6
+		var waist: GearVisual = _gear.get("pants")
+		if waist:
+			waist.set_back_view(enabled)
 	if _head_visual:
 		_head_visual.set_back_view(enabled)
 	if _head_base:
@@ -1075,6 +1139,8 @@ func _set_back_view(enabled: bool) -> void:
 	if enabled:
 		if _left_hand_base:
 			_left_hand_base.set_part("hand_grip")
+			if race_id == "human":
+				_left_hand_base.z_index = 7
 		if _right_hand_base:
 			_right_hand_base.set_part("hand_grip")
 	else:
@@ -1680,6 +1746,10 @@ func _apply_weapon_hand_parts() -> void:
 		var left_hand_grips: bool = loadout.weapon in ["bow","crossbow"] or _has_two_handed_axe_loadout()
 		_left_hand_base.set_part("hand_grip_back" if left_hand_grips else "hand_open")
 		_left_hand_base.z_index = 18 if _has_two_handed_axe_loadout() or loadout.weapon == "crossbow" else (14 if loadout.weapon == "bow" else 7)
+		if race_id == "human" and CharacterCatalog.is_shield(loadout.offhand):
+			_left_hand_base.set_part("hand_grip_back")
+			if current_motion != &"climb":
+				_left_hand_base.z_index = -2
 	if _right_hand_base:
 		_right_hand_base.set_part("hand_open" if loadout.weapon == "bow" else "hand_grip_back")
 

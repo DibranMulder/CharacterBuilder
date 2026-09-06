@@ -128,7 +128,9 @@ func _initialize() -> void:
 
 	var sided_avatar := Avatar.new()
 	root.add_child(sided_avatar)
-	sided_avatar.configure("human",{
+	# Shared cutout orientation still applies to other humanoid lineages;
+	# humans use continuous surfaces, covered by human_surface_regression.gd.
+	sided_avatar.configure("fae",{
 		"weapon":"none", "offhand":"none", "armor":"none", "pants":"none",
 		"boots":"none", "head":"none", "back":"none", "accessory":"none",
 	})

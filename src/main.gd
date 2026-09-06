@@ -26,7 +26,7 @@ func _ready() -> void:
 	avatar.equipment_changed.connect(_equipment_changed)
 	_build_ui()
 	_build_motion_controls()
-	_select_race(0)
+	_select_race(race_ids.find("human"))
 
 
 func _build_background() -> void:
@@ -106,6 +106,7 @@ func _label(text_: String) -> Label:
 
 func _select_race(index: int) -> void:
 	if index < 0 or index >= race_ids.size(): return
+	race_selector.select(index)
 	var id := race_ids[index]
 	# Selecting a lineage starts from the reference painting's complete modular
 	# kit. The selectors below can still replace every supported piece.

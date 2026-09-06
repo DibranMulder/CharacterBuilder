@@ -33,11 +33,12 @@ func _render() -> void:
 	for frame in 6:
 		await process_frame
 	var image := viewport.get_texture().get_image()
-	if image == null or image.save_png(OUTPUT_PATH) != OK:
-		push_error("Could not save %s" % OUTPUT_PATH)
+	var output := "res://artifacts/human_body_showcase.png" if "--bare" in OS.get_cmdline_user_args() else OUTPUT_PATH
+	if image == null or image.save_png(output) != OK:
+		push_error("Could not save %s" % output)
 		quit(1)
 		return
-	print("PASS: rendered Human ranger pants through all melee curves and locomotion to %s" % OUTPUT_PATH)
+	print("PASS: rendered human pose showcase to %s" % output)
 	quit()
 
 
@@ -59,12 +60,28 @@ func _add_sample(canvas: Node2D,origin: Vector2,sample: Dictionary,index: int) -
 		"pants":"ranger", "boots":"leather", "head":"none",
 		"back":"long_cape", "accessory":"scarf",
 	})
-	if sample.mode in [&"jab",&"forehand",&"backhand"]:
+	var overrides: Dictionary = sample.get("loadout", {})
+	for slot in overrides:
+		avatar.equip(StringName(slot), overrides[slot])
+	if "--left" in OS.get_cmdline_user_args():
+		avatar.set_facing(&"left")
+	if "--bare" in OS.get_cmdline_user_args():
+		for slot in ["offhand", "armor", "pants", "boots", "head", "back", "accessory"]:
+			avatar.equip(StringName(slot), "none")
+	if sample.has("gesture"):
+		avatar.play_gesture(int(sample.gesture))
+	elif sample.mode in [&"jab",&"forehand",&"backhand",&"fire_bow",&"fire_crossbow",&"cast_spell"]:
 		avatar.play_weapon_attack(sample.mode)
 	else:
 		avatar.play_motion(sample.mode)
 	if avatar._active_tween:
-		avatar._active_tween.custom_step(float(sample.time))
+		# Advance through callbacks and successive tween phases as the runtime
+		# does; a single large step can initialize later phases at the wrong pose.
+		var remaining := float(sample.time)
+		while remaining > 0.0:
+			var step := minf(remaining, 1.0 / 120.0)
+			avatar._active_tween.custom_step(step)
+			remaining -= step
 		avatar._active_tween.pause()
 
 

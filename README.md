@@ -12,6 +12,64 @@ Press **F6/F5**, select any of eight races, swap equipment independently, compar
 
 ## Production strategy
 
+### Human surface rig
+
+Human torso equipment now renders through `GarmentSurface`, an indexed surface
+bound to the existing torso, pelvis, and thigh transforms. The neckline follows
+the chest, the waist stays with the pelvis during torso lean, and the hem shares
+thigh motion. Plate keeps its chest rigid and limits deformation to its lower
+skirt. Front/rear textures, dyes, equipment swapping, and mirrored facing use
+the same binding. Other lineages retain their existing rendering.
+
+Human arms and legs now use `HumanLimbSurface`: one shaded contour spanning
+both bones, with no internal elbow/knee cap. Wrist and ankle endpoints stay on
+the original sockets. Armor selects fitted upper sleeves and, where appropriate,
+forearm bracers on that contour; removing armor exposes the continuous skin.
+The reference tunic uses ivory sleeves and leather bracers from the concept.
+
+Human trousers now use those continuous leg contours as well, including a
+wider baggy cut, material shading and folds, and a plate knee covering. The
+waist and both leg materials swap together. Human capes and scarves use
+`ClothSurface` to distribute the existing animation bend from a pinned upper
+section toward the free hem; packs, quivers, and jewelry remain rigid items.
+
+The human torso now has its own continuous neck-to-pelvis silhouette with
+front/rear details and the same warm shading as the limbs. A fitted trouser
+waist replaces the old skirt-shaped panel and shares the leg material palette.
+Use the showcase command with `-- --bare` to inspect the unarmored body in
+`artifacts/human_body_showcase.png`.
+
+Human hands now have dedicated open, palm-grip and back-grip contours, and
+bare feet use a matching ankle-to-toe silhouette. They retain the existing
+attachment and pose-switching interface while leaving the original head art intact.
+
+The builder opens on Human with its reference loadout. Warm contour shading,
+fabric folds, and cuff highlights unify the procedural body and fitted limb
+clothing with the retained painted head and torso equipment. Garment meshes are reused while the relative bone pose is
+unchanged and rebuilt when that pose changes.
+
+The human rework and its verification evidence are described in
+[`docs/human-surface-rig.md`](docs/human-surface-rig.md).
+
+Run `godot --headless --path . --script tests/garment_surface_regression.gd`
+for binding checks and `godot --path . --script tools/render_human_ranger_showcase.gd`
+for the human pose preview.
+`tests/human_surface_regression.gd` checks continuous limb endpoints through
+extreme bends and mirrored facing, armor changes, and isolation to the human.
+`tools/render_human_cycle.gd -- --motion=run` renders twelve samples across a
+motion for visual review; supported motions also include stairs, climb, jab,
+forehand and backhand. Add `--bare` to inspect body seams without clothing.
+It also supports `fire_bow`, `fire_crossbow`, `cast_spell`, and `vault`; use
+`--shield` to include the reference shield. The human gripping palm renders
+behind a carried shield and returns to the foreground for ladder climbing.
+`tools/render_human_armor_fit.gd` compares every armor in a running pose; add
+`--rear` for a climbing comparison. The shared garment chest is narrowed to
+the human shoulder span before deformation. Rear back equipment now covers
+the torso and trouser waist, and rear trousers omit the front buckle.
+Arm-opening vertices also follow their corresponding upper-arm transforms,
+while the central chest remains fixed to the torso. The fitted trouser waist
+extends underneath outer garments and renders beneath their hems.
+
 Do **not** author a complete sprite sheet for every race × armor × weapon × action combination. That grows multiplicatively and becomes impossible to maintain. Use a hybrid cutout rig:
 
 1. One named rig contract per topology family (`biped`, `centaur`, and `winged` in this prototype).

@@ -98,6 +98,7 @@ var target_size := Vector2(52,52)
 var back_view := false
 var horizontal_flip := false
 var _sprite: Sprite2D
+var _human_extremity: Node2D
 var _available := false
 
 
@@ -131,14 +132,33 @@ func set_part(p_part_id: String) -> void:
 
 func set_horizontal_flip(enabled: bool) -> void:
 	horizontal_flip = enabled
+	if _human_extremity:
+		_human_extremity.scale.x = -absf(_human_extremity.scale.x) if enabled else absf(_human_extremity.scale.x)
 	if _sprite:
 		_sprite.flip_h = horizontal_flip or (part_id == "head" and not back_view and FLIPPED_FRONT_HEADS.get(race_id,false))
 
 
 func _build_sprite() -> void:
+	if _human_extremity:
+		remove_child(_human_extremity)
+		_human_extremity.queue_free()
+		_human_extremity = null
 	if _sprite:
 		remove_child(_sprite)
 		_sprite.queue_free()
+		_sprite = null
+	if race_id == "human" and part_id in ["hand_open", "hand_grip", "hand_grip_back", "foot"]:
+		var extremity := preload("res://src/human_extremity_visual.gd").new()
+		extremity.name = "HumanExtremity"
+		extremity.part = part_id
+		extremity.skin = CharacterCatalog.race("human").skin
+		extremity.scale = target_size / Vector2(24, 24)
+		add_child(extremity)
+		_human_extremity = extremity
+		_available = true
+		visible = true
+		set_horizontal_flip(horizontal_flip)
+		return
 	_sprite = Sprite2D.new()
 	_sprite.name = "Sprite"
 	_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS

@@ -12,6 +12,9 @@ func _run() -> void:
 	root.add_child(builder)
 	await process_frame
 	await process_frame
+	if builder.avatar.race_id != "human" or builder.race_ids[builder.race_selector.selected] != "human":
+		_fail("builder must open with Human selected in both the avatar and race control")
+		return
 	var builder_panel: PanelContainer = builder.get_node("BuilderPanel")
 	var gesture_box: HBoxContainer = builder.gesture_box
 	var content_bottom := gesture_box.global_position.y+gesture_box.size.y

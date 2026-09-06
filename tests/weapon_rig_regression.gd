@@ -319,7 +319,11 @@ func _run() -> void:
 	var maximum_shield_offset: float = profile.torso.x * profile.scale
 	if absf(shield_center.x - torso.global_position.x) > maximum_shield_offset:
 		_fail("shield face must overlap the torso silhouette instead of floating away from the body")
-	if shield.z_index >= 0:
+	if avatar.race_id == "human":
+		var shield_layer: int = shield.z_index + left_forearm.z_index + left_arm.z_index
+		if shield_layer <= left_arm.z_index or shield_layer >= torso.z_index:
+			_fail("human shield must cover the continuous arm while remaining behind the torso")
+	elif shield.z_index >= 0:
 		_fail("shield must remain behind the far-side forearm and torso")
 	if shoulder_position.distance_to(sword_tip) <= shoulder_position.distance_to(hand_position):
 		_fail("sword tip must extend beyond the hand from the shoulder pivot")

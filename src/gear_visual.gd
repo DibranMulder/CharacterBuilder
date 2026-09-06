@@ -117,6 +117,8 @@ func setup(p_slot: String, p_item: String, p_accent: Color) -> GearVisual:
 	elif slot == "pants" and item == "baggy":
 		dye_color = BAGGY_PANTS_DYE
 	material = _storybook_material(needs_magenta_key,needs_accent_dye,dye_color) if needs_magenta_key or needs_accent_dye else null
+	if fitted_waist:
+		material = null
 	queue_redraw()
 	return self
 
@@ -223,6 +225,59 @@ func _shield_exterior_texture() -> Texture2D:
 	}.get(item, STORYBOOK_SHIELD_EXTERIOR)
 
 
+var garment_surface: GarmentSurface
+var _garment_mesh: ArrayMesh
+var fitted_cloth := false
+var fitted_waist := false
+var _cloth_mesh: ArrayMesh
+var _cloth_mesh_key: Array = []
+
+
+func bind_garment(hip: Node2D, left_leg: Node2D, right_leg: Node2D, left_arm: Node2D, right_arm: Node2D) -> void:
+	garment_surface = preload("res://src/garment_surface.gd").new()
+	garment_surface.bind(self, hip, left_leg, right_leg, left_arm, right_arm)
+
+
+func _process(_delta: float) -> void:
+	if garment_surface or fitted_cloth:
+		queue_redraw()
+
+
+func _draw_armor(texture: Texture2D) -> void:
+	if garment_surface:
+		_garment_mesh = garment_surface.mesh(texture.get_size(), item == "plate")
+		draw_mesh(_garment_mesh, texture)
+	else:
+		draw_texture(texture, Vector2(-41, 0))
+
+
+func _draw_cloth(texture: Texture2D, origin: Vector2) -> void:
+	if fitted_cloth:
+		var key: Array = [texture.get_size(), origin, rotation]
+		if not _cloth_mesh or key != _cloth_mesh_key:
+			_cloth_mesh = preload("res://src/cloth_surface.gd").mesh(texture.get_size(), origin, rotation)
+			_cloth_mesh_key = key
+		draw_mesh(_cloth_mesh, texture)
+	else:
+		draw_texture(texture, origin)
+
+
+func _draw_fitted_waist() -> void:
+	if item == "none":
+		return
+	var fill: Color = {
+		"ranger": RANGER_PANTS_DYE, "cloth": accent,
+		"baggy": BAGGY_PANTS_DYE, "leather": Color("785638"),
+		"plate": Color("939fa5"),
+	}.get(item, accent)
+	var contour := PackedVector2Array([Vector2(-19,-10),Vector2(19,-10),Vector2(23,9),Vector2(13,18),Vector2(0,19),Vector2(-13,18),Vector2(-23,9)])
+	draw_colored_polygon(contour, fill)
+	# Keep the lower join unoutlined where it merges into the trouser legs.
+	draw_line(Vector2(-19,-8),Vector2(19,-8),Color("705034"),4.0,true)
+	if not back_view:
+		draw_rect(Rect2(-3,-10,6,5),Color("b69a55"),false,.8)
+
+
 func _draw() -> void:
 	match slot:
 		"weapon":
@@ -297,40 +352,43 @@ func _draw() -> void:
 			if item == "cloth":
 				# The dyed front keeps its compact sleeveless edge; climbing swaps to
 				# a buckle-free rear panel with open neck and arm sockets.
-				draw_texture(STORYBOOK_CLOTH_ARMOR_BACK if back_view else STORYBOOK_CLOTH_ARMOR,Vector2(-41,0))
+				_draw_armor(STORYBOOK_CLOTH_ARMOR_BACK if back_view else STORYBOOK_CLOTH_ARMOR)
 			elif item == "marsh_tunic":
 				# Loose ivory homespun matches the Bogkin painting without baking
 				# frog anatomy or its independently equipped orange scarf.
-				draw_texture(STORYBOOK_MARSH_TUNIC_BACK if back_view else STORYBOOK_MARSH_TUNIC,Vector2(-41,0))
+				_draw_armor(STORYBOOK_MARSH_TUNIC_BACK if back_view else STORYBOOK_MARSH_TUNIC)
 			elif item == "leather":
 				# Empty neck/arm openings let both authored views layer over every
 				# lineage body; the rear replaces chest hardware with crossed straps.
-				draw_texture(STORYBOOK_LEATHER_ARMOR_BACK if back_view else STORYBOOK_LEATHER_ARMOR,Vector2(-41,0))
+				_draw_armor(STORYBOOK_LEATHER_ARMOR_BACK if back_view else STORYBOOK_LEATHER_ARMOR)
 			elif item == "woodland_harness":
 				# Bronze pauldrons, crossed tack, and leaf tabs echo the Centaur
 				# painting while the open center preserves authored anatomy.
-				draw_texture(STORYBOOK_WOODLAND_HARNESS_BACK if back_view else STORYBOOK_WOODLAND_HARNESS,Vector2(-41,0))
+				_draw_armor(STORYBOOK_WOODLAND_HARNESS_BACK if back_view else STORYBOOK_WOODLAND_HARNESS)
 			elif item == "troll_jerkin":
 				# Rugged charcoal hide and rust skirt tabs match the Frost Troll
 				# painting; rear climbing removes its laced inset and buckle.
-				draw_texture(STORYBOOK_TROLL_JERKIN_BACK if back_view else STORYBOOK_TROLL_JERKIN,Vector2(-41,0))
+				_draw_armor(STORYBOOK_TROLL_JERKIN_BACK if back_view else STORYBOOK_TROLL_JERKIN)
 			elif item == "fur_coat":
 				# The Frostling's quilted indigo travel coat keeps fixed authored
 				# colors and swaps to a buckle-free rear panel on the ladder.
-				draw_texture(STORYBOOK_FUR_COAT_BACK if back_view else STORYBOOK_FUR_COAT,Vector2(-41,0))
+				_draw_armor(STORYBOOK_FUR_COAT_BACK if back_view else STORYBOOK_FUR_COAT)
 			elif item == "fae_tunic":
 				# Paired reference-matched golden tunic, red capelet, and blue sash;
 				# ladder motion swaps away the clasp and front sash knot.
-				draw_texture(STORYBOOK_FAE_TUNIC_BACK if back_view else STORYBOOK_FAE_TUNIC,Vector2(-41,0))
+				_draw_armor(STORYBOOK_FAE_TUNIC_BACK if back_view else STORYBOOK_FAE_TUNIC)
 			elif item == "lamellar":
 				# The Duneborn reference's scale rows, shoulder mantle, and belt are
 				# paired front/rear items; the neck and both arm holes stay open.
-				draw_texture(STORYBOOK_LAMELLAR_ARMOR_BACK if back_view else STORYBOOK_LAMELLAR_ARMOR,Vector2(-41,0))
+				_draw_armor(STORYBOOK_LAMELLAR_ARMOR_BACK if back_view else STORYBOOK_LAMELLAR_ARMOR)
 			elif item == "plate":
 				# The keyed front breastplate swaps to a true-alpha articulated
 				# backplate so ladder poses never show front-facing armor contours.
-				draw_texture(STORYBOOK_PLATE_ARMOR_BACK if back_view else STORYBOOK_PLATE_ARMOR,Vector2(-41,0))
+				_draw_armor(STORYBOOK_PLATE_ARMOR_BACK if back_view else STORYBOOK_PLATE_ARMOR)
 		"pants":
+			if fitted_waist:
+				_draw_fitted_waist()
+				return
 			var pants_texture := _pants_texture(pants_piece)
 			if pants_texture and pants_piece == "waist":
 				draw_texture(pants_texture,Vector2(-28,-2))
@@ -375,11 +433,11 @@ func _draw() -> void:
 				"cape":
 					# The twin clasps align around the upper-back origin; the restrained
 					# painted sweep supplies motion without detaching from the torso.
-					draw_texture(STORYBOOK_CAPE,Vector2(-44,2))
+					_draw_cloth(STORYBOOK_CAPE,Vector2(-44,2))
 				"long_cape":
 					# The reference-matched travel cape shares the clasp socket but adds
 					# a broad wind-swept knee-length silhouette around the torso and legs.
-					draw_texture(STORYBOOK_LONG_CAPE,Vector2(-92,2))
+					_draw_cloth(STORYBOOK_LONG_CAPE,Vector2(-92,2))
 				"pack":
 					draw_texture(STORYBOOK_PACK,Vector2(-35,6))
 				"quiver":
@@ -391,7 +449,7 @@ func _draw() -> void:
 			match item:
 				"scarf":
 					var scarf_texture := STORYBOOK_SCARF_BACK if back_view else STORYBOOK_SCARF
-					draw_texture(scarf_texture,Vector2(-33,-3))
+					_draw_cloth(scarf_texture,Vector2(-33,-3))
 				"amulet":
 					# A front-hanging pendant is occluded by the head and torso from the
 					# rear rather than being incorrectly painted over a climbing back.

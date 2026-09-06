@@ -262,6 +262,12 @@ func _run() -> void:
 			if avatar._gear.pants.visible:
 				_fail("centaur must not render biped pants")
 				return
+		elif race_id == "human":
+			for side in ["left", "right"]:
+				var surface = avatar._bones[side + "_leg"].get_node("HumanLimbSurface")
+				if surface.lower != avatar._bones[side + "_shin"] or surface.pants != avatar.loadout.pants:
+					_fail("human trousers must share the continuous animated knee surface")
+					return
 		else:
 			if not avatar._bones.left_leg.has_node("LeftPantsThigh") or not avatar._bones.right_leg.has_node("RightPantsThigh"):
 				_fail("%s pants must have separate thigh pieces attached to the animated legs" % race_id)
