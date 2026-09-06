@@ -9,6 +9,11 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	for part in ["torso", "torso_back", "arm", "leg", "hand_open", "hand_grip", "hand_grip_back", "foot"]:
+		var paint := HumanPaintedAtlas.texture(part)
+		assert(paint.atlas != null, "Every human body part needs painted artwork")
+		assert(Rect2(Vector2.ZERO, paint.atlas.get_size()).encloses(paint.region), "Painted crops must remain inside the source atlas")
+		assert(paint == HumanPaintedAtlas.texture(part), "Painted crops should be shared between characters")
 	for bend in [-.35, 0.0, .35]:
 		var clasp := Vector2(-20, 5)
 		var hem := Vector2(-70, 130)
@@ -24,6 +29,8 @@ func _run() -> void:
 		assert(avatar._right_hand_base.get_node("HumanExtremity").part == part)
 		assert(avatar._right_hand_base.has_sprite())
 	assert(avatar._bones.torso.has_node("HumanTorsoSurface"))
+	assert(avatar._bones.torso.get_node("HumanTorsoSurface").material == HumanPaintedAtlas.paint_material())
+	assert(avatar._right_hand_base.get_node("HumanExtremity").material == HumanPaintedAtlas.paint_material())
 	assert(avatar._gear.pants.z_index < avatar._gear.armor.z_index, "Outer garment must cover the trouser waist")
 	var garment = avatar._gear.armor.garment_surface
 	var opening := Vector2(34, 20)

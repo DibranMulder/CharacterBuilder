@@ -78,11 +78,12 @@ func _add_sample(canvas: Node2D,origin: Vector2,sample: Dictionary,index: int) -
 		# Advance through callbacks and successive tween phases as the runtime
 		# does; a single large step can initialize later phases at the wrong pose.
 		var remaining := float(sample.time)
-		while remaining > 0.0:
+		while remaining > 0.0 and avatar._active_tween:
 			var step := minf(remaining, 1.0 / 120.0)
 			avatar._active_tween.custom_step(step)
 			remaining -= step
-		avatar._active_tween.pause()
+		if avatar._active_tween:
+			avatar._active_tween.pause()
 
 
 func _add_rect(parent: Node,rect: Rect2,color: Color,z_index: int) -> void:

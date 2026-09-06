@@ -20,7 +20,7 @@ const BOW_ATTACKS := [&"fire_bow"]
 const CROSSBOW_ATTACKS := [&"fire_crossbow"]
 const STAFF_ATTACKS := [&"cast_spell"]
 const STAFF_WEAPONS := ["staff","branch_staff"]
-const MOTIONS := [&"idle", &"stand", &"run", &"stairs", &"climb"]
+const MOTIONS := [&"idle", &"stand", &"run", &"stairs", &"climb", &"jump"]
 const RUN_FRAME_DURATION := .085
 const STAIR_FRAME_DURATION := .11
 const FAE_RUN_WING_CYCLE := [-28.0,-12.0,8.0,24.0,12.0,-8.0,-24.0,-10.0]
@@ -490,6 +490,11 @@ func play_motion(motion: StringName) -> void:
 	_set_back_view(motion == &"climb")
 	_set_climbing_anatomy(motion == &"climb")
 	_set_climbing_gear(motion == &"climb")
+	if motion == &"jump":
+		_active_tween = create_tween()
+		_build_jump()
+		motion_changed.emit(current_motion)
+		return
 	_active_tween = create_tween().set_loops()
 	if motion in [&"run", &"stairs"] and _profile.topology != "centaur":
 		# Eight closely spaced poses already describe the acceleration curve;
@@ -723,9 +728,11 @@ func _rebuild() -> void:
 	else:
 		var thigh_length := float(_profile.leg) * .52
 		var shin_length := float(_profile.leg) - thigh_length
-		_part(hip, "left_leg", "limb", Vector2(leg_width,thigh_length), skin.darkened(.08), Vector2(-torso_size.x*.23, 8), -2)
+		# Human's screen-left hip is the near leg in the right-facing artwork.
+		# Mirror the complete rig for left-facing; keep this relative depth.
+		_part(hip, "left_leg", "limb", Vector2(leg_width,thigh_length), skin.darkened(.08), Vector2(-torso_size.x*.23, 8), 1 if race_id == "human" else -2)
 		_part(_bones.left_leg, "left_shin", "shin", Vector2(leg_width*.94,shin_length), skin.darkened(.05), Vector2(0,thigh_length), 0)
-		_part(hip, "right_leg", "limb", Vector2(leg_width,thigh_length), skin, Vector2(torso_size.x*.23, 8), 1)
+		_part(hip, "right_leg", "limb", Vector2(leg_width,thigh_length), skin, Vector2(torso_size.x*.23, 8), -2 if race_id == "human" else 1)
 		_part(_bones.right_leg, "right_shin", "shin", Vector2(leg_width*.94,shin_length), skin, Vector2(0,thigh_length), 0)
 		_left_foot_base = _base_sprite(_bones.left_shin,"LeftFootSprite","foot",Vector2(28,20)*extremity_scale,Vector2(0,shin_length),4)
 		_right_foot_base = _base_sprite(_bones.right_shin,"RightFootSprite","foot",Vector2(28,20)*extremity_scale,Vector2(0,shin_length),4)
@@ -1201,7 +1208,7 @@ func _queue_motion_pose(rotations: Dictionary, rig_y: float, duration: float) ->
 	for bone_name in rotations:
 		if _bones.has(bone_name):
 			_active_tween.parallel().tween_property(_bones[bone_name], "rotation_degrees", rotations[bone_name], duration)
-	if current_motion in [&"run", &"stairs"]:
+	if current_motion in [&"run", &"stairs", &"jump"]:
 		var parent_rotation: float = rotations.get("torso",0.0)+rotations.get("right_arm",0.0)+rotations.get("right_forearm",0.0)
 		if loadout.weapon == "spear" or _is_staff_weapon():
 			# Pole weapons stay upright in world space while their complete parent
@@ -1211,6 +1218,49 @@ func _queue_motion_pose(rotations: Dictionary, rig_y: float, duration: float) ->
 			# Keep the guide rail level and forward instead of allowing the run arm
 			# swing to rotate the broad limbs across the face.
 			_active_tween.parallel().tween_property(_gear.weapon,"rotation_degrees",-90.0-parent_rotation,duration)
+
+
+func _build_jump() -> void:
+	# A single jump: load the legs, rise with decreasing speed, fall with
+	# increasing speed, absorb the landing, then return to a grounded stand.
+	var crouch := {"torso": 12.0, "left_arm": 20.0, "left_forearm": -45.0}
+	var airborne := {"torso": -5.0, "left_arm": -45.0, "left_forearm": -50.0}
+	var landing := {"torso": 15.0, "left_arm": -15.0, "left_forearm": -35.0}
+	if _profile.topology == "centaur":
+		for i in 4:
+			crouch["horse_leg_%d" % i] = -22.0
+			crouch["horse_shin_%d" % i] = 45.0
+			airborne["horse_leg_%d" % i] = -38.0 if i < 2 else 22.0
+			airborne["horse_shin_%d" % i] = 65.0
+			landing["horse_leg_%d" % i] = -26.0
+			landing["horse_shin_%d" % i] = 52.0
+	else:
+		crouch.merge({"left_leg": -25.0, "left_shin": 50.0, "right_leg": -25.0, "right_shin": 50.0})
+		airborne.merge({"left_leg": -38.0, "left_shin": 70.0, "right_leg": 12.0, "right_shin": 45.0})
+		landing.merge({"left_leg": -30.0, "left_shin": 60.0, "right_leg": -30.0, "right_shin": 60.0})
+	for pose in [crouch, airborne, landing]:
+		_stage_outboard_weapon_carry(pose, 0)
+	_add_fae_wing_pose(airborne, 28.0)
+	_active_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_queue_motion_pose(crouch, 8.0, .16)
+	_queue_secondary_gear_pose(-5.0, -3.0, .16)
+	_queue_motion_pose(airborne, -float(_profile.leg) * .85, .28)
+	_queue_secondary_gear_pose(14.0, 9.0, .28)
+	var touchdown := airborne.duplicate()
+	for bone_name in _rest:
+		if "leg" in String(bone_name) or "shin" in String(bone_name):
+			touchdown[bone_name] = rad_to_deg(_rest[bone_name].rotation)
+	_active_tween.set_ease(Tween.EASE_IN)
+	_queue_motion_pose(touchdown, 0.0, .28)
+	_queue_secondary_gear_pose(-8.0, -5.0, .28)
+	_active_tween.set_ease(Tween.EASE_OUT)
+	_queue_motion_pose(landing, 10.0, .10)
+	var standing := {}
+	for bone_name in _rest:
+		standing[bone_name] = rad_to_deg(_rest[bone_name].rotation)
+	_queue_motion_pose(standing, 0.0, .18)
+	_queue_secondary_gear_pose(0.0, 0.0, .18)
+	_active_tween.tween_callback(play_motion.bind(&"stand"))
 
 
 func _build_run_loop() -> void:

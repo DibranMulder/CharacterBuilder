@@ -6,11 +6,11 @@ func _render() -> void:
 	for argument in OS.get_cmdline_user_args():
 		if argument.begins_with("--motion="):
 			motion = argument.trim_prefix("--motion=")
-	if motion not in ["run", "stairs", "climb", "jab", "forehand", "backhand", "fire_bow", "fire_crossbow", "cast_spell", "vault"]:
+	if motion not in ["run", "stairs", "climb", "jump", "jab", "forehand", "backhand", "fire_bow", "fire_crossbow", "cast_spell", "vault"]:
 		push_error("Unsupported cycle: " + motion)
 		quit(1)
 		return
-	var duration: float = {"run":.68, "stairs":.88, "climb":.56, "cast_spell":2.0}.get(motion, 1.4)
+	var duration: float = {"run":.68, "stairs":.88, "climb":.56, "jump":1.0, "cast_spell":2.0}.get(motion, 1.4)
 	var viewport := SubViewport.new()
 	viewport.size = Vector2i(1600, 1140)
 	viewport.disable_3d = true

@@ -1,16 +1,22 @@
 # Human character surface rig
 
 The human keeps the original front/rear head illustration and the existing
-animation and equipment API. Its body is now drawn as continuous shaded
-contours, and clothing follows those contours or a mesh bound to the same pose.
+animation and equipment API. Its body now uses a dedicated painted anatomy atlas
+referenced from the original head, with continuous deformation under the artwork.
+Clothing follows those surfaces or a mesh bound to the same pose.
 The other seven lineages retain their existing art and construction.
 
 ## Rendering strategy
 
-- `HumanTorsoSurface` supplies one neck-to-pelvis silhouette with front/rear details.
+- `HumanPaintedAtlas` shares tight crops for the painted front/rear torso, whole
+  arm, whole leg, hands and foot. Its shader removes the source's neutral
+  checkerboard; the warm skin shading and brown contours come from the artwork.
+- `HumanTorsoSurface` bends the front/rear painted torso from neck to pelvis.
 - `HumanLimbSurface` spans each two-bone chain, rounding the elbow/knee without
-  drawing a seam across it. The same contour carries sleeves, bracers and trousers.
-- `HumanExtremityVisual` supplies matching feet and open/front-grip/back-grip hands.
+  drawing a seam across it. `HumanLimbPaint` maps the whole limb painting by arc
+  length over explicit triangles, including tightly folded joints. Separate
+  clothing contours still carry sleeves, bracers and trousers.
+- `HumanExtremityVisual` supplies painted feet and open/front-grip/back-grip hands.
 - `GarmentSurface` fits the authored torso texture to the human shoulder span.
   Shoulder openings share arm motion, the chest follows the torso, the waist
   follows the pelvis and the skirt shares thigh motion. Plate restricts bending

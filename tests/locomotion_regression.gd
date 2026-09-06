@@ -8,7 +8,7 @@ func _initialize() -> void:
 
 
 func _run() -> void:
-	if Avatar.MOTIONS != [&"idle", &"stand", &"run", &"stairs", &"climb"]:
+	if Avatar.MOTIONS != [&"idle", &"stand", &"run", &"stairs", &"climb", &"jump"]:
 		_fail("expected idle, stand, run, stairs, and ladder-climb motions")
 		return
 	if Avatar.BIPED_RUN_CYCLE.size() != 8:

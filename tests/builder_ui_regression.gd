@@ -49,7 +49,7 @@ func _run() -> void:
 	var motion_labels: Array[String] = []
 	for child in builder.get_node("MotionPanel").find_children("*","Button",true,false):
 		motion_labels.append(child.text)
-	for required_label in ["Idle","Stand","Run","Stairs","Ladder","Left","Right"]:
+	for required_label in ["Idle","Stand","Run","Stairs","Ladder","Jump","Left","Right"]:
 		if required_label not in motion_labels:
 			_fail("builder motion panel is missing %s" % required_label)
 			return

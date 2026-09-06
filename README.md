@@ -245,4 +245,14 @@ For production, put definitions in custom `.tres` resources rather than hard-cod
 
 ## Next art milestone
 
+The motion panel includes a one-shot **Jump** for every lineage: anticipation,
+airborne rise/fall, landing compression, and recovery to Stand. Jump can be
+interrupted by another motion and preserves facing and equipped items.
+
+Human anatomy uses a dedicated head-referenced painted atlas for the front/rear
+torso, arms, legs, hands and feet. Whole-limb textures bend continuously around
+elbows and knees; the original head and equipment sockets remain unchanged.
+See [the human surface rig](docs/human-surface-rig.md) and
+[the bare-body pose preview](artifacts/human_body_showcase.png).
+
 Before producing hundreds of items, finish one vertical slice: Human + one armor set + sword/shield + locomotion + one attack. Validate pivots, silhouette, hand swapping, draw-order changes during attacks, and hit timing. Then lock the asset contract and roll it across the other seven races.

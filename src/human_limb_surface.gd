@@ -11,6 +11,14 @@ var is_leg := false
 var armor := "none"
 var pants := "none"
 var accent := Color.WHITE
+var painted_surface: Node2D
+
+
+func _ready() -> void:
+	painted_surface = preload("res://src/human_limb_paint.gd").new()
+	painted_surface.surface = self
+	painted_surface.show_behind_parent = true
+	add_child(painted_surface)
 
 
 func setup(lower_bone: Node2D, lower_length: float, limb_width: float, tone: Color, leg := false) -> void:
@@ -23,6 +31,9 @@ func setup(lower_bone: Node2D, lower_length: float, limb_width: float, tone: Col
 
 func _process(_delta: float) -> void:
 	queue_redraw()
+	if is_instance_valid(painted_surface):
+		painted_surface.visible = not is_leg or pants == "none"
+		painted_surface.queue_redraw()
 
 
 func centerline() -> PackedVector2Array:
@@ -88,15 +99,18 @@ func _draw() -> void:
 			tones.append(fill.lightened(.06))
 		else:
 			tones.append(fill)
-	draw_polygon(silhouette, tones)
+	if is_leg and pants != "none":
+		draw_polygon(silhouette, tones)
 	var reversed_shade := shade_edge.duplicate()
 	reversed_shade.reverse()
-	draw_colored_polygon(outer + reversed_shade, fill.darkened(.18))
+	if is_leg and pants != "none":
+		draw_colored_polygon(outer + reversed_shade, fill.darkened(.18))
 	# Fine warm ink matches the head, without outlining the shoulder or wrist
 	# seams that disappear beneath adjacent anatomy.
 	var ink := Color("795039")
-	draw_polyline(outer, ink, .85, true)
-	draw_polyline(inner, ink, .85, true)
+	if is_leg and pants != "none":
+		draw_polyline(outer, ink, .85, true)
+		draw_polyline(inner, ink, .85, true)
 	if is_leg and pants != "none":
 		# A side seam and short compression folds carry the material through
 		# the bend without painting a hard horizontal boundary across the knee.
