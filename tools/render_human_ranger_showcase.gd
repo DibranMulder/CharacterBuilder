@@ -64,12 +64,14 @@ func _add_sample(canvas: Node2D,origin: Vector2,sample: Dictionary,index: int) -
 		lineage = "frost_troll"
 	if "--goblin" in OS.get_cmdline_user_args():
 		lineage = "goblin"
+	if "--duneborn" in OS.get_cmdline_user_args():
+		lineage = "duneborn"
 	avatar.configure(lineage,{
 		"weapon":"sword", "offhand":"none", "armor":"marsh_tunic",
 		"pants":"ranger", "boots":"leather", "head":"none",
 		"back":"long_cape", "accessory":"scarf",
 	})
-	if lineage in ["centaur", "fae", "frost_troll", "goblin"]:
+	if lineage in ["centaur", "fae", "frost_troll", "goblin", "duneborn"]:
 		avatar.configure(lineage, CharacterCatalog.reference_loadout(lineage))
 	var overrides: Dictionary = sample.get("loadout", {})
 	for slot in overrides:

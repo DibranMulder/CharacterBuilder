@@ -11,7 +11,7 @@ const EQUIPMENT := {
 	"armor": ["none", "cloth", "marsh_tunic", "leather", "woodland_harness", "troll_jerkin", "fur_coat", "fae_tunic", "lamellar", "plate"],
 	"pants": ["none", "cloth", "ranger", "baggy", "leather", "plate"],
 	"boots": ["none", "wraps", "leather", "plate"],
-	"head": ["none", "hood", "helm", "crown"],
+	"head": ["none", "hood", "balaclava", "helm", "crown"],
 	"back": ["none", "cape", "long_cape", "pack", "quiver"],
 	"accessory": ["none", "scarf", "amulet", "goggles"],
 }
@@ -26,7 +26,7 @@ const REFERENCE_LOADOUTS := {
 	"fae": {"weapon":"branch_staff", "offhand":"none", "armor":"fae_tunic", "pants":"baggy", "boots":"wraps", "head":"none", "back":"none", "accessory":"none"},
 	"frost_troll": {"weapon":"axe", "offhand":"none", "armor":"troll_jerkin", "pants":"leather", "boots":"none", "head":"none", "back":"none", "accessory":"none"},
 	"goblin": {"weapon":"crossbow", "offhand":"none", "armor":"leather", "pants":"leather", "boots":"leather", "head":"none", "back":"pack", "accessory":"goggles"},
-	"duneborn": {"weapon":"spear", "offhand":"dune_shield", "armor":"lamellar", "pants":"cloth", "boots":"leather", "head":"none", "back":"cape", "accessory":"none"},
+	"duneborn": {"weapon":"spear", "offhand":"dune_shield", "armor":"lamellar", "pants":"cloth", "boots":"leather", "head":"balaclava", "back":"cape", "accessory":"none"},
 	"frostling": {"weapon":"staff", "offhand":"none", "armor":"fur_coat", "pants":"cloth", "boots":"leather", "head":"hood", "back":"pack", "accessory":"none"},
 }
 
@@ -126,8 +126,8 @@ const RACES := {
 		"name": "Duneborn", "tagline": "Disciplined travelers of the glass sea",
 		"skin": Color("bf825d"), "accent": Color("8d493d"),
 		"visual": {"hair_style": "none", "hair": Color("302823"), "eye": Color("9b6b2e"), "boot": Color("6b4a35"), "body_shape": "lean"},
-		"scale": 0.94, "head": Vector2(50, 56), "torso": Vector2(48, 74),
-		"arm": 61.0, "leg": 64.0, "limb_width": 15.0, "leg_width": 17.0,
+		"scale": 0.94, "head": Vector2(50, 56), "torso": Vector2(90, 74),
+		"arm": 61.0, "leg": 64.0, "limb_width": 26.0, "leg_width": 26.0,
 		"shoulder_spread": 0.30, "head_sprite_scale": 1.52, "topology": "biped",
 		"gestures": [
 			{"name": "Sirocco Thrust", "style": "thrust"},

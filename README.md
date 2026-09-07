@@ -245,6 +245,12 @@ For production, put definitions in custom `.tres` resources rather than hard-cod
 
 ## Next art milestone
 
+Duneborn now uses coordinated reference artwork for its bronze shoulder mantle,
+rust-red robe, continuous limbs, boots and cape. The **Balaclava** is removable
+in the **Head** slot; choosing **None** reveals a complete uncovered head.
+See the [equipped/removed comparison](artifacts/duneborn_reference_comparison.png)
+and [surface notes](docs/duneborn-surface-rig.md).
+
 Goblin now uses coordinated reference paintings for its large-eared head,
 green anatomy, purple-scarved leather vest, continuous limbs, boots, goggles
 and backpack. Equipment remains swappable. See the

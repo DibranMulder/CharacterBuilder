@@ -100,6 +100,15 @@ const STORYBOOK_LEATHER_BOOT := preload("res://assets/equipment/leather_boot_sto
 const STORYBOOK_PLATE_BOOT := preload("res://assets/equipment/plate_boot_storybook.png")
 
 
+func _wrap_style(color: Color) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = color
+	style.border_color = INK
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(12)
+	return style
+
+
 func setup(p_slot: String, p_item: String, p_accent: Color) -> GearVisual:
 	slot = p_slot
 	item = p_item
@@ -421,6 +430,13 @@ func _draw() -> void:
 				draw_texture(boot_texture,Vector2(-11,-31))
 		"head":
 			match item:
+				"balaclava":
+					# Generic fitted cloth fallback; Duneborn supplies coordinated art.
+					var wrap := Color("663a32")
+					draw_style_box(_wrap_style(wrap), Rect2(-31, -65, 62, 26))
+					draw_style_box(_wrap_style(wrap), Rect2(-29, -28, 58, 37))
+					if back_view:
+						draw_style_box(_wrap_style(wrap), Rect2(-30, -48, 60, 38))
 				"hood":
 					# Climbing swaps to the closed rear shell instead of exposing the
 					# authored rear head through this front face aperture.
