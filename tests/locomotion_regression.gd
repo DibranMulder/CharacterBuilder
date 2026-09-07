@@ -196,7 +196,9 @@ func _run() -> void:
 			avatar.call("_update_crossbow_support_grip")
 			var carried_crossbow: GearVisual = avatar._gear.weapon
 			carried_crossbow.force_update_transform()
-			var crossbow_axis := carried_crossbow.to_global(carried_crossbow.reach_endpoint())-carried_crossbow.global_position
+			# The side-view rail sits above the trigger hand; measure its own axis.
+			var rail_start := Vector2(carried_crossbow.reach_endpoint().x,0)
+			var crossbow_axis := carried_crossbow.to_global(carried_crossbow.reach_endpoint())-carried_crossbow.to_global(rail_start)
 			if crossbow_axis.x <= 0.0 or absf(crossbow_axis.y) > 1.0:
 				_fail("%s crossbow must remain level and forward instead of crossing the face" % motion_id)
 				return

@@ -19,7 +19,7 @@ const REACH_ENDPOINTS := {
 	"sword": Vector2(0, 88),
 	"axe": Vector2(30, 92),
 	"bow": Vector2(0, 40),
-	"crossbow": Vector2(0, 88),
+	"crossbow": Vector2(5.5, 88),
 	"spear": Vector2(0, 126),
 	"staff": Vector2(0, 126),
 	"branch_staff": Vector2(0, 126),
@@ -33,7 +33,11 @@ const POLE_BUTT := Vector2(0,-72)
 const SHIELD_CENTER := Vector2(0,-20)
 const BOW_TOP := Vector2(-40,-40)
 const BOW_BOTTOM := Vector2(-40,40)
-const CROSSBOW_SECOND_GRIP := Vector2(0,34)
+const CROSSBOW_SECOND_GRIP := Vector2(-8,43)
+const CROSSBOW_ART_SCALE := 128.0 / 1640.0
+const CROSSBOW_ART_ORIGIN := Vector2(575,450)
+# Rear of the painted stock, relative to the trigger-hand origin.
+const CROSSBOW_STOCK_BUTT := Vector2(0,-40)
 const TWO_HANDED_AXE_SECOND_GRIP := Vector2(0,90)
 const LANTERN_DRAW_OFFSET := Vector2(-16,-4)
 const LANTERN_DISPLAY_SCALE := 1.35
@@ -47,7 +51,7 @@ const STORYBOOK_STAFF := preload("res://assets/equipment/staff_storybook.png")
 const STORYBOOK_BRANCH_STAFF := preload("res://assets/equipment/branch_staff_storybook_v1.png")
 const STORYBOOK_BOW := preload("res://assets/equipment/bow_storybook.png")
 const STORYBOOK_ARROW := preload("res://assets/equipment/arrow_projectile_storybook.png")
-const STORYBOOK_CROSSBOW := preload("res://assets/equipment/crossbow_storybook_v1.png")
+const STORYBOOK_CROSSBOW := preload("res://assets/equipment/crossbow_storybook_v2.png")
 const STORYBOOK_CROSSBOW_BOLT := preload("res://assets/equipment/crossbow_bolt_storybook.png")
 const STORYBOOK_AXE := preload("res://assets/equipment/axe_storybook.png")
 const STORYBOOK_TROLL_GREAT_AXE := preload("res://assets/equipment/troll_great_axe_storybook.png")
@@ -117,7 +121,7 @@ func setup(p_slot: String, p_item: String, p_accent: Color) -> GearVisual:
 	crossbow_loaded = true
 	two_handed = false
 	visible = item != "none"
-	var needs_magenta_key := (slot == "armor" and item == "plate") or (slot == "accessory" and item == "goggles") or (slot == "pants" and item in ["cloth","ranger","baggy","leather","plate"])
+	var needs_magenta_key := (slot == "weapon" and item == "crossbow") or (slot == "armor" and item == "plate") or (slot == "accessory" and item == "goggles") or (slot == "pants" and item in ["cloth","ranger","baggy","leather","plate"])
 	# The concept sheets repeat one material language while shifting their cloth
 	# accents per lineage. Recolor only the cool-blue textile families; leather,
 	# metal, glass, wood, and painted highlights retain their authored palettes.
@@ -321,13 +325,15 @@ func _draw() -> void:
 						# nock and fixed tip, replacing the former line-and-triangle proxy.
 						draw_texture_rect(STORYBOOK_ARROW,Rect2(nock.x,-9,98.0+bow_draw,18),false)
 				"crossbow":
-					# Grip at local zero, guide rail on +Y, and the support socket farther
-					# along the stock preserve a compact two-handed firing contract.
-					draw_texture(STORYBOOK_CROSSBOW,Vector2(-55,-45))
+					# Side-on artwork shows horizontal, foreshortened limbs. Rotate its
+					# right-facing stock onto the rig's +Y axis without flattening it.
+					draw_set_transform(Vector2.ZERO,PI*.5,Vector2.ONE*CROSSBOW_ART_SCALE)
+					draw_texture(STORYBOOK_CROSSBOW,-CROSSBOW_ART_ORIGIN)
+					draw_set_transform(Vector2.ZERO,0.0,Vector2.ONE)
 					if crossbow_loaded:
 						# The authored horizontal bolt rotates onto the local +Y guide
 						# rail, which becomes screen-forward when the weapon is shouldered.
-						draw_set_transform(Vector2(0,14),PI*.5)
+						draw_set_transform(Vector2(5.5,14),PI*.5)
 						draw_texture(STORYBOOK_CROSSBOW_BOLT,Vector2(0,-10))
 						draw_set_transform(Vector2.ZERO,0.0,Vector2.ONE)
 				"spear":

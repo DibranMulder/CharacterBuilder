@@ -245,6 +245,14 @@ For production, put definitions in custom `.tres` resources rather than hard-cod
 
 ## Next art milestone
 
+Crossbow firing now braces the painted stock against the shoulder through
+aim, release and recoil. The arm pose is solved from that contact point for
+each lineage instead of fixed chest-height angles; the support hand stays on
+the forward grip. A regression covers both facings, recovery and interruption.
+The side-view crossbow artwork uses foreshortened horizontal limbs, with the
+support hand fitted to the foregrip and the loaded bolt aligned to the top rail.
+See the [shouldered crossbow comparison](artifacts/crossbow_shoulder_all_lineages.png).
+
 Cast Spell now angles both staff variants forward during gathering and
 follow-through, then restores the upright grip. The previous idle grip angle
 combined with the casting arm bend aimed the tip backward. A direction

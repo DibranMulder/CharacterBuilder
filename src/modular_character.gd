@@ -790,6 +790,11 @@ func _rebuild() -> void:
 	# The +60-degree relative bend preserves the requested 120-degree interior
 	# elbow while leaving the grip transform free to orient each weapon class.
 	_bones.right_arm.rotation_degrees = 15; _bones.right_forearm.rotation_degrees = -15
+	if loadout.weapon == "crossbow":
+		# Lift the resting stock enough to keep the lower foregrip reachable;
+		# the opposing angles preserve a level weapon at rest and recovery.
+		_bones.right_arm.rotation_degrees = 55
+		_bones.right_forearm.rotation_degrees = -55
 	if loadout.weapon == "bow":
 		# Keep the same -90-degree combined chain/bow orientation, but move the
 		# elbow outward so compact torsos do not hide most of the painted stave.
@@ -1803,21 +1808,37 @@ func _animate_fire_bow() -> void:
 	_queue_lower_body_recovery(.24)
 
 
+func _crossbow_shoulder_pose(recoil := 0.0) -> Vector3:
+	# Solve the trigger hand from stock contact, rather than guessing arm angles
+	# that leave smaller/longer-armed lineages firing from the waist.
+	var target := Vector2(-Gear.CROSSBOW_STOCK_BUTT.y - recoil, 3.0)
+	var upper_length := float(_profile.arm) * .52
+	var lower_length := float(_profile.arm) * .48
+	var elbow := -acos(clampf((target.length_squared() - upper_length * upper_length - lower_length * lower_length) / (2.0 * upper_length * lower_length), -1.0, 1.0))
+	var shoulder := target.angle() - atan2(lower_length * sin(elbow), upper_length + lower_length * cos(elbow)) - PI * .5
+	var upper := rad_to_deg(shoulder)
+	var lower := rad_to_deg(elbow)
+	# Compensate the arm bend so the rail stays forward along the chest's X axis.
+	return Vector3(upper, lower, -90.0 - upper - lower)
+
+
 func _animate_fire_crossbow() -> void:
 	var crossbow: GearVisual = _gear.get("weapon")
 	if not crossbow or loadout.weapon != "crossbow":
 		return
+	var aim := _crossbow_shoulder_pose()
+	var recoil := _crossbow_shoulder_pose(2.0)
 	# Raise the compact stock from its two-handed rest into a level firing line.
 	# The support hand is solved continuously against the forward stock socket.
 	_active_tween.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	_active_tween.tween_property(_bones.right_arm,"rotation_degrees",-48.0,.18)
-	_active_tween.parallel().tween_property(_bones.right_forearm,"rotation_degrees",48.0,.18)
-	_active_tween.parallel().tween_property(crossbow,"rotation_degrees",-90.0,.18)
+	_active_tween.tween_property(_bones.right_arm,"rotation_degrees",aim.x,.18)
+	_active_tween.parallel().tween_property(_bones.right_forearm,"rotation_degrees",aim.y,.18)
+	_active_tween.parallel().tween_property(crossbow,"rotation_degrees",aim.z,.18)
 	_active_tween.parallel().tween_property(_bones.torso,"rotation_degrees",-4.0,.18)
 	_queue_ranged_footwork("bow","ready",.18)
 	# A short sighting beat replaces the long elastic draw used by a hand bow.
-	_active_tween.tween_property(_bones.right_arm,"rotation_degrees",-54.0,.14)
-	_active_tween.parallel().tween_property(_bones.right_forearm,"rotation_degrees",54.0,.14)
+	_active_tween.tween_property(_bones.right_arm,"rotation_degrees",aim.x,.14)
+	_active_tween.parallel().tween_property(_bones.right_forearm,"rotation_degrees",aim.y,.14)
 	_active_tween.parallel().tween_property(_bones.torso,"rotation_degrees",-7.0,.14)
 	_queue_ranged_footwork("bow","draw",.14)
 	_active_tween.tween_interval(.06)
@@ -1825,8 +1846,9 @@ func _animate_fire_crossbow() -> void:
 	# Compact recoil is sharp at the shoulder but remains grounded through both
 	# legs before returning to the captured two-handed rest pose.
 	_active_tween.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	_active_tween.tween_property(_bones.right_arm,"rotation_degrees",-40.0,.08)
-	_active_tween.parallel().tween_property(_bones.right_forearm,"rotation_degrees",40.0,.08)
+	_active_tween.tween_property(_bones.right_arm,"rotation_degrees",recoil.x,.08)
+	_active_tween.parallel().tween_property(_bones.right_forearm,"rotation_degrees",recoil.y,.08)
+	_active_tween.parallel().tween_property(crossbow,"rotation_degrees",recoil.z,.08)
 	_active_tween.parallel().tween_property(_bones.torso,"rotation_degrees",3.0,.08)
 	_active_tween.parallel().tween_property(_bones.rig,"position:x",-6.0,.08)
 	_queue_ranged_footwork("bow","recoil",.08)

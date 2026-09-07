@@ -50,8 +50,10 @@ func _run() -> void:
 		_fail("authored staff texture is missing or shorter than its socket contract")
 	if GearVisual.STORYBOOK_BOW.get_size() != Vector2(40,88):
 		_fail("authored bow stave must preserve the string endpoint and hand socket contract")
-	if GearVisual.STORYBOOK_CROSSBOW.get_size() != Vector2(110,140):
-		_fail("authored crossbow must preserve its compact stock and limb contract")
+	if GearVisual.STORYBOOK_CROSSBOW.get_width() <= GearVisual.STORYBOOK_CROSSBOW.get_height()*1.8:
+		_fail("authored crossbow must use the horizontal side-view artwork")
+	if absf(1640.0*GearVisual.CROSSBOW_ART_SCALE-128.0) > 0.01:
+		_fail("crossbow stock must preserve its shoulder-to-muzzle length")
 	if GearVisual.STORYBOOK_AXE.get_size().y < 110.0:
 		_fail("authored one-handed axe is missing or too short for its reach contract")
 	if GearVisual.STORYBOOK_TROLL_GREAT_AXE.get_size() != Vector2(120,190):
