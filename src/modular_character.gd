@@ -723,9 +723,11 @@ func _rebuild() -> void:
 		var horse_upper_length := float(_profile.leg) * .52
 		var horse_lower_length := float(_profile.leg) - horse_upper_length
 		for i in 4:
-			var x: float = [-44.0, -32.0, 28.0, 40.0][i]
+			# Resolve sockets from this painting's anatomy rather than the old
+			# barrel's evenly spaced legs. Mirroring the rig preserves this order.
+			var leg_root: Vector2 = _bones.horse_body.position + CentaurPaintedAtlas.leg_root(i, _horse_body_visual.size)
 			var upper_name := "horse_leg_%d" % i
-			_part(hip, upper_name, "limb", Vector2(15,horse_upper_length), skin.darkened(.12), Vector2(x,38), -3 if i % 2 == 0 else -2)
+			_part(hip, upper_name, "limb", Vector2(15,horse_upper_length), skin.darkened(.12), leg_root, -3 if i % 2 == 0 else -2)
 			_part(_bones[upper_name], "horse_shin_%d" % i, "shin", Vector2(14,horse_lower_length), skin.darkened(.08), Vector2(0,horse_upper_length), 0)
 			_base_sprite(_bones["horse_shin_%d" % i],"HoofSprite%d" % i,"hoof",Vector2(22,13),Vector2(0,horse_lower_length),3)
 	else:

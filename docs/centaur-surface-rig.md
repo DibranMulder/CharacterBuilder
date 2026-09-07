@@ -22,6 +22,9 @@ hidden. Whole-arm and whole-leg paintings use the same continuous two-bone strip
 as the human, retaining the original wrist/hoof sockets. Fore and hind legs have
 separate paintings and paired roots: indices 0/1 are hind, 2/3 are fore; even
 indices are far-side and odd indices near-side. The entire rig mirrors for left.
+Leg roots are measured in the active barrel atlas and fitted with the body,
+not inherited from the previous sprite's spacing. The near foreleg sits under
+the large painted shoulder; the near hind leg sits under the outer haunch.
 The hip height includes the equine leg-root offset so standing hooves meet the
 ground. The humanoid torso's lower mesh rows stay bound to the offset horse hip.
 
@@ -52,6 +55,9 @@ motions in both facings, near/far layering, planted rear contact, recovery and
 attack/gesture interruption. The existing suite additionally checks equipment,
 weapon reach, attack curves, all lineage motions and effects, jump, and UI.
 Visual checks are pose samples, not proof of every frame of every loadout.
+`tests/centaur_leg_attachment_regression.gd` independently compares all four
+root axes with the painted body exits and checks their vertical overlap through
+stand, run, stairs, jump and rearing in both facings.
 
 ```sh
 godot --headless --path . --script tests/centaur_surface_regression.gd
