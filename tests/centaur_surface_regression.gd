@@ -44,7 +44,7 @@ func _run() -> void:
 			avatar.play_motion(motion)
 			for sample in 60:
 				_advance(avatar, 1.0 / 60.0)
-				for root_name in ["left_arm", "right_arm", "horse_leg_0", "horse_leg_1", "horse_leg_2", "horse_leg_3"]:
+				for root_name in ["left_arm", "right_arm"]:
 					var surface: HumanLimbSurface = avatar._bones[root_name].get_node("CentaurLimbSurface")
 					var points := surface.centerline()
 					assert(surface.to_global(points[-1]).distance_to(surface.lower.to_global(Vector2(0, surface.length))) < .001)

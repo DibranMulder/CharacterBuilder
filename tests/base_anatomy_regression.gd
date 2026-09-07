@@ -79,19 +79,29 @@ func _initialize() -> void:
 	assert(centaur_torso.authored_skin, "Centaur humanoid torso lost its painted cutout")
 	assert(horse_body.authored_skin, "Centaur horse body still draws procedural anatomy")
 	var tail_anatomy: BaseAnatomyVisual = troll_avatar._horse_tail_base
-	var body_anatomy: BaseAnatomyVisual = troll_avatar._bones.horse_body.find_child("AuthoredAnatomy",true,false)
+	# At rest the continuous mesh is identical to this fitted painting. Test
+	# tail overlap against the active source, not the hidden legacy barrel.
+	var body_sprite := Sprite2D.new()
+	var equine_texture := AtlasTexture.new()
+	equine_texture.atlas = load(CentaurEquineSurface.SOURCE)
+	equine_texture.region = CentaurEquineSurface.CROP
+	body_sprite.texture = equine_texture
+	body_sprite.scale = CentaurEquineSurface.BIND_RECT.size / CentaurEquineSurface.CROP.size
+	body_sprite.position = CentaurEquineSurface.BIND_RECT.get_center()
+	troll_avatar._bones.hip.add_child(body_sprite)
 	var tail_bounds := _sprite_opaque_global_bounds(tail_anatomy.get_node("Sprite"))
-	var body_bounds := _sprite_opaque_global_bounds(body_anatomy.get_node("Sprite"))
+	var body_bounds := _sprite_opaque_global_bounds(body_sprite)
 	var rump_overlap := tail_bounds.intersection(body_bounds)
 	if rump_overlap.size.x < 10.0 or rump_overlap.size.y < 10.0:
 		push_error("Centaur tail is detached from the side-view rump: overlap=%s tail=%s body=%s" % [rump_overlap,tail_bounds,body_bounds])
 		quit(1)
 		return
-	var painted_overlap := _sprite_opaque_overlap_count(tail_anatomy.get_node("Sprite"),body_anatomy.get_node("Sprite"))
+	var painted_overlap := _sprite_opaque_overlap_count(tail_anatomy.get_node("Sprite"),body_sprite)
 	if painted_overlap < 20:
 		push_error("Centaur tail has no painted-pixel attachment to the side-view rump: opaque overlap=%d" % painted_overlap)
 		quit(1)
 		return
+	body_sprite.free()
 	for horse_bone in ["horse_neck","horse_leg_0","horse_shin_0"]:
 		var equine_part: PartVisual = troll_avatar._bones[horse_bone].get_child(0)
 		assert(equine_part.authored_skin, "Centaur %s still draws procedural anatomy" % horse_bone)

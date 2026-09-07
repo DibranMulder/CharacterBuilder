@@ -723,9 +723,8 @@ func _rebuild() -> void:
 		var horse_upper_length := float(_profile.leg) * .52
 		var horse_lower_length := float(_profile.leg) - horse_upper_length
 		for i in 4:
-			# Resolve sockets from this painting's anatomy rather than the old
-			# barrel's evenly spaced legs. Mirroring the rig preserves this order.
-			var leg_root: Vector2 = _bones.horse_body.position + CentaurPaintedAtlas.leg_root(i, _horse_body_visual.size)
+			# Bind the existing animation chains to the unified painting's roots.
+			var leg_root: Vector2 = CentaurEquineSurface.leg_root(i)
 			var upper_name := "horse_leg_%d" % i
 			_part(hip, upper_name, "limb", Vector2(15,horse_upper_length), skin.darkened(.12), leg_root, -3 if i % 2 == 0 else -2)
 			_part(_bones[upper_name], "horse_shin_%d" % i, "shin", Vector2(14,horse_lower_length), skin.darkened(.08), Vector2(0,horse_upper_length), 0)
@@ -838,18 +837,29 @@ func _rebuild() -> void:
 
 
 func _build_centaur_surfaces(arm_width: float, skin: Color) -> void:
-	for chain in ["left", "right", "0", "1", "2", "3"]:
-		var arm: bool = chain in ["left", "right"]
-		var upper: Node2D = _bones[chain + "_arm" if arm else "horse_leg_" + chain]
-		var lower: Node2D = _bones[chain + "_forearm" if arm else "horse_shin_" + chain]
+	for chain in ["left", "right"]:
+		var upper: Node2D = _bones[chain + "_arm"]
+		var lower: Node2D = _bones[chain + "_forearm"]
 		upper.get_child(0).hide()
 		lower.get_child(0).hide()
 		var surface := preload("res://src/human_limb_surface.gd").new()
 		surface.name = "CentaurLimbSurface"
-		surface.paint_texture = CentaurPaintedAtlas.texture("arm" if arm else ("hind_leg" if int(chain) < 2 else "front_leg"))
+		surface.paint_texture = CentaurPaintedAtlas.texture("arm")
 		surface.paint_material = CentaurPaintedAtlas.paint_material()
-		surface.setup(lower, float(_profile.arm if arm else _profile.leg) * .48, arm_width if arm else float(_profile.leg_width), skin, not arm)
+		surface.setup(lower, float(_profile.arm) * .48, arm_width, skin)
 		upper.add_child(surface)
+	# The old body is retained only for the rear climbing view. No independent
+	# leg/hoof artwork is visible in profile; the continuous mesh owns it all.
+	_horse_body_visual.hide()
+	for i in 4:
+		_bones["horse_leg_%d" % i].get_child(0).hide()
+		var shin: Node2D = _bones["horse_shin_%d" % i]
+		shin.get_child(0).hide()
+		shin.get_node("HoofSprite%d" % i).hide()
+	var equine := CentaurEquineSurface.new()
+	equine.name = "CentaurEquineSurface"
+	_bones.hip.add_child(equine)
+	equine.setup(_bones)
 
 
 func _build_human_limb_surfaces(arm_width: float, leg_width: float, skin: Color) -> void:
@@ -1197,6 +1207,8 @@ func _set_climbing_anatomy(enabled: bool) -> void:
 		return
 	for leg_index in 4:
 		_bones["horse_leg_%d" % leg_index].visible = not enabled
+	_bones.hip.get_node("CentaurEquineSurface").visible = not enabled
+	_horse_body_visual.visible = enabled
 	if enabled:
 		_center_centaur_climb()
 	else:

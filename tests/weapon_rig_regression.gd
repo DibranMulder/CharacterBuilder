@@ -492,9 +492,12 @@ func _run() -> void:
 	var hidden_boots: GearVisual = centaur.get_node("Rig/Hip/Boots")
 	if hidden_boots.visible:
 		_fail("Centaur footwear slot node must remain hidden behind its four hooves")
+	var equine: CentaurEquineSurface = centaur.get_node("Rig/Hip/CentaurEquineSurface")
+	if not equine.visible or not equine.near_layer.visible or not equine.far_layer.visible:
+		_fail("Centaur footwear exclusion must preserve both skinned hoof layers")
 	for hoof_index in 4:
-		if not centaur.get_node("Rig/Hip/horse_leg_%d/horse_shin_%d/HoofSprite%d" % [hoof_index,hoof_index,hoof_index]).visible:
-			_fail("Centaur footwear exclusion must preserve hoof %d" % hoof_index)
+		if centaur.get_node("Rig/Hip/horse_leg_%d/horse_shin_%d/HoofSprite%d" % [hoof_index,hoof_index,hoof_index]).visible:
+			_fail("Centaur must not draw a duplicate detached hoof %d" % hoof_index)
 
 	# Entering and leaving the two-handed crossbow posture rebuilds the rig's
 	# captured rest pose, so inspect fresh sockets after the equipment change.

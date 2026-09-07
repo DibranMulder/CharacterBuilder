@@ -1,10 +1,5 @@
 extends SceneTree
 
-# Measured centers of the four leg exits in the v3 barrel painting, in atlas
-# pixels: far hind, near hind, far fore, near fore. Verify against the rendered
-# body transform, not the rig's own attachment constants.
-const PAINTED_EXITS := [Vector2(270, 350), Vector2(194, 350), Vector2(477, 365), Vector2(395, 380)]
-
 
 func _initialize() -> void:
 	_run.call_deferred()
@@ -14,6 +9,25 @@ func _run() -> void:
 	var avatar := ModularCharacter.new()
 	root.add_child(avatar)
 	avatar.configure("centaur", CharacterCatalog.reference_loadout("centaur"))
+	var surface: CentaurEquineSurface = avatar._bones.hip.get_node("CentaurEquineSurface")
+	assert(surface.near_layer.texture == surface.far_layer.texture)
+	assert(surface.near_layer.z_index > surface.far_layer.z_index)
+	assert(surface.near_mesh.get_surface_count() == 1, "Body and near legs must be one mesh surface")
+	assert(not avatar._horse_body_visual.visible)
+	for i in 4:
+		var upper: Node2D = avatar._bones["horse_leg_%d" % i]
+		var lower: Node2D = avatar._bones["horse_shin_%d" % i]
+		assert(not upper.has_node("CentaurLimbSurface"), "Separate horse leg paintings must be removed")
+		assert(not upper.get_child(0).visible and not lower.get_child(0).visible)
+		assert(not lower.get_node("HoofSprite%d" % i).visible, "Hooves belong to the continuous texture")
+	# The indexed grid reuses vertices across every row, including leg roots.
+	var referenced := {}
+	for index in surface.near_indices:
+		referenced[index] = true
+	assert(referenced.size() == surface.rest_vertices.size())
+	assert(surface.near_indices.size() == CentaurEquineSurface.ROWS * CentaurEquineSurface.COLUMNS * 6)
+	for point in surface.rest_vertices:
+		assert(surface.deform_point(point).distance_to(point) < .001, "Rest mesh must reproduce the painting without distortion")
 	for facing in [&"right", &"left"]:
 		avatar.set_facing(facing)
 		for action in [&"stand", &"run", &"stairs", &"jump", &"rear"]:
@@ -23,29 +37,28 @@ func _run() -> void:
 			else:
 				avatar.play_motion(action)
 			for sample in 24:
-				if not _check_attachments(avatar, "%s/%s/%d" % [facing, action, sample]):
-					quit(1)
-					return
+				_check_surface(avatar, surface)
 				if avatar._active_tween:
 					avatar._active_tween.custom_step(1.0 / 24.0)
+		avatar.play_motion(&"climb")
+		assert(not surface.visible and avatar._horse_body_visual.visible)
+		avatar.play_motion(&"stand")
+		assert(surface.visible and not avatar._horse_body_visual.visible)
 	avatar.free()
-	print("PASS: four painted centaur leg attachments through stand, run, stairs, jump and rear in both facings")
+	print("PASS: continuous equine mesh, shared topology, four skinned hooves, both facings and rear switching")
 	quit()
 
 
-func _check_attachments(avatar: ModularCharacter, pose: String) -> bool:
-	var body: Sprite2D = avatar._bones.horse_body.find_child("AuthoredAnatomy", true, false).get_node("Sprite")
-	var atlas: AtlasTexture = body.texture
-	for i in 4:
-		var leg: Node2D = avatar._bones["horse_leg_%d" % i]
-		var root_in_body := body.to_local(leg.global_position)
-		var exit_in_body: Vector2 = PAINTED_EXITS[i] - atlas.region.get_center()
-		var error_x := absf(root_in_body.x - exit_in_body.x) * absf(body.global_scale.x)
-		if error_x > 2.0:
-			push_error("Centaur %s leg %d misses its painted body exit by %.2f pixels" % [pose, i, error_x])
-			return false
-		var overlap := (exit_in_body.y - root_in_body.y) * absf(body.global_scale.y)
-		if overlap < 4.0 or overlap > 24.0:
-			push_error("Centaur %s leg %d must start inside its body attachment, overlap=%.2f" % [pose, i, overlap])
-			return false
-	return true
+func _check_surface(avatar: ModularCharacter, surface: CentaurEquineSurface) -> void:
+	for far_side in [false, true]:
+		for vertex in surface.deformed_vertices(far_side):
+			assert(vertex.is_finite())
+		for near_index in [1, 3]:
+			var index: int = near_index - 1 if far_side else near_index
+			var bind_root := CentaurEquineSurface.leg_root(near_index)
+			var bind_ankle := bind_root + Vector2(0, avatar._profile.leg)
+			var actual := surface.to_global(surface.deform_point(bind_ankle, far_side))
+			var lower: Node2D = avatar._bones["horse_shin_%d" % index]
+			assert(actual.distance_to(lower.to_global(Vector2(0, avatar._profile.leg * .48))) < .001,
+				"Painted hooves must track their animation bones")
+	assert(surface.deform_point(Vector2.ZERO).is_equal_approx(Vector2.ZERO), "Upper barrel must remain hip-bound")

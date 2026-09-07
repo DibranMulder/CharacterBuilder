@@ -247,8 +247,10 @@ For production, put definitions in custom `.tres` resources rather than hard-cod
 
 Centaur now uses new artwork drawn from `light-lineages.png`: a bare upper body,
 pointed ears, waist-length braided hair, a compact barrel, sturdy legs and small
-dark hooves. The face, torso and arms share one coordinated atlas. Continuous
-limbs, paired near/far layering and the grounded Rearing Strike remain intact.
+dark hooves. The face, torso and arms share one coordinated atlas. The horse
+body, near legs and hooves now form one continuous painted mesh; a matching
+far-leg layer preserves depth. Existing locomotion and grounded rearing drive
+the mesh through the same bones, without separate visible horse-leg sprites.
 See the [reference comparison](artifacts/centaur_reference_comparison.png),
 [centaur rig and motion checks](docs/centaur-surface-rig.md) and
 [side/rear preview](artifacts/centaur_views.png).
