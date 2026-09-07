@@ -42,7 +42,7 @@ const HEAD_TEXTURES := {
 	"human": preload("res://assets/base_sprites/human_heads.png"),
 	"centaur": preload("res://assets/base_sprites/centaur_reference_upper_v3.png"),
 	"fae": preload("res://assets/base_sprites/fae_reference_base_v2.png"),
-	"frost_troll": preload("res://assets/base_sprites/frost_troll_heads_v2.png"),
+	"frost_troll": preload("res://assets/base_sprites/troll_reference_base_v3.png"),
 	"goblin": preload("res://assets/base_sprites/goblin_heads.png"),
 	"duneborn": preload("res://assets/base_sprites/duneborn_heads_v3.png"),
 	"frostling": preload("res://assets/base_sprites/frostling_heads_v3.png"),
@@ -53,7 +53,7 @@ const HEAD_REGIONS := {
 	"human": {"front": Rect2(94,346,504,531), "back": Rect2(663,345,506,531)},
 	"centaur": {"front": Rect2(207,87,208,244), "back": Rect2(490,87,220,244)},
 	"fae": {"front": Rect2(268,155,204,215), "back": Rect2(672,146,162,208)},
-	"frost_troll": {"front": Rect2(65,332,527,592), "back": Rect2(653,325,554,557)},
+	"frost_troll": {"front": Rect2(54,98,299,356), "back": Rect2(408,108,316,346)},
 	"goblin": {"front": Rect2(14,343,606,552), "back": Rect2(647,343,594,545)},
 	"duneborn": {"front": Rect2(65,270,555,710), "back": Rect2(675,275,535,710)},
 	"frostling": {"front": Rect2(55,285,575,650), "back": Rect2(660,290,555,650)},
@@ -163,6 +163,15 @@ func _build_sprite() -> void:
 	_sprite.name = "Sprite"
 	_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	add_child(_sprite)
+	if race_id == "frost_troll" and part_id in ["hand_open", "hand_grip", "hand_grip_back", "foot"]:
+		_sprite.texture = TrollPaintedAtlas.texture(part_id)
+		_sprite.scale = target_size / _sprite.texture.get_size()
+		_sprite.position = _part_offset()
+		_sprite.flip_h = horizontal_flip
+		_sprite.material = TrollPaintedAtlas.paint_material()
+		_available = true
+		visible = true
+		return
 	if race_id == "fae" and part_id in ["hand_open", "hand_grip", "hand_grip_back", "foot_wraps"]:
 		_sprite.texture = FaePaintedAtlas.texture(part_id)
 		_sprite.scale = target_size / _sprite.texture.get_size()

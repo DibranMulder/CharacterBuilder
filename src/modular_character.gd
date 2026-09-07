@@ -221,7 +221,7 @@ const WEAPON_ATTACK_CURVES := {
 			{"phase": "chamber", "upper": -120.0, "forearm": 60.0, "torso": -10.0, "x": -12.0, "duration": 0.22},
 			{"phase": "guard", "upper": -100.0, "forearm": 70.0, "torso": -14.0, "x": -8.0, "duration": 0.10},
 			{"phase": "strike", "upper": -100.0, "forearm": 130.0, "torso": 16.0, "x": 22.0, "duration": 0.13},
-			{"phase": "follow", "upper": -120.0, "forearm": 165.0, "torso": 40.0, "x": 28.0, "duration": 0.10},
+			{"phase": "follow", "upper": -120.0, "forearm": 165.0, "torso": 40.0, "x": 28.0, "duration": 0.095},
 		],
 		"backhand": [
 			# The larger two-handed weapon uses the same four readable beats but
@@ -387,14 +387,14 @@ func equip(slot: StringName, item_id: String) -> bool:
 			pants_visual.setup("pants",item_id,_profile.accent)
 		if race_id == "human":
 			_update_human_trousers()
-		_refresh_fae_appearance()
+		_refresh_painted_appearance()
 		equipment_changed.emit(slot,item_id)
 		return true
 	if slot == &"boots":
 		for boot_visual in _boot_parts:
 			boot_visual.setup("boots",item_id,_profile.accent)
 		_update_base_foot_visibility()
-		_refresh_fae_appearance()
+		_refresh_painted_appearance()
 		equipment_changed.emit(slot,item_id)
 		return true
 	var visual: GearVisual = _gear.get(String(slot))
@@ -405,7 +405,7 @@ func equip(slot: StringName, item_id: String) -> bool:
 		_apply_weapon_hand_parts()
 	if slot == &"armor" and race_id == "human":
 		_update_human_sleeves()
-	_refresh_fae_appearance()
+	_refresh_painted_appearance()
 	equipment_changed.emit(slot, item_id)
 	return true
 
@@ -799,8 +799,10 @@ func _rebuild() -> void:
 		# Keep the anatomical-right elbow outside its shoulder while the forearm
 		# returns the primary grip inward. Mirroring the whole rig preserves this
 		# outward bend for the opposite facing direction.
+		# The broader troll chest needs a slightly inward forearm so the second
+		# shaft socket remains reachable without locking the support elbow.
 		_bones.right_arm.rotation_degrees = 30
-		_bones.right_forearm.rotation_degrees = -30
+		_bones.right_forearm.rotation_degrees = -50
 
 	_attach_gear("back", torso, Vector2(0,torso_top_y+5), -6)
 	if race_id == "human":
@@ -842,11 +844,18 @@ func _rebuild() -> void:
 		appearance.name = "FaeAppearance"
 		add_child(appearance)
 		appearance.setup(self)
+	if race_id == "frost_troll":
+		var appearance := TrollAppearance.new()
+		appearance.name = "TrollAppearance"
+		add_child(appearance)
+		appearance.setup(self)
 
 
-func _refresh_fae_appearance() -> void:
+func _refresh_painted_appearance() -> void:
 	if race_id == "fae" and has_node("FaeAppearance"):
 		get_node("FaeAppearance").refresh()
+	if race_id == "frost_troll" and has_node("TrollAppearance"):
+		get_node("TrollAppearance").refresh()
 
 
 func _build_centaur_surfaces(arm_width: float, skin: Color) -> void:
@@ -1213,7 +1222,7 @@ func _set_back_view(enabled: bool) -> void:
 		_horse_body_visual.set_back_view(enabled)
 	if _horse_neck_visual:
 		_horse_neck_visual.set_back_view(enabled)
-	_refresh_fae_appearance()
+	_refresh_painted_appearance()
 
 
 func _set_climbing_anatomy(enabled: bool) -> void:

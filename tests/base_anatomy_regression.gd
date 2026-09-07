@@ -18,7 +18,7 @@ func _initialize() -> void:
 		assert(front_texture != back_texture, "%s front and rear head views did not switch" % race_id)
 		head.free()
 
-	var expected_head_versions := {"frost_troll":"_v2.png", "centaur":"centaur_reference_upper_v3.png", "duneborn":"_v3.png", "frostling":"_v3.png"}
+	var expected_head_versions := {"frost_troll":"troll_reference_base_v3.png", "centaur":"centaur_reference_upper_v3.png", "duneborn":"_v3.png", "frostling":"_v3.png"}
 	for redesigned_race in expected_head_versions:
 		var source_path: String = BaseAnatomy.HEAD_TEXTURES[redesigned_race].resource_path
 		assert(source_path.ends_with(expected_head_versions[redesigned_race]), "%s is not using its style-matched head sheet" % redesigned_race)
@@ -47,8 +47,8 @@ func _initialize() -> void:
 	for troll_part in ["hand_open","hand_grip","hand_grip_back","foot"]:
 		var troll_extremity: BaseAnatomyVisual = BaseAnatomy.new().setup("frost_troll",troll_part,Vector2(48,42))
 		var atlas_texture: AtlasTexture = troll_extremity.get_node("Sprite").texture
-		assert(atlas_texture.atlas.resource_path.ends_with("frost_troll_extremities.png"), "%s still uses human anatomy" % troll_part)
-		assert(troll_extremity.get_node("Sprite").material.get_shader_parameter("key_mode") == 1, "Frost Troll %s no longer removes its chroma key" % troll_part)
+		assert(atlas_texture == TrollPaintedAtlas.texture(troll_part), "%s still uses old anatomy" % troll_part)
+		assert(troll_extremity.get_node("Sprite").material == TrollPaintedAtlas.paint_material())
 		troll_extremity.free()
 	for bogkin_part in ["hand_open","hand_grip","hand_grip_back","foot"]:
 		var bogkin_extremity: BaseAnatomyVisual = BaseAnatomy.new().setup("bogkin",bogkin_part,Vector2(48,42))

@@ -245,6 +245,12 @@ For production, put definitions in custom `.tres` resources rather than hard-cod
 
 ## Next art milestone
 
+Frost Troll now uses coordinated artwork drawn from `dark-lineages.png`: a
+broad blue mottled body, heavy continuous arms and short legs, a connected
+tusked head, ragged charcoal jerkin and leather bracers. See the
+[reference comparison](artifacts/troll_reference_comparison.png) and
+[surface and verification notes](docs/troll-surface-rig.md).
+
 Fae now uses reference-matched head/ponytail, body and clothing paintings,
 continuous arm and trouser-leg surfaces, a hip-bound split tunic, and translucent
 angular insect wings. Equipment remains swappable. See the

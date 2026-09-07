@@ -58,12 +58,14 @@ func _add_sample(canvas: Node2D,origin: Vector2,sample: Dictionary,index: int) -
 	var lineage := "centaur" if "--centaur" in OS.get_cmdline_user_args() else "human"
 	if "--fae" in OS.get_cmdline_user_args():
 		lineage = "fae"
+	if "--troll" in OS.get_cmdline_user_args():
+		lineage = "frost_troll"
 	avatar.configure(lineage,{
 		"weapon":"sword", "offhand":"none", "armor":"marsh_tunic",
 		"pants":"ranger", "boots":"leather", "head":"none",
 		"back":"long_cape", "accessory":"scarf",
 	})
-	if lineage in ["centaur", "fae"]:
+	if lineage in ["centaur", "fae", "frost_troll"]:
 		avatar.configure(lineage, CharacterCatalog.reference_loadout(lineage))
 	var overrides: Dictionary = sample.get("loadout", {})
 	for slot in overrides:

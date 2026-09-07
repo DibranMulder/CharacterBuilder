@@ -99,9 +99,9 @@ const RACES := {
 		"name": "Frost Troll", "tagline": "Mountain-born breakers",
 		"skin": Color("7195a9"), "accent": Color("687047"),
 		"visual": {"hair_style": "crest", "hair": Color("343b3e"), "eye": Color("332c25"), "boot": Color("4b4238"), "body_shape": "top_heavy", "skin_pattern": "mottled"},
-		"scale": 1.16, "head": Vector2(70, 64), "torso": Vector2(108, 84),
-		"arm": 86.0, "leg": 54.0, "limb_width": 25.0, "leg_width": 25.0,
-		"shoulder_spread": 0.40, "extremity_scale": 1.85, "head_sprite_scale": 1.58, "head_y_adjust": 4.0,
+		"scale": 1.16, "head": Vector2(70, 64), "torso": Vector2(136, 86),
+		"arm": 100.0, "leg": 54.0, "limb_width": 48.0, "leg_width": 42.0,
+		"shoulder_spread": 0.40, "extremity_scale": 1.85, "head_sprite_scale": 1.6, "head_y_adjust": 14.0,
 		"armor_width_scale": 1.45, "pants_width_scale": 1.35, "topology": "biped",
 		"gestures": [
 			{"name": "Glacier Cleave", "style": "smash"},
