@@ -27,6 +27,8 @@ func _render() -> void:
 			default_weapon = "crossbow"
 		if "--duneborn" in OS.get_cmdline_user_args():
 			default_weapon = "spear"
+		if "--frostling" in OS.get_cmdline_user_args():
+			default_weapon = "staff"
 		var weapon: String = {"fire_bow":"bow", "fire_crossbow":"crossbow", "cast_spell":"staff"}.get(motion, default_weapon)
 		sample.loadout = {"weapon":weapon}
 		if "--shield" in OS.get_cmdline_user_args():
@@ -55,6 +57,8 @@ func _render() -> void:
 		lineage = "goblin"
 	if "--duneborn" in OS.get_cmdline_user_args():
 		lineage = "duneborn"
+	if "--frostling" in OS.get_cmdline_user_args():
+		lineage = "frostling"
 	var output := "res://artifacts/%s_%s_cycle%s.png" % [lineage,motion,suffix]
 	if viewport.get_texture().get_image().save_png(output) != OK:
 		quit(1)

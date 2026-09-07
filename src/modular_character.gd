@@ -859,9 +859,16 @@ func _rebuild() -> void:
 		appearance.name = "DunebornAppearance"
 		add_child(appearance)
 		appearance.setup(self)
+	if race_id == "frostling":
+		var appearance := FrostlingAppearance.new()
+		appearance.name = "FrostlingAppearance"
+		add_child(appearance)
+		appearance.setup(self)
 
 
 func _refresh_painted_appearance() -> void:
+	if race_id == "frostling" and has_node("FrostlingAppearance"):
+		get_node("FrostlingAppearance").refresh()
 	if race_id == "duneborn" and has_node("DunebornAppearance"):
 		get_node("DunebornAppearance").refresh()
 	if race_id == "goblin" and has_node("GoblinAppearance"):

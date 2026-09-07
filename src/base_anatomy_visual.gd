@@ -45,7 +45,7 @@ const HEAD_TEXTURES := {
 	"frost_troll": preload("res://assets/base_sprites/troll_reference_base_v3.png"),
 	"goblin": preload("res://assets/base_sprites/goblin_reference_base_v2.png"),
 	"duneborn": preload("res://assets/base_sprites/duneborn_reference_base_v4.png"),
-	"frostling": preload("res://assets/base_sprites/frostling_heads_v3.png"),
+	"frostling": preload("res://assets/base_sprites/frostling_reference_base_v4.png"),
 }
 
 const HEAD_REGIONS := {
@@ -56,7 +56,7 @@ const HEAD_REGIONS := {
 	"frost_troll": {"front": Rect2(54,98,299,356), "back": Rect2(408,108,316,346)},
 	"goblin": {"front": Rect2(35,130,392,269), "back": Rect2(449,132,366,267)},
 	"duneborn": {"front": Rect2(57,84,294,340), "back": Rect2(452,91,263,314)},
-	"frostling": {"front": Rect2(55,285,575,650), "back": Rect2(660,290,555,650)},
+	"frostling": {"front": Rect2(56,98,333,355), "back": Rect2(419,108,318,357)},
 }
 
 const EXTREMITY_REGIONS := {
@@ -172,8 +172,11 @@ func _build_sprite() -> void:
 		_available = true
 		visible = true
 		return
-	if race_id in ["goblin", "duneborn"] and part_id in ["hand_open", "hand_grip", "hand_grip_back", "foot"]:
-		_sprite.texture = GoblinPaintedAtlas.texture(part_id) if race_id == "goblin" else DunebornPaintedAtlas.texture(part_id)
+	if race_id in ["goblin", "duneborn", "frostling"] and part_id in ["hand_open", "hand_grip", "hand_grip_back", "foot"]:
+		if race_id == "frostling":
+			_sprite.texture = FrostlingPaintedAtlas.texture(part_id)
+		else:
+			_sprite.texture = GoblinPaintedAtlas.texture(part_id) if race_id == "goblin" else DunebornPaintedAtlas.texture(part_id)
 		_sprite.scale = target_size / _sprite.texture.get_size()
 		_sprite.position = _part_offset()
 		_sprite.flip_h = horizontal_flip

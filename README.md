@@ -245,6 +245,12 @@ For production, put definitions in custom `.tres` resources rather than hard-cod
 
 ## Next art milestone
 
+Frostling now uses coordinated gray-blue anatomy, white hair, continuous
+fur-trimmed coat sleeves and trouser legs, painted boots and a bedroll pack.
+Its hood remains removable. See the
+[hooded/uncovered comparison](artifacts/frostling_reference_comparison.png)
+and [surface notes](docs/frostling-surface-rig.md).
+
 Duneborn now uses coordinated reference artwork for its bronze shoulder mantle,
 rust-red robe, continuous limbs, boots and cape. The **Balaclava** is removable
 in the **Head** slot; choosing **None** reveals a complete uncovered head.

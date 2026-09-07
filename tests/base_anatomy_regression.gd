@@ -18,7 +18,7 @@ func _initialize() -> void:
 		assert(front_texture != back_texture, "%s front and rear head views did not switch" % race_id)
 		head.free()
 
-	var expected_head_versions := {"frost_troll":"troll_reference_base_v3.png", "centaur":"centaur_reference_upper_v3.png", "duneborn":"duneborn_reference_base_v4.png", "frostling":"_v3.png"}
+	var expected_head_versions := {"frost_troll":"troll_reference_base_v3.png", "centaur":"centaur_reference_upper_v3.png", "duneborn":"duneborn_reference_base_v4.png", "frostling":"frostling_reference_base_v4.png"}
 	for redesigned_race in expected_head_versions:
 		var source_path: String = BaseAnatomy.HEAD_TEXTURES[redesigned_race].resource_path
 		assert(source_path.ends_with(expected_head_versions[redesigned_race]), "%s is not using its style-matched head sheet" % redesigned_race)

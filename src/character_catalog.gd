@@ -139,8 +139,8 @@ const RACES := {
 		"name": "Frostling", "tagline": "Small mystics of the aurora",
 		"skin": Color("8795a7"), "accent": Color("37658b"),
 		"visual": {"hair_style": "shaggy", "hair": Color("e3e7e5"), "eye": Color("73c9ef"), "boot": Color("3b5366"), "body_shape": "compact"},
-		"scale": 0.84, "head": Vector2(61, 57), "torso": Vector2(54, 55),
-		"arm": 47.0, "leg": 39.0, "limb_width": 17.0, "leg_width": 20.0,
+		"scale": 0.84, "head": Vector2(61, 57), "torso": Vector2(80, 55),
+		"arm": 47.0, "leg": 39.0, "limb_width": 24.0, "leg_width": 25.0,
 		"shoulder_spread": 0.32, "extremity_scale": 1.08, "head_sprite_scale": 1.55, "head_y_adjust": 2.0, "topology": "biped",
 		"gestures": [
 			{"name": "Crystal Jab", "style": "thrust"},
