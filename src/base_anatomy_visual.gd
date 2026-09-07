@@ -41,7 +41,7 @@ const HEAD_TEXTURES := {
 	"bogkin": preload("res://assets/base_sprites/bogkin_heads.png"),
 	"human": preload("res://assets/base_sprites/human_heads.png"),
 	"centaur": preload("res://assets/base_sprites/centaur_reference_upper_v3.png"),
-	"fae": preload("res://assets/base_sprites/fae_heads.png"),
+	"fae": preload("res://assets/base_sprites/fae_reference_base_v2.png"),
 	"frost_troll": preload("res://assets/base_sprites/frost_troll_heads_v2.png"),
 	"goblin": preload("res://assets/base_sprites/goblin_heads.png"),
 	"duneborn": preload("res://assets/base_sprites/duneborn_heads_v3.png"),
@@ -52,7 +52,7 @@ const HEAD_REGIONS := {
 	"bogkin": {"front": Rect2(69,404,530,481), "back": Rect2(691,407,487,482)},
 	"human": {"front": Rect2(94,346,504,531), "back": Rect2(663,345,506,531)},
 	"centaur": {"front": Rect2(207,87,208,244), "back": Rect2(490,87,220,244)},
-	"fae": {"front": Rect2(14,364,605,495), "back": Rect2(672,365,568,515)},
+	"fae": {"front": Rect2(268,155,204,215), "back": Rect2(672,146,162,208)},
 	"frost_troll": {"front": Rect2(65,332,527,592), "back": Rect2(653,325,554,557)},
 	"goblin": {"front": Rect2(14,343,606,552), "back": Rect2(647,343,594,545)},
 	"duneborn": {"front": Rect2(65,270,555,710), "back": Rect2(675,275,535,710)},
@@ -163,6 +163,15 @@ func _build_sprite() -> void:
 	_sprite.name = "Sprite"
 	_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	add_child(_sprite)
+	if race_id == "fae" and part_id in ["hand_open", "hand_grip", "hand_grip_back", "foot_wraps"]:
+		_sprite.texture = FaePaintedAtlas.texture(part_id)
+		_sprite.scale = target_size / _sprite.texture.get_size()
+		_sprite.position = _part_offset()
+		_sprite.flip_h = horizontal_flip
+		_sprite.material = CentaurPaintedAtlas.paint_material()
+		_available = true
+		visible = true
+		return
 	if race_id == "centaur" and part_id in ["horse_body", "horse_tail", "hoof", "hand_open", "hand_grip", "hand_grip_back"]:
 		var painted_part := "horse_body_back" if part_id == "horse_body" and back_view else part_id
 		_sprite.texture = CentaurPaintedAtlas.texture(painted_part)
@@ -251,21 +260,23 @@ func _build_sprite() -> void:
 	var authored_bogkin_extremity := race_id == "bogkin" and BOGKIN_EXTREMITY_REGIONS.has(part_id)
 	var tint_strength := .92 if SHARED_ANATOMY_TEXTURES.has(part_id) and race_id != "frost_troll" else (.72 if part_id in ["hand_open","hand_grip","hand_grip_back","foot"] and not authored_troll_extremity and not authored_bogkin_extremity else 0.0)
 	_sprite.material = _key_material(key_mode,anatomy_tint,tint_strength)
-	if race_id == "centaur" and part_id == "head":
+	if race_id in ["centaur", "fae"] and part_id == "head":
 		# Size the face independently of the waist-length hair. Both layers use
 		# identical source coordinates, so the head never separates from its mane.
 		var hair_region := Rect2(450, 83, 292, 497) if back_view else Rect2(39, 83, 381, 461)
+		if race_id == "fae":
+			hair_region = Rect2(488, 120, 352, 317) if back_view else Rect2(35, 118, 441, 294)
 		var hair_texture := AtlasTexture.new()
 		hair_texture.atlas = source
 		hair_texture.region = hair_region
 		hair_texture.filter_clip = true
 		var hair := Sprite2D.new()
-		hair.name = "LongHair"
+		hair.name = "Ponytail" if race_id == "fae" else "LongHair"
 		hair.texture = hair_texture
 		hair.position = hair_region.get_center() - region.get_center()
 		hair.material = _sprite.material
 		# Behind the chest in profile, covering the back in the rear view.
-		hair.z_index = 0 if back_view else -8
+		hair.z_index = 0 if back_view and race_id == "centaur" else -8
 		_sprite.add_child(hair)
 
 
@@ -276,7 +287,7 @@ func _part_offset() -> Vector2:
 		# that alignment. The rear sheet is centered and needs to cancel it.
 		"horse_tail": return Vector2(target_size.x*.46,target_size.y*.30) if back_view else Vector2.ZERO
 		"hand_open", "hand_grip", "hand_grip_back": return Vector2(target_size.x*.12,target_size.y*.08)
-		"foot", "hoof": return Vector2(target_size.x*.22,target_size.y*.04)
+		"foot", "foot_wraps", "hoof": return Vector2(target_size.x*.22,target_size.y*.04)
 	return Vector2.ZERO
 
 

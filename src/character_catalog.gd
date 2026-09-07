@@ -85,8 +85,9 @@ const RACES := {
 		# The reference's poised winged figure is approximately Human-height, not
 		# a miniature fairy. A slightly taller global scale retains the slender
 		# anatomy while letting staff, wings, and wind-pulled garments read clearly.
-		"scale": 1.02, "head": Vector2(45, 50), "torso": Vector2(40, 66),
-		"arm": 57.0, "leg": 59.0, "limb_width": 14.0, "leg_width": 16.0,
+		"scale": 1.02, "head": Vector2(45, 50), "torso": Vector2(48, 64),
+		"head_y_adjust": 4.0,
+		"arm": 57.0, "leg": 59.0, "limb_width": 17.0, "leg_width": 21.0,
 		"shoulder_spread": 0.30, "extremity_scale": 0.90, "topology": "winged",
 		"gestures": [
 			{"name": "Wand Arc", "style": "slash"},

@@ -387,12 +387,14 @@ func equip(slot: StringName, item_id: String) -> bool:
 			pants_visual.setup("pants",item_id,_profile.accent)
 		if race_id == "human":
 			_update_human_trousers()
+		_refresh_fae_appearance()
 		equipment_changed.emit(slot,item_id)
 		return true
 	if slot == &"boots":
 		for boot_visual in _boot_parts:
 			boot_visual.setup("boots",item_id,_profile.accent)
 		_update_base_foot_visibility()
+		_refresh_fae_appearance()
 		equipment_changed.emit(slot,item_id)
 		return true
 	var visual: GearVisual = _gear.get(String(slot))
@@ -403,6 +405,7 @@ func equip(slot: StringName, item_id: String) -> bool:
 		_apply_weapon_hand_parts()
 	if slot == &"armor" and race_id == "human":
 		_update_human_sleeves()
+	_refresh_fae_appearance()
 	equipment_changed.emit(slot, item_id)
 	return true
 
@@ -734,9 +737,9 @@ func _rebuild() -> void:
 		var shin_length := float(_profile.leg) - thigh_length
 		# Human's screen-left hip is the near leg in the right-facing artwork.
 		# Mirror the complete rig for left-facing; keep this relative depth.
-		_part(hip, "left_leg", "limb", Vector2(leg_width,thigh_length), skin.darkened(.08), Vector2(-torso_size.x*.23, 8), 1 if race_id == "human" else -2)
+		_part(hip, "left_leg", "limb", Vector2(leg_width,thigh_length), skin.darkened(.08), Vector2(-torso_size.x*.23, 8), 1 if race_id in ["human", "fae"] else -2)
 		_part(_bones.left_leg, "left_shin", "shin", Vector2(leg_width*.94,shin_length), skin.darkened(.05), Vector2(0,thigh_length), 0)
-		_part(hip, "right_leg", "limb", Vector2(leg_width,thigh_length), skin, Vector2(torso_size.x*.23, 8), -2 if race_id == "human" else 1)
+		_part(hip, "right_leg", "limb", Vector2(leg_width,thigh_length), skin, Vector2(torso_size.x*.23, 8), -2 if race_id in ["human", "fae"] else 1)
 		_part(_bones.right_leg, "right_shin", "shin", Vector2(leg_width*.94,shin_length), skin, Vector2(0,thigh_length), 0)
 		_left_foot_base = _base_sprite(_bones.left_shin,"LeftFootSprite","foot",Vector2(28,20)*extremity_scale,Vector2(0,shin_length),4)
 		_right_foot_base = _base_sprite(_bones.right_shin,"RightFootSprite","foot",Vector2(28,20)*extremity_scale,Vector2(0,shin_length),4)
@@ -834,6 +837,16 @@ func _rebuild() -> void:
 		_update_crossbow_support_grip()
 	_capture_pose()
 	_apply_facing()
+	if race_id == "fae":
+		var appearance := FaeAppearance.new()
+		appearance.name = "FaeAppearance"
+		add_child(appearance)
+		appearance.setup(self)
+
+
+func _refresh_fae_appearance() -> void:
+	if race_id == "fae" and has_node("FaeAppearance"):
+		get_node("FaeAppearance").refresh()
 
 
 func _build_centaur_surfaces(arm_width: float, skin: Color) -> void:
@@ -1200,6 +1213,7 @@ func _set_back_view(enabled: bool) -> void:
 		_horse_body_visual.set_back_view(enabled)
 	if _horse_neck_visual:
 		_horse_neck_visual.set_back_view(enabled)
+	_refresh_fae_appearance()
 
 
 func _set_climbing_anatomy(enabled: bool) -> void:

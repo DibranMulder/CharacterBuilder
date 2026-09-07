@@ -40,6 +40,8 @@ func _render() -> void:
 	if "--shield" in OS.get_cmdline_user_args():
 		suffix += "_shield"
 	var lineage := "centaur" if "--centaur" in OS.get_cmdline_user_args() else "human"
+	if "--fae" in OS.get_cmdline_user_args():
+		lineage = "fae"
 	var output := "res://artifacts/%s_%s_cycle%s.png" % [lineage,motion,suffix]
 	if viewport.get_texture().get_image().save_png(output) != OK:
 		quit(1)

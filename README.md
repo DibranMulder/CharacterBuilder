@@ -245,6 +245,12 @@ For production, put definitions in custom `.tres` resources rather than hard-cod
 
 ## Next art milestone
 
+Fae now uses reference-matched head/ponytail, body and clothing paintings,
+continuous arm and trouser-leg surfaces, a hip-bound split tunic, and translucent
+angular insect wings. Equipment remains swappable. See the
+[Fae reference comparison](artifacts/fae_reference_comparison.png) and
+[surface and verification notes](docs/fae-surface-rig.md).
+
 Centaur now uses new artwork drawn from `light-lineages.png`: a bare upper body,
 pointed ears, waist-length braided hair, a compact barrel, sturdy legs and small
 dark hooves. The face, torso and arms share one coordinated atlas. The horse
