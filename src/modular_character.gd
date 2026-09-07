@@ -1853,7 +1853,10 @@ func _animate_staff_spell() -> void:
 	_active_tween.parallel().tween_property(_bones.left_arm,"rotation_degrees",-112.0,.18)
 	_active_tween.parallel().tween_property(_bones.left_forearm,"rotation_degrees",42.0,.18)
 	_active_tween.parallel().tween_property(_bones.torso,"rotation_degrees",-8.0,.18)
-	_active_tween.parallel().tween_property(staff,"rotation_degrees",180.0,.18)
+	# The tip is local +Y. Keeping the idle 180-degree grip while bending
+	# the arm backward aimed the crystal behind the caster. Rotate the staff
+	# forward relative to that arm; the complete rig mirrors this for left.
+	_active_tween.parallel().tween_property(staff,"rotation_degrees",270.0,.18)
 	_queue_ranged_footwork("staff","gather",.18)
 	_active_tween.tween_interval(.12)
 	_active_tween.tween_callback(_release_staff_spell)
@@ -1865,6 +1868,7 @@ func _animate_staff_spell() -> void:
 	_active_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	_active_tween.tween_property(_bones.right_arm,"rotation_degrees",-84.0,.10)
 	_active_tween.parallel().tween_property(_bones.right_forearm,"rotation_degrees",12.0,.10)
+	_active_tween.parallel().tween_property(staff,"rotation_degrees",300.0,.10)
 	_active_tween.parallel().tween_property(_bones.left_arm,"rotation_degrees",-76.0,.10)
 	_active_tween.parallel().tween_property(_bones.left_forearm,"rotation_degrees",18.0,.10)
 	_active_tween.parallel().tween_property(_bones.torso,"rotation_degrees",4.0,.10)
@@ -1878,6 +1882,7 @@ func _animate_staff_spell() -> void:
 	_active_tween.parallel().tween_property(_bones.torso,"rotation",_rest.torso.rotation,.24)
 	_active_tween.parallel().tween_property(_bones.rig,"position:x",_rest.rig.position.x,.24)
 	_queue_lower_body_recovery(.24)
+	_active_tween.parallel().tween_property(staff,"rotation_degrees",WEAPON_GRIP_ROTATIONS[loadout.weapon],.24)
 
 
 func _release_staff_spell() -> void:

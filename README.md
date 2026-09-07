@@ -245,6 +245,12 @@ For production, put definitions in custom `.tres` resources rather than hard-cod
 
 ## Next art milestone
 
+Cast Spell now angles both staff variants forward during gathering and
+follow-through, then restores the upright grip. The previous idle grip angle
+combined with the casting arm bend aimed the tip backward. A direction
+regression checks all eight lineages in both facings, including recovery.
+See the [casting comparison](artifacts/staff_cast_all_lineages.png).
+
 Frostling now uses coordinated gray-blue anatomy, white hair, continuous
 fur-trimmed coat sleeves and trouser legs, painted boots and a bedroll pack.
 Its hood remains removable. See the
