@@ -40,7 +40,7 @@ const CENTAUR_EQUINE_TEXTURES := {
 const HEAD_TEXTURES := {
 	"bogkin": preload("res://assets/base_sprites/bogkin_heads.png"),
 	"human": preload("res://assets/base_sprites/human_heads.png"),
-	"centaur": preload("res://assets/base_sprites/centaur_heads_v2.png"),
+	"centaur": preload("res://assets/base_sprites/centaur_reference_upper_v3.png"),
 	"fae": preload("res://assets/base_sprites/fae_heads.png"),
 	"frost_troll": preload("res://assets/base_sprites/frost_troll_heads_v2.png"),
 	"goblin": preload("res://assets/base_sprites/goblin_heads.png"),
@@ -51,7 +51,7 @@ const HEAD_TEXTURES := {
 const HEAD_REGIONS := {
 	"bogkin": {"front": Rect2(69,404,530,481), "back": Rect2(691,407,487,482)},
 	"human": {"front": Rect2(94,346,504,531), "back": Rect2(663,345,506,531)},
-	"centaur": {"front": Rect2(62,306,580,620), "back": Rect2(665,320,535,640)},
+	"centaur": {"front": Rect2(207,87,208,244), "back": Rect2(490,87,220,244)},
 	"fae": {"front": Rect2(14,364,605,495), "back": Rect2(672,365,568,515)},
 	"frost_troll": {"front": Rect2(65,332,527,592), "back": Rect2(653,325,554,557)},
 	"goblin": {"front": Rect2(14,343,606,552), "back": Rect2(647,343,594,545)},
@@ -163,6 +163,22 @@ func _build_sprite() -> void:
 	_sprite.name = "Sprite"
 	_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	add_child(_sprite)
+	if race_id == "centaur" and part_id in ["horse_body", "horse_tail", "hoof", "hand_open", "hand_grip", "hand_grip_back"]:
+		var painted_part := "horse_body_back" if part_id == "horse_body" and back_view else part_id
+		_sprite.texture = CentaurPaintedAtlas.texture(painted_part)
+		var fitted_size := target_size
+		if part_id == "horse_body" and back_view:
+			fitted_size = Vector2(target_size.y * 1.08, target_size.y)
+		_sprite.scale = fitted_size / _sprite.texture.get_size()
+		_sprite.position = _part_offset()
+		if part_id == "horse_tail" and back_view:
+			_sprite.scale = Vector2(44, 68) / _sprite.texture.get_size()
+			_sprite.rotation_degrees = -35.0
+		_sprite.flip_h = horizontal_flip
+		_sprite.material = CentaurPaintedAtlas.paint_material()
+		_available = true
+		visible = true
+		return
 
 	var source: Texture2D
 	var region := Rect2()
@@ -235,6 +251,22 @@ func _build_sprite() -> void:
 	var authored_bogkin_extremity := race_id == "bogkin" and BOGKIN_EXTREMITY_REGIONS.has(part_id)
 	var tint_strength := .92 if SHARED_ANATOMY_TEXTURES.has(part_id) and race_id != "frost_troll" else (.72 if part_id in ["hand_open","hand_grip","hand_grip_back","foot"] and not authored_troll_extremity and not authored_bogkin_extremity else 0.0)
 	_sprite.material = _key_material(key_mode,anatomy_tint,tint_strength)
+	if race_id == "centaur" and part_id == "head":
+		# Size the face independently of the waist-length hair. Both layers use
+		# identical source coordinates, so the head never separates from its mane.
+		var hair_region := Rect2(450, 83, 292, 497) if back_view else Rect2(39, 83, 381, 461)
+		var hair_texture := AtlasTexture.new()
+		hair_texture.atlas = source
+		hair_texture.region = hair_region
+		hair_texture.filter_clip = true
+		var hair := Sprite2D.new()
+		hair.name = "LongHair"
+		hair.texture = hair_texture
+		hair.position = hair_region.get_center() - region.get_center()
+		hair.material = _sprite.material
+		# Behind the chest in profile, covering the back in the rear view.
+		hair.z_index = 0 if back_view else -8
+		_sprite.add_child(hair)
 
 
 func _part_offset() -> Vector2:

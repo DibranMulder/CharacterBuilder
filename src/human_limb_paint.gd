@@ -4,7 +4,7 @@ var surface: HumanLimbSurface
 
 
 func _ready() -> void:
-	material = HumanPaintedAtlas.paint_material()
+	material = surface.paint_material if surface.paint_material != null else HumanPaintedAtlas.paint_material()
 
 
 func _draw() -> void:
@@ -22,6 +22,8 @@ func _draw() -> void:
 		if i > 0:
 			distances.append(distances[i - 1] + centers[i].distance_to(centers[i - 1]))
 	var texture := HumanPaintedAtlas.texture("leg" if surface.is_leg else "arm")
+	if surface.paint_texture != null:
+		texture = surface.paint_texture
 	for i in range(centers.size() - 1):
 		var v0 := distances[i] / distances[-1]
 		var v1 := distances[i + 1] / distances[-1]

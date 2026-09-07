@@ -18,7 +18,7 @@ func _initialize() -> void:
 		assert(front_texture != back_texture, "%s front and rear head views did not switch" % race_id)
 		head.free()
 
-	var expected_head_versions := {"frost_troll":"_v2.png", "centaur":"_v2.png", "duneborn":"_v3.png", "frostling":"_v3.png"}
+	var expected_head_versions := {"frost_troll":"_v2.png", "centaur":"centaur_reference_upper_v3.png", "duneborn":"_v3.png", "frostling":"_v3.png"}
 	for redesigned_race in expected_head_versions:
 		var source_path: String = BaseAnatomy.HEAD_TEXTURES[redesigned_race].resource_path
 		assert(source_path.ends_with(expected_head_versions[redesigned_race]), "%s is not using its style-matched head sheet" % redesigned_race)
@@ -146,7 +146,8 @@ func _initialize() -> void:
 	var side_tail_texture: Texture2D = centaur_tail.get_node("Sprite").texture
 	centaur_tail.set_back_view(true)
 	var climbing_tail_texture: Texture2D = centaur_tail.get_node("Sprite").texture
-	assert(side_tail_texture != climbing_tail_texture, "centaur tail does not switch to its rear climbing sprite")
+	assert(side_tail_texture == climbing_tail_texture, "centaur views should share the coordinated tail painting")
+	assert(is_equal_approx(centaur_tail.get_node("Sprite").rotation_degrees, -35.0), "rear tail must hang down the centered rump")
 	centaur_tail.free()
 	for equine_part_id in ["horse_body","horse_neck"]:
 		var equine_view: BaseAnatomyVisual = BaseAnatomy.new().setup("centaur",equine_part_id,Vector2(96,60))

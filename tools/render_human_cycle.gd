@@ -6,7 +6,7 @@ func _render() -> void:
 	for argument in OS.get_cmdline_user_args():
 		if argument.begins_with("--motion="):
 			motion = argument.trim_prefix("--motion=")
-	if motion not in ["run", "stairs", "climb", "jump", "jab", "forehand", "backhand", "fire_bow", "fire_crossbow", "cast_spell", "vault"]:
+	if motion not in ["idle", "stand", "run", "stairs", "climb", "jump", "jab", "forehand", "backhand", "fire_bow", "fire_crossbow", "cast_spell", "vault", "gesture0", "gesture1", "gesture2"]:
 		push_error("Unsupported cycle: " + motion)
 		quit(1)
 		return
@@ -28,6 +28,9 @@ func _render() -> void:
 			sample.loadout.offhand = "shield"
 		if motion == "vault":
 			sample.gesture = 2
+		if motion.begins_with("gesture"):
+			sample.gesture = int(motion.trim_prefix("gesture"))
+			sample.loadout.weapon = "bow"
 		_add_sample(canvas, Vector2(index % 4,index / 4) * TILE_SIZE, sample, index)
 	for frame in 6:
 		await process_frame
@@ -36,9 +39,10 @@ func _render() -> void:
 		suffix += "_left"
 	if "--shield" in OS.get_cmdline_user_args():
 		suffix += "_shield"
-	var output := "res://artifacts/human_%s_cycle%s.png" % [motion,suffix]
+	var lineage := "centaur" if "--centaur" in OS.get_cmdline_user_args() else "human"
+	var output := "res://artifacts/%s_%s_cycle%s.png" % [lineage,motion,suffix]
 	if viewport.get_texture().get_image().save_png(output) != OK:
 		quit(1)
 		return
-	print("PASS: rendered full human %s cycle to %s" % [motion,output])
+	print("PASS: rendered full %s %s cycle to %s" % [lineage,motion,output])
 	quit()

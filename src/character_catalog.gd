@@ -68,7 +68,9 @@ const RACES := {
 		"name": "Centaur", "tagline": "Swift guardians of the old groves",
 		"skin": Color("a66f45"), "accent": Color("6d9b57"),
 		"visual": {"hair_style": "long", "hair": Color("4a3328"), "eye": Color("39291e"), "boot": Color("392c24")},
-		"scale": 0.9, "head": Vector2(48, 54), "torso": Vector2(54, 76),
+		"scale": 0.9, "head": Vector2(48, 54), "torso": Vector2(70, 70),
+		"head_y_adjust": 9.0, "limb_width": 22.0, "leg_width": 38.0,
+		"armor_width_scale": 1.2, "armor_height_scale": 1.25,
 		"arm": 62.0, "leg": 58.0, "topology": "centaur",
 		"gestures": [
 			{"name": "Gallop Shot", "style": "shoot"},

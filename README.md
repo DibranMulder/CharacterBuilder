@@ -245,6 +245,14 @@ For production, put definitions in custom `.tres` resources rather than hard-cod
 
 ## Next art milestone
 
+Centaur now uses new artwork drawn from `light-lineages.png`: a bare upper body,
+pointed ears, waist-length braided hair, a compact barrel, sturdy legs and small
+dark hooves. The face, torso and arms share one coordinated atlas. Continuous
+limbs, paired near/far layering and the grounded Rearing Strike remain intact.
+See the [reference comparison](artifacts/centaur_reference_comparison.png),
+[centaur rig and motion checks](docs/centaur-surface-rig.md) and
+[side/rear preview](artifacts/centaur_views.png).
+
 The motion panel includes a one-shot **Jump** for every lineage: anticipation,
 airborne rise/fall, landing compression, and recovery to Stand. Jump can be
 interrupted by another motion and preserves facing and equipped items.

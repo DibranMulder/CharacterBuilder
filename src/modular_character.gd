@@ -704,27 +704,30 @@ func _rebuild() -> void:
 	var leg_width := float(_profile.get("leg_width",18.0))
 	var extremity_scale := float(_profile.get("extremity_scale",1.0))
 	var hip_y := -float(_profile.leg)
+	if _profile.topology == "centaur":
+		hip_y -= 38.0
 	var hip := Node2D.new(); hip.name = "Hip"; hip.position = Vector2(0, hip_y); rig.add_child(hip); _bones.hip = hip
 
 	if _profile.topology == "centaur":
-		_horse_body_visual = _part(hip, "horse_body", "horse", Vector2(128,62), skin.darkened(.16), Vector2(-12, 18), -1)
+		_horse_body_visual = _part(hip, "horse_body", "horse", Vector2(116,70), skin.darkened(.16), Vector2(-3, -8), -1)
 		_horse_neck_visual = _part(hip, "horse_neck", "horse_neck", Vector2(62,48), skin.darkened(.10), Vector2(28, -6), -1)
+		_horse_neck_visual.hide() # Withers now belong to the seamless barrel painting.
 		var tail := Node2D.new()
 		tail.name = "horse_tail"
-		tail.position = Vector2(-62,24)
+		tail.position = Vector2(-50,24)
 		tail.z_index = -4
 		hip.add_child(tail)
 		_bones.horse_tail = tail
 		# The authored tail is rooted at its right edge and flows behind the rump.
-		_horse_tail_base = _base_sprite(tail,"HorseTailSprite","horse_tail",Vector2(72,72),Vector2(-33,17),0)
+		_horse_tail_base = _base_sprite(tail,"HorseTailSprite","horse_tail",Vector2(45,66),Vector2(-20,21),0)
 		var horse_upper_length := float(_profile.leg) * .52
 		var horse_lower_length := float(_profile.leg) - horse_upper_length
 		for i in 4:
-			var x := -52.0 + i * 34.0
+			var x: float = [-44.0, -32.0, 28.0, 40.0][i]
 			var upper_name := "horse_leg_%d" % i
-			_part(hip, upper_name, "limb", Vector2(15,horse_upper_length), skin.darkened(.12), Vector2(x,38), -2 if i < 2 else 1)
+			_part(hip, upper_name, "limb", Vector2(15,horse_upper_length), skin.darkened(.12), Vector2(x,38), -3 if i % 2 == 0 else -2)
 			_part(_bones[upper_name], "horse_shin_%d" % i, "shin", Vector2(14,horse_lower_length), skin.darkened(.08), Vector2(0,horse_upper_length), 0)
-			_base_sprite(_bones["horse_shin_%d" % i],"HoofSprite%d" % i,"hoof",Vector2(28,24),Vector2(0,horse_lower_length),3)
+			_base_sprite(_bones["horse_shin_%d" % i],"HoofSprite%d" % i,"hoof",Vector2(22,13),Vector2(0,horse_lower_length),3)
 	else:
 		var thigh_length := float(_profile.leg) * .52
 		var shin_length := float(_profile.leg) - thigh_length
@@ -805,6 +808,15 @@ func _rebuild() -> void:
 		body.skin = skin
 		body.hip = hip
 		torso.add_child(body)
+	if race_id == "centaur":
+		_build_centaur_surfaces(limb_width, skin)
+		torso_visual.hide()
+		var body := preload("res://src/human_torso_surface.gd").new()
+		body.name = "CentaurTorsoSurface"
+		body.centaur = true
+		body.size = torso_size
+		body.hip = hip
+		torso.add_child(body)
 	_attach_gear("armor", torso, Vector2(0,torso_top_y), 1)
 	_attach_pants(hip,torso_x)
 	_attach_boots(hip,extremity_scale)
@@ -821,6 +833,21 @@ func _rebuild() -> void:
 		_update_crossbow_support_grip()
 	_capture_pose()
 	_apply_facing()
+
+
+func _build_centaur_surfaces(arm_width: float, skin: Color) -> void:
+	for chain in ["left", "right", "0", "1", "2", "3"]:
+		var arm: bool = chain in ["left", "right"]
+		var upper: Node2D = _bones[chain + "_arm" if arm else "horse_leg_" + chain]
+		var lower: Node2D = _bones[chain + "_forearm" if arm else "horse_shin_" + chain]
+		upper.get_child(0).hide()
+		lower.get_child(0).hide()
+		var surface := preload("res://src/human_limb_surface.gd").new()
+		surface.name = "CentaurLimbSurface"
+		surface.paint_texture = CentaurPaintedAtlas.texture("arm" if arm else ("hind_leg" if int(chain) < 2 else "front_leg"))
+		surface.paint_material = CentaurPaintedAtlas.paint_material()
+		surface.setup(lower, float(_profile.arm if arm else _profile.leg) * .48, arm_width if arm else float(_profile.leg_width), skin, not arm)
+		upper.add_child(surface)
 
 
 func _build_human_limb_surfaces(arm_width: float, leg_width: float, skin: Color) -> void:
@@ -860,6 +887,7 @@ func _attach_gear(slot: String, parent: Node2D, at: Vector2, z: int) -> void:
 	visual.name = slot.capitalize(); visual.position = at; visual.z_index = z
 	if slot == "armor":
 		visual.scale.x = float(_profile.get("armor_width_scale",1.0))
+		visual.scale.y = float(_profile.get("armor_height_scale",1.0))
 	elif slot == "offhand" and loadout[slot] == "lantern":
 		visual.scale = Vector2.ONE*Gear.LANTERN_DISPLAY_SCALE
 	parent.add_child(visual); _gear[slot] = visual
@@ -1121,6 +1149,8 @@ func _apply_facing() -> void:
 
 
 func _set_back_view(enabled: bool) -> void:
+	if race_id == "centaur" and _bones.has("torso") and _bones.torso.has_node("CentaurTorsoSurface"):
+		_bones.torso.get_node("CentaurTorsoSurface").back_view = enabled
 	if race_id == "human" and _bones.has("torso") and _bones.torso.has_node("HumanTorsoSurface"):
 		_bones.torso.get_node("HumanTorsoSurface").back_view = enabled
 		var back: GearVisual = _gear.get("back")
@@ -1172,7 +1202,7 @@ func _set_climbing_anatomy(enabled: bool) -> void:
 	# The climbing silhouette looks down over the horse's back: recenter the
 	# foreshortened barrel under the humanoid torso and root the tail at the
 	# lower middle of its rump.
-	_bones.horse_body.position = Vector2(_bones.torso.position.x,12) if enabled else _rest.horse_body.position
+	_bones.horse_body.position = Vector2(_bones.torso.position.x,4) if enabled else _rest.horse_body.position
 	_bones.horse_tail.position = Vector2(_bones.torso.position.x,58) if enabled else _rest.horse_tail.position
 	_bones.horse_tail.rotation = 0.0 if enabled else _rest.horse_tail.rotation
 	_bones.horse_tail.z_index = 1 if enabled else -4
@@ -1365,16 +1395,28 @@ func _swing(node: Node2D, windup: float, strike: float) -> void:
 
 func _animate_race_gesture(profile: Dictionary, motion_id: String) -> void:
 	var times: Array = profile.times
-	_tween_race_pose(profile.windup,float(times[0]))
+	var windup: Array = profile.windup.duplicate()
+	var impact: Array = profile.impact.duplicate()
+	if motion_id == "centaur_1":
+		# A rear pivots about the hind contact instead of translating the rig.
+		windup[5] = 0.0
+		windup[6] = 0.0
+		impact[5] = 0.0
+		impact[6] = 0.0
+	_tween_race_pose(windup,float(times[0]))
 	_queue_gesture_footwork(motion_id,false,float(times[0]))
+	if motion_id == "centaur_1":
+		_active_tween.parallel().tween_method(_pose_centaur_rear, 0.0, .12, float(times[0]))
 	if motion_id == "centaur_0" and loadout.weapon == "bow":
 		# Gallop Shot visibly loads the same authored nocked arrow as Fire Bow
 		# during anticipation, while the equine gait drives underneath it.
 		var bow: GearVisual = _gear.weapon
 		bow.set_bow_draw(0.0)
 		_active_tween.parallel().tween_method(bow.set_bow_draw,0.0,20.0,float(times[0]))
-	_tween_race_pose(profile.impact,float(times[1]),Tween.TRANS_BACK)
+	_tween_race_pose(impact,float(times[1]),Tween.TRANS_BACK)
 	_queue_gesture_footwork(motion_id,true,float(times[1]))
+	if motion_id == "centaur_1":
+		_active_tween.parallel().tween_method(_pose_centaur_rear, .12, 1.0, float(times[1]))
 	# The semantic effect belongs to the completed contact pose. Spawning it
 	# before this tween left weapon, mouth, and hand effects at their anticipation
 	# coordinates while the body finished the strike; projectile gestures also
@@ -1390,6 +1432,25 @@ func _animate_race_gesture(profile: Dictionary, motion_id: String) -> void:
 	_active_tween.parallel().tween_property(_bones.rig,"position",_rest.rig.position,.24)
 	_queue_lower_body_recovery(.24)
 	_queue_wing_recovery(.24)
+	if motion_id == "centaur_1":
+		_active_tween.parallel().tween_method(_pose_centaur_rear, 1.0, 0.0, .24)
+
+
+func _pose_centaur_rear(amount: float) -> void:
+	var pitch := deg_to_rad(-32.0 * amount)
+	var hip: Node2D = _bones.hip
+	hip.rotation = pitch
+	for index in [0, 1]:
+		_bones["horse_leg_%d" % index].rotation = -pitch - deg_to_rad(8.0 * amount)
+		_bones["horse_shin_%d" % index].rotation = deg_to_rad(16.0 * amount)
+	# Solve the hip translation from the supporting near hind ankle. The
+	# horse barrel, forelegs, torso and gear all rise around that contact.
+	var upper: Node2D = _bones.horse_leg_1
+	var lower: Node2D = _bones.horse_shin_1
+	var lower_length := float(_profile.leg) * .48
+	var contact := upper.position + lower.position.rotated(upper.rotation) + Vector2(0, lower_length).rotated(upper.rotation + lower.rotation)
+	var resting_contact: Vector2 = _rest.horse_leg_1.position + _rest.horse_shin_1.position + Vector2(0, lower_length)
+	hip.position = _rest.hip.position + resting_contact - contact.rotated(pitch)
 
 
 func _queue_gesture_footwork(motion_id: String,impact: bool,duration: float) -> void:

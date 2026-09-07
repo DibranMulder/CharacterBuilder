@@ -12,6 +12,8 @@ var armor := "none"
 var pants := "none"
 var accent := Color.WHITE
 var painted_surface: Node2D
+var paint_texture: Texture2D
+var paint_material: Material
 
 
 func _ready() -> void:

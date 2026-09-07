@@ -55,11 +55,14 @@ func _add_sample(canvas: Node2D,origin: Vector2,sample: Dictionary,index: int) -
 	avatar.position = origin+Vector2(200,322)
 	avatar.scale = Vector2.ONE*1.18
 	canvas.add_child(avatar)
-	avatar.configure("human",{
+	var lineage := "centaur" if "--centaur" in OS.get_cmdline_user_args() else "human"
+	avatar.configure(lineage,{
 		"weapon":"sword", "offhand":"none", "armor":"marsh_tunic",
 		"pants":"ranger", "boots":"leather", "head":"none",
 		"back":"long_cape", "accessory":"scarf",
 	})
+	if lineage == "centaur":
+		avatar.configure(lineage, CharacterCatalog.reference_loadout(lineage))
 	var overrides: Dictionary = sample.get("loadout", {})
 	for slot in overrides:
 		avatar.equip(StringName(slot), overrides[slot])
@@ -84,6 +87,13 @@ func _add_sample(canvas: Node2D,origin: Vector2,sample: Dictionary,index: int) -
 			remaining -= step
 		if avatar._active_tween:
 			avatar._active_tween.pause()
+	elif sample.mode == &"idle":
+		# Idle is procedural rather than tween-driven; sample its actual phase.
+		var remaining := float(sample.time)
+		while remaining > 0.0:
+			var step := minf(remaining, 1.0 / 120.0)
+			avatar._process(step)
+			remaining -= step
 
 
 func _add_rect(parent: Node,rect: Rect2,color: Color,z_index: int) -> void:
