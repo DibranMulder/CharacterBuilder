@@ -23,6 +23,8 @@ func _render() -> void:
 		var time := duration * float(index) / 11.0
 		var sample := {"title":"%s / %.2fs" % [motion.to_upper(), time], "mode":StringName(motion), "time":time}
 		var default_weapon := "axe" if "--troll" in OS.get_cmdline_user_args() else "sword"
+		if "--goblin" in OS.get_cmdline_user_args():
+			default_weapon = "crossbow"
 		var weapon: String = {"fire_bow":"bow", "fire_crossbow":"crossbow", "cast_spell":"staff"}.get(motion, default_weapon)
 		sample.loadout = {"weapon":weapon}
 		if "--shield" in OS.get_cmdline_user_args():
@@ -32,6 +34,8 @@ func _render() -> void:
 		if motion.begins_with("gesture"):
 			sample.gesture = int(motion.trim_prefix("gesture"))
 			sample.loadout.weapon = "axe" if "--troll" in OS.get_cmdline_user_args() else "bow"
+			if "--goblin" in OS.get_cmdline_user_args():
+				sample.loadout.weapon = "crossbow"
 		_add_sample(canvas, Vector2(index % 4,index / 4) * TILE_SIZE, sample, index)
 	for frame in 6:
 		await process_frame
@@ -45,6 +49,8 @@ func _render() -> void:
 		lineage = "fae"
 	if "--troll" in OS.get_cmdline_user_args():
 		lineage = "frost_troll"
+	if "--goblin" in OS.get_cmdline_user_args():
+		lineage = "goblin"
 	var output := "res://artifacts/%s_%s_cycle%s.png" % [lineage,motion,suffix]
 	if viewport.get_texture().get_image().save_png(output) != OK:
 		quit(1)

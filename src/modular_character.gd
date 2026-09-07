@@ -849,9 +849,16 @@ func _rebuild() -> void:
 		appearance.name = "TrollAppearance"
 		add_child(appearance)
 		appearance.setup(self)
+	if race_id == "goblin":
+		var appearance := GoblinAppearance.new()
+		appearance.name = "GoblinAppearance"
+		add_child(appearance)
+		appearance.setup(self)
 
 
 func _refresh_painted_appearance() -> void:
+	if race_id == "goblin" and has_node("GoblinAppearance"):
+		get_node("GoblinAppearance").refresh()
 	if race_id == "fae" and has_node("FaeAppearance"):
 		get_node("FaeAppearance").refresh()
 	if race_id == "frost_troll" and has_node("TrollAppearance"):

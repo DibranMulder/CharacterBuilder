@@ -245,6 +245,12 @@ For production, put definitions in custom `.tres` resources rather than hard-cod
 
 ## Next art milestone
 
+Goblin now uses coordinated reference paintings for its large-eared head,
+green anatomy, purple-scarved leather vest, continuous limbs, boots, goggles
+and backpack. Equipment remains swappable. See the
+[Goblin reference comparison](artifacts/goblin_reference_comparison.png) and
+[surface notes](docs/goblin-surface-rig.md).
+
 Frost Troll now uses coordinated artwork drawn from `dark-lineages.png`: a
 broad blue mottled body, heavy continuous arms and short legs, a connected
 tusked head, ragged charcoal jerkin and leather bracers. See the

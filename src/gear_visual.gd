@@ -12,6 +12,8 @@ var bow_draw := 0.0
 var crossbow_loaded := true
 var two_handed := false
 var back_view := false
+var appearance_texture: Texture2D
+var appearance_rect := Rect2()
 
 const REACH_ENDPOINTS := {
 	"sword": Vector2(0, 88),
@@ -279,6 +281,9 @@ func _draw_fitted_waist() -> void:
 
 
 func _draw() -> void:
+	if appearance_texture:
+		draw_texture_rect(appearance_texture, appearance_rect, false)
+		return
 	match slot:
 		"weapon":
 			match item:

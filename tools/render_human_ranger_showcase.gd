@@ -54,18 +54,22 @@ func _add_sample(canvas: Node2D,origin: Vector2,sample: Dictionary,index: int) -
 	var avatar := Avatar.new()
 	avatar.position = origin+Vector2(200,322)
 	avatar.scale = Vector2.ONE*1.18
+	if "--goblin" in OS.get_cmdline_user_args():
+		avatar.scale = Vector2.ONE * 1.8
 	canvas.add_child(avatar)
 	var lineage := "centaur" if "--centaur" in OS.get_cmdline_user_args() else "human"
 	if "--fae" in OS.get_cmdline_user_args():
 		lineage = "fae"
 	if "--troll" in OS.get_cmdline_user_args():
 		lineage = "frost_troll"
+	if "--goblin" in OS.get_cmdline_user_args():
+		lineage = "goblin"
 	avatar.configure(lineage,{
 		"weapon":"sword", "offhand":"none", "armor":"marsh_tunic",
 		"pants":"ranger", "boots":"leather", "head":"none",
 		"back":"long_cape", "accessory":"scarf",
 	})
-	if lineage in ["centaur", "fae", "frost_troll"]:
+	if lineage in ["centaur", "fae", "frost_troll", "goblin"]:
 		avatar.configure(lineage, CharacterCatalog.reference_loadout(lineage))
 	var overrides: Dictionary = sample.get("loadout", {})
 	for slot in overrides:

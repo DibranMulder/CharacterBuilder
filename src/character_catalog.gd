@@ -113,8 +113,9 @@ const RACES := {
 		"name": "Goblin", "tagline": "Quick-handed tunnel inventors",
 		"skin": Color("91a44a"), "accent": Color("b77c3f"),
 		"visual": {"hair_style": "crop", "hair": Color("493527"), "eye": Color("d7a63d"), "boot": Color("55402d")},
-		"scale": 0.72, "head": Vector2(58, 46), "torso": Vector2(44, 54),
-		"arm": 46.0, "leg": 40.0, "topology": "biped",
+		"scale": 0.8, "head": Vector2(58, 46), "torso": Vector2(70, 54),
+		"arm": 50.0, "leg": 40.0, "limb_width": 24.0, "leg_width": 24.0,
+		"head_sprite_scale": 1.8, "head_y_adjust": 12.0, "topology": "biped",
 		"gestures": [
 			{"name": "Snap Shot", "style": "shoot"},
 			{"name": "Low Blow", "style": "slash"},
