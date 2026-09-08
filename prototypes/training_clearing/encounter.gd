@@ -10,6 +10,11 @@ var velocity := Vector2.ZERO
 var facing := 1.0
 var grounded := true
 var health := 100.0
+var mana := 100.0
+var mana_delay := 0.0
+var xp := 0
+var adventure_level := 1
+var last_rejection := ""
 var stamina := 100.0
 var guarding := false
 var attack_time := 0.0
@@ -29,6 +34,61 @@ var events: Array[Dictionary] = []
 var weapon := "sword"
 var can_guard := true
 var projectiles: Array[Dictionary] = []
+var inventory = preload("res://prototypes/training_clearing/inventory.gd").new()
+var loot: Array[Dictionary] = []
+var potion_cooldown := 0.0
+
+func use_potion(kind: String) -> Dictionary:
+	if health <= 0 or potion_cooldown > 0 or not kind in ["hp", "mana"]:
+		return {}
+	var restored: float = inventory.consume(kind, health if kind == "hp" else mana, 100)
+	if restored <= 0:
+		return {}
+	if kind == "hp":
+		health += restored
+	else:
+		mana += restored
+	potion_cooldown = 1.0
+	return {"kind":"xp" if kind == "hp" else "notice", "text":"+%d %s" % [restored, kind.to_upper()], "position":position + Vector2(0,-150)}
+
+func change_equipment(index: int, slot := "") -> bool:
+	if health <= 0 or attack_time > 0 or not projectiles.is_empty():
+		return false
+	var changed: bool = inventory.equip(index) if slot.is_empty() else inventory.unequip(slot)
+	if changed:
+		configure_equipment(inventory.equipped)
+		guarding = false
+	return changed
+const WEAPON_FEEL := {
+	"sword": {"damage":20, "duration":.88, "release":.39, "reach":140},
+	"axe": {"damage":28, "duration":1.05, "release":.43, "reach":130},
+	"spear": {"damage":18, "duration":.72, "release":.25, "reach":180},
+	"bow": {"damage":18, "duration":.88, "release":.50, "reach":650},
+	"crossbow": {"damage":26, "duration":.94, "release":.38, "reach":650},
+	"staff": {"damage":22, "duration":.78, "release":.30, "reach":650},
+	"branch_staff": {"damage":22, "duration":.78, "release":.30, "reach":650},
+}
+
+func weapon_feel() -> Dictionary:
+	return WEAPON_FEEL.get(weapon, WEAPON_FEEL.sword)
+
+func mana_cost(power := false) -> float:
+	return 25.0 if power else (8.0 if weapon in ["staff", "branch_staff"] else 0.0)
+
+func xp_required() -> int:
+	return adventure_level * 100
+
+func award_xp(amount: int) -> void:
+	if adventure_level >= 120:
+		return
+	xp += amount
+	events.append({"kind":"xp", "text":"+%d XP" % amount, "position": position + Vector2(0,-190)})
+	while adventure_level < 120 and xp >= xp_required():
+		xp -= xp_required()
+		adventure_level += 1
+		events.append({"kind":"level", "text":"LEVEL %d" % adventure_level, "position": position + Vector2(0,-220)})
+	if adventure_level == 120:
+		xp = 0
 
 func configure_equipment(loadout: Dictionary) -> void:
 	weapon = loadout.weapon
@@ -53,16 +113,22 @@ func _init() -> void:
 			"timer": 0.0, "facing": -1.0, "flash": 0.0})
 
 func begin_attack(power := false) -> bool:
+	last_rejection = ""
 	if weapon == "none" or health <= 0 or attack_time > 0 or guarding:
 		return false
-	if power and (skill_cooldown > 0 or stamina < 25):
+	if power and skill_cooldown > 0:
+		return false
+	if mana < mana_cost(power):
+		last_rejection = "NOT ENOUGH MANA"
 		return false
 	attack_kind = "power" if power else "sword"
-	attack_time = .88
+	attack_time = weapon_feel().duration
 	attack_hit = false
 	attack_facing = facing
+	mana -= mana_cost(power)
+	if mana_cost(power) > 0:
+		mana_delay = 1.2
 	if power:
-		stamina -= 25
 		skill_cooldown = 4.0
 	return true
 
@@ -74,8 +140,9 @@ func jump() -> bool:
 	jumped = true
 	return true
 
-func step(delta: float, direction: float, guard_held: bool) -> void:
+func step(delta: float, direction: float, guard_held: bool, muzzle := Vector2.INF) -> void:
 	events.clear()
+	potion_cooldown = maxf(0, potion_cooldown - delta)
 	skill_cooldown = maxf(0, skill_cooldown - delta)
 	invulnerable = maxf(0, invulnerable - delta)
 	if health <= 0:
@@ -84,6 +151,7 @@ func step(delta: float, direction: float, guard_held: bool) -> void:
 			position = Vector2(160, FLOOR_Y)
 			velocity = Vector2.ZERO
 			health = 100
+			mana = 100
 			stamina = 100
 			invulnerable = 2
 			for enemy in enemies:
@@ -94,6 +162,9 @@ func step(delta: float, direction: float, guard_held: bool) -> void:
 					enemy.timer = 0.0
 			events.append({"text": "Recovered in the same clearing", "position": position})
 		return
+	mana_delay = maxf(0, mana_delay - delta)
+	if mana_delay <= 0:
+		mana = minf(100, mana + 5 * delta)
 	guarding = can_guard and guard_held and grounded and attack_time <= 0 and stamina > 1
 	if absf(direction) > .1 and attack_time <= 0:
 		facing = signf(direction)
@@ -117,43 +188,68 @@ func step(delta: float, direction: float, guard_held: bool) -> void:
 	stamina = clampf(stamina + (-8.0 if guarding else 19.0) * delta, 0, 100)
 	if attack_time > 0:
 		attack_time = maxf(0, attack_time - delta)
-		var release := .5 if weapon == "bow" else (.38 if weapon == "crossbow" else (.3 if weapon in ["staff", "branch_staff"] else .39))
-		if not attack_hit and attack_time <= .88 - release:
+		if not attack_hit and attack_time <= weapon_feel().duration - weapon_feel().release:
 			attack_hit = true
 			if is_ranged():
-				projectiles.append({"position": position + Vector2(attack_facing * 35, -45), "direction": attack_facing, "life": 1.0, "power": attack_kind == "power"})
+				var origin: Vector2 = muzzle if muzzle.is_finite() else position + Vector2(attack_facing * 35, -45)
+				var travel := Vector2(attack_facing, 0)
+				var closest := 650.0
+				for enemy in enemies:
+					var distance: float = (enemy.x - origin.x) * attack_facing
+					if enemy.hp > 0 and distance > 0 and distance < closest:
+						closest = distance
+						travel = (Vector2(enemy.x, FLOOR_Y - 40) - origin).normalized()
+				projectiles.append({"position": origin, "velocity": travel * 620, "direction": attack_facing, "life": 1.05, "power": attack_kind == "power"})
 			for enemy in enemies if not is_ranged() else []:
 				var dx: float = (enemy.x - position.x) * attack_facing
-				var reach := 180 if weapon == "spear" else 140
+				var reach: int = weapon_feel().reach
 				if enemy.hp > 0 and dx >= -10 and dx <= reach and absf(position.y - FLOOR_Y) < 90:
 					_damage_enemy(enemy, attack_kind == "power")
 	for projectile in projectiles:
-		var previous_x: float = projectile.position.x
-		projectile.position.x += projectile.direction * 620 * delta
+		var previous: Vector2 = projectile.position
+		projectile.position += projectile.velocity * delta
 		projectile.life -= delta
 		# Sort along travel direction so a shot stops at the first living target.
 		var targets := enemies.duplicate()
 		targets.sort_custom(func(a, b): return a.x < b.x if projectile.direction > 0 else a.x > b.x)
 		for enemy in targets:
-			if enemy.hp > 0 and enemy.x >= minf(previous_x, projectile.position.x) - 30 and enemy.x <= maxf(previous_x, projectile.position.x) + 30 and absf(projectile.position.y - (FLOOR_Y - 40)) < 45:
+			var center := Vector2(enemy.x, FLOOR_Y - 40)
+			if enemy.hp > 0 and Geometry2D.get_closest_point_to_segment(center, previous, projectile.position).distance_to(center) < 32:
 				_damage_enemy(enemy, projectile.power)
 				projectile.life = 0
 				break
 	projectiles = projectiles.filter(func(shot): return shot.life > 0)
 	for enemy in enemies:
 		_update_enemy(enemy, delta)
+	if health > 0:
+		for drop in loot:
+			if not drop.collected and position.distance_to(drop.position) < 75:
+				drop.collected = true
+				inventory.grant(drop.reward)
+				events.append({"kind":"level", "text":drop.label, "position":position + Vector2(0,-150)})
+		loot = loot.filter(func(drop): return not drop.collected)
 
 func _damage_enemy(enemy: Dictionary, power: bool) -> void:
-	var damage := 42 if power else 20
+	if enemy.hp <= 0:
+		return
+	var damage: int = mini(int(enemy.hp), roundi(weapon_feel().damage * (2.1 if power else 1.0)))
 	enemy.hp = maxf(0, enemy.hp - damage)
 	enemy.flash = .18
-	events.append({"text": str(damage), "position": Vector2(enemy.x, FLOOR_Y - 100)})
+	events.append({"kind":"power" if power else "dealt", "text":str(damage), "position":Vector2(enemy.x, FLOOR_Y-105), "impact":Vector2(enemy.x,FLOOR_Y-40)})
 	if power:
 		enemy.state = "recover"
 		enemy.timer = .85
 	if enemy.hp <= 0:
 		kills += 1
 		elite_defeated = elite_defeated or enemy.elite
+		award_xp(100 if enemy.elite else 40)
+		var reward := {"coins":30 if enemy.elite else 8, "hp":1, "mana":1, "items":[]}
+		if enemy.elite:
+			reward.items.append({"slot":"weapon", "id":"axe"})
+		elif kills == 2:
+			reward.items.append({"slot":"weapon", "id":"crossbow"})
+		loot.append({"position":Vector2(enemy.x, FLOOR_Y), "collected":false, "reward":reward,
+			"label":"+%d COINS · POTIONS%s" % [reward.coins, " · GEAR" if not reward.items.is_empty() else ""]})
 
 func _update_enemy(enemy: Dictionary, delta: float) -> void:
 	enemy.flash = maxf(0, enemy.flash - delta)
@@ -182,14 +278,15 @@ func _update_enemy(enemy: Dictionary, delta: float) -> void:
 			var blocked: bool = guarding and -dx * facing > 0 and stamina >= 18
 			if blocked:
 				stamina -= 18
-				damage *= .2
+				damage = roundf(damage * .2)
 				blocks += 1
 			elif guarding:
 				guarding = false
 				stamina = maxf(0, stamina - 18)
+			damage = minf(health, damage)
 			health = maxf(0, health - damage)
 			invulnerable = .25
-			events.append({"text": "BLOCK" if blocked else "−%d" % damage, "position": position + Vector2(0, -150)})
+			events.append({"kind":"blocked" if blocked else "taken", "text":"BLOCK −%d" % damage if blocked else "−%d HP" % damage, "position":position+Vector2(0,-150), "impact":position+Vector2(0,-85)})
 			if health <= 0:
 				projectiles.clear()
 				death_time = 2

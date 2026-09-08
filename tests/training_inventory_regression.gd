@@ -1,0 +1,66 @@
+extends SceneTree
+const Encounter = preload("res://prototypes/training_clearing/encounter.gd")
+const Clearing = preload("res://prototypes/training_clearing/training_clearing.tscn")
+
+func _initialize() -> void:
+	_run.call_deferred()
+
+func _run() -> void:
+	var model = Encounter.new()
+	model.inventory.configure("human", CharacterCatalog.reference_loadout("human"))
+	assert(model.use_potion("hp").is_empty())
+	assert(model.inventory.potions.hp == 3)
+	model.health = 75
+	assert(model.use_potion("hp").text == "+25 HP")
+	assert(model.health == 100 and model.inventory.potions.hp == 2)
+	model.mana = 0
+	assert(model.use_potion("mana").is_empty(), "shared cooldown prevents potion spam")
+	model.step(1.01,0,false)
+	assert(not model.use_potion("mana").is_empty())
+	assert(model.inventory.potions.mana == 2)
+	model.health = 0
+	model.potion_cooldown = 0
+	assert(model.use_potion("hp").is_empty(), "potions cannot revive")
+	model.health = 100
+	model.enemies[0].hp = 1
+	model._damage_enemy(model.enemies[0],false)
+	assert(model.loot.size() == 1 and model.inventory.coins == 0)
+	model._damage_enemy(model.enemies[0],false)
+	assert(model.loot.size() == 1)
+	model.position.x = model.enemies[0].x
+	model.step(.01,0,false)
+	assert(model.loot.is_empty() and model.inventory.coins == 8)
+	model.step(.01,0,false)
+	assert(model.inventory.coins == 8, "loot may only be collected once")
+	model.inventory.grant({"items":[{"slot":"weapon", "id":"staff"}]})
+	assert(model.change_equipment(0))
+	assert(model.weapon == "staff" and model.mana_cost() == 8)
+	assert(model.inventory.items[0].id == "sword", "swaps return old gear")
+	assert(model.change_equipment(-1,"weapon") and model.weapon == "none")
+	assert(not model.change_equipment(999))
+	model.inventory.configure("centaur", CharacterCatalog.reference_loadout("centaur"))
+	model.inventory.grant({"items":[{"slot":"pants", "id":"cloth"}]})
+	assert(not model.change_equipment(model.inventory.items.size()-1))
+	assert(model.inventory.equipped.pants == "none")
+	var scene = Clearing.instantiate()
+	root.add_child(scene)
+	scene.set_physics_process(false)
+	scene.model.inventory.grant({"coins":8, "items":[{"slot":"weapon", "id":"crossbow"}]})
+	scene._toggle_inventory()
+	assert(scene.paused and is_instance_valid(scene.inventory_panel))
+	scene.inventory_panel.select_tile(scene.inventory_panel.tiles[0])
+	assert("26" in scene.inventory_panel.detail.text)
+	scene.inventory_panel._activate()
+	assert(scene.avatar.loadout.weapon == "crossbow" and scene.model.weapon == "crossbow")
+	scene._toggle_inventory()
+	assert(not scene.paused)
+	scene._toggle_pause()
+	scene._toggle_inventory()
+	scene._toggle_inventory()
+	assert(scene.paused, "closing inventory preserves an existing pause")
+	scene._restart()
+	assert(scene.model.inventory.coins == 0 and scene.model.inventory.potions.hp == 3)
+	assert(scene.model.inventory.equipped.weapon == "crossbow")
+	scene.free()
+	print("PASS: potion bounds/cooldown, single loot collection, gear transactions, restrictions and inventory UI")
+	quit()

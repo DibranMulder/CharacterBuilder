@@ -22,6 +22,10 @@ func _run() -> void:
 				return
 		clearing.avatar.present_static_pose("guard")
 		clearing.avatar.present_static_pose("air")
+		clearing._physics_process(1.0 / 60)
+		if not clearing.avatar.projectile_socket().is_finite():
+			_fail("weapon socket must be finite for " + lineage)
+			return
 		clearing._restart()
 		if clearing.avatar.race_id != lineage or clearing.avatar.loadout != outfit or clearing.model.weapon != outfit.weapon:
 			_fail("restart lost selected lineage")

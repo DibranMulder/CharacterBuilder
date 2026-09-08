@@ -27,3 +27,7 @@ func _fire_crossbow_bolt() -> void:
 
 func _release_staff_spell() -> void:
 	pass
+
+func projectile_socket() -> Vector2:
+	var weapon := _gear.weapon as GearVisual
+	return weapon.to_global(weapon.reach_endpoint())

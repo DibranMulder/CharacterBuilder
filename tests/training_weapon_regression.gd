@@ -10,9 +10,9 @@ func _initialize() -> void:
 		if accepted != (weapon != "none"):
 			_fail("empty weapon must not attack")
 			return
-		for frame in 60:
+		for frame in 90:
 			model.step(1.0 / 60, 0, false)
-		if weapon != "none" and model.enemies[0].hp != 30:
+		if weapon != "none" and model.enemies[0].hp != 50 - model.weapon_feel().damage:
 			_fail("equipped %s must hit exactly once" % weapon)
 			return
 		model.step(.01, 0, true)
