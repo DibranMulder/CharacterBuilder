@@ -134,11 +134,12 @@ func refresh() -> void:
 	selected_slot = ""
 	selected_potion = ""
 	item_title.text = "Your equipment"
-	detail.text = "Select an item to inspect it. Drag gear onto its matching slot."
+	detail.text = ""
 	stats.text = "HEALTH     %d / 100\n\nMANA         %d / 100\n\nCOINS         %d" % [model.health,model.mana,model.inventory.coins]
 	action.text = "Select an item"
 	action.disabled = true
-	message.text = "Drag to equip · Drop equipped gear into the pouch to remove it · Click for comparison · Combat paused"
+	action.visible = false
+	message.text = ""
 	queue_redraw()
 
 func _add_tile(tile: Control) -> void:
@@ -157,7 +158,7 @@ func select_tile(tile: Control) -> void:
 	item_title.text = ("Health potion" if selected_potion == "hp" else "Mana potion") if not selected_potion.is_empty() else String(tile.item.id).capitalize()
 	var current: String = model.inventory.equipped.get(tile.item.slot,"none")
 	detail.text = "Currently: %s\nSelected: %s" % [current.capitalize(),String(tile.item.id).capitalize()]
-	stats.text = "Appearance only\nNo armor bonuses yet."
+	stats.text = "Cosmetic equipment"
 	if tile.item.slot == "weapon":
 		var before: Dictionary = model.WEAPON_FEEL.get(current,{"damage":0,"duration":0})
 		var after: Dictionary = model.WEAPON_FEEL.get(tile.item.id,{"damage":0,"duration":0})
@@ -167,8 +168,9 @@ func select_tile(tile: Control) -> void:
 		stats.text = "GUARD\n\n" + ("Blocks frontal attacks\n80% damage reduction" if CharacterCatalog.is_shield(tile.item.id) else "No shield guard")
 	if not selected_potion.is_empty():
 		detail.text = "Restores up to 40 %s.\nShared 1-second cooldown." % selected_potion.to_upper()
-		stats.text = "IN POUCH   ×%d\n\nUse %s after closing\nthe pouch." % [tile.count,"H" if selected_potion == "hp" else "M"]
+		stats.text = "IN POUCH   ×%d" % tile.count
 	action.text = "Unequip" if not selected_slot.is_empty() else "Equip item"
+	action.visible = tile.item.id != "none" and tile.item.slot != "potion"
 	action.disabled = tile.item.id == "none" or tile.locked or tile.item.slot == "potion"
 	if tile.locked:
 		detail.text = "Grove Centaurs cannot\nequip pants or boots."

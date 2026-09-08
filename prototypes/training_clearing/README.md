@@ -97,3 +97,17 @@ Observe: can players recognize and block the warning without instruction? Does
 attack commitment feel fair? Can touch users move and act simultaneously? Does
 Power Strike create a worthwhile mana choice? Is recovery understandable?
 The verdict is pending hands-on play, especially on physical mobile devices.
+
+The play screen intentionally omits the practice checklist, debug counters,
+instructional signs and persistent tutorial prose, following the uncluttered
+world presentation in `designs/npc-interaction-mockup.png`. Action hotkeys and
+resource/cost information remain; Builder and Restart are exposed while paused.
+The practice conditions still run in the local model. Controls are documented
+here rather than overlaid on the world. The pouch shows item details and errors,
+not a permanent drag-and-drop instruction banner.
+
+The top-left resource HUD follows the NPC mockup's compact portrait medallion,
+overlapping level badge, name, red/blue numeric bars and slim green XP percentage.
+The portrait renders the equipped character (including headgear) once per outfit
+change through `src/ui/character_portrait.gd`; it is not a continuously animated
+second character. `capture_hud.gd` produces an eight-lineage visual audit.

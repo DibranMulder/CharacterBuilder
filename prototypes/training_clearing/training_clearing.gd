@@ -18,7 +18,6 @@ var paused := false
 var feedback := preload("res://prototypes/training_clearing/combat_overlay.gd").new()
 var resources := preload("res://prototypes/training_clearing/resource_hud.gd").new()
 var hud: Label
-var objective: Label
 var notice: Label
 var skill_button: Button
 var last_pose := ""
@@ -28,7 +27,8 @@ var hp_button: Button
 var mana_button: Button
 var attack_button: Button
 var guard_button: Button
-var equipment_label: Label
+var builder_button: Button
+var restart_button: Button
 
 func _ready() -> void:
 	RenderingServer.set_default_clear_color(Color("182e2e"))
@@ -47,22 +47,20 @@ func _ready() -> void:
 	add_child(feedback)
 	add_child(resources)
 	resources.player_name = CharacterCatalog.race(avatar.race_id).name.to_upper()
+	resources.set_character(avatar.race_id,avatar.loadout)
 	_build_ui()
 	get_window().focus_exited.connect(_lose_focus)
 	_update_view(0)
 
 func _build_ui() -> void:
-	var title := _label("THE FIRST CLEARING", Vector2(482, 18), 24)
-	title.theme_type_variation = "ChronicleHeading"
-	title.add_theme_color_override("font_color", CREAM)
-	equipment_label = _label("", Vector2(484, 53), 12)
-	hud = _label("", Vector2(484, 83), 15)
-	objective = _label("", Vector2(28, 136), 14)
-	notice = _label("", Vector2(28, 160), 13)
-	_button("Builder", Vector2(1010, 20), Vector2(112, 38)).pressed.connect(func(): get_tree().change_scene_to_file("res://main.tscn"))
+	hud = _label("", Vector2(1010, 112), 15)
+	notice = _label("", Vector2(484, 24), 18)
+	builder_button = _button("Builder", Vector2(1010, 66), Vector2(112, 38))
+	builder_button.pressed.connect(func(): get_tree().change_scene_to_file("res://main.tscn"))
 	_button("Pause · Esc", Vector2(872, 20), Vector2(128, 38)).pressed.connect(_toggle_pause)
-	_button("Restart · R", Vector2(872, 66), Vector2(128, 38)).pressed.connect(_restart)
-	_button("Pouch · I", Vector2(1010,66), Vector2(112,38)).pressed.connect(_toggle_inventory)
+	restart_button = _button("Restart · R", Vector2(872, 66), Vector2(128, 38))
+	restart_button.pressed.connect(_restart)
+	_button("Pouch · I", Vector2(1010,20), Vector2(112,38)).pressed.connect(_toggle_inventory)
 	hp_button = _button("", Vector2(366,536), Vector2(144,48))
 	hp_button.pressed.connect(_potion.bind("hp"))
 	mana_button = _button("", Vector2(522,536), Vector2(144,48))
@@ -89,7 +87,6 @@ func _build_ui() -> void:
 	skill_button = _button("", Vector2(982, 548), Vector2(144, 70))
 	skill_button.theme_type_variation = "PrimaryButton"
 	skill_button.pressed.connect(_attack.bind(true))
-	_label("A / D or arrows to move   •   Gold = warning   •   Red = strike   •   Guard faces your enemy", Vector2(26, 628), 12)
 
 func _label(value: String, at: Vector2, size: int) -> Label:
 	var label := Label.new()
@@ -99,6 +96,8 @@ func _label(value: String, at: Vector2, size: int) -> Label:
 	label.position = at
 	label.add_theme_font_size_override("font_size", size)
 	label.add_theme_color_override("font_color", Color("dae4c7"))
+	label.add_theme_color_override("font_outline_color", Color("101b2c"))
+	label.add_theme_constant_override("outline_size",3)
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(label)
 	return label
@@ -225,6 +224,7 @@ func _equipment_changed() -> void:
 	var facing_direction: StringName = avatar.facing
 	avatar.configure(avatar.race_id, model.inventory.equipped.duplicate())
 	avatar.set_facing(facing_direction)
+	resources.set_character(avatar.race_id,avatar.loadout)
 	last_pose = ""
 	_update_view(0)
 
@@ -273,29 +273,21 @@ func _update_view(delta: float) -> void:
 	resources.queue_redraw()
 	feedback.camera = Vector2(camera_x, camera_y)
 	feedback.queue_redraw()
-	hud.text = "DEFEATED %d / 3    BLOCKS %d" % [model.kills, model.blocks]
-	hud.text += "    COINS %d" % model.inventory.coins
-	equipment_label.text = "%s + %s" % [model.weapon.to_upper(), String(avatar.loadout.offhand).to_upper()]
+	hud.text = "%d coins" % model.inventory.coins
+	builder_button.visible = paused
+	restart_button.visible = paused
 	guard_button.disabled = not model.can_guard
-	guard_button.text = "GUARD\nHold Shift / 2" if model.can_guard else "NO SHIELD"
+	guard_button.text = "GUARD\nShift / 2" if model.can_guard else "NO SHIELD"
 	attack_button.disabled = model.weapon == "none"
 	attack_button.text = "SPELL\nJ / 1 · 8 mana" if model.mana_cost() > 0 else "ATTACK\nJ / 1"
 	hp_button.text = "HP ×%d · H" % model.inventory.potions.hp
 	mana_button.text = "Mana ×%d · M" % model.inventory.potions.mana
 	hp_button.disabled = paused or model.health <= 0 or model.health >= 100 or model.inventory.potions.hp == 0 or model.potion_cooldown > 0
 	mana_button.disabled = paused or model.health <= 0 or model.mana >= 100 or model.inventory.potions.mana == 0 or model.potion_cooldown > 0
-	objective.text = "Practice: %s Move     %s Jump     %s     %s Defeat two enemies" % [_mark(model.moved), _mark(model.jumped), (_mark(model.blocks > 0) + " Block a hit") if model.can_guard else "No shield: evade attacks", _mark(model.kills >= 2)]
-	notice.text = "PAUSED — Esc or Pause to resume" if paused else ("Defeated — recovering here in %.1fs" % model.death_time if model.health <= 0 else ("Clearing complete! Optional: follow the trail to the Elder Briar. R to try again." if model.complete() else "Let an enemy wind up, face it, and hold Guard. Power Strike costs 25 mana."))
-	if model.elite_defeated and model.complete():
-		notice.text = "All challenges complete. How did the timing feel? Restart to try a different approach."
+	notice.text = "Paused" if paused else ("Recovering · %.1fs" % model.death_time if model.health <= 0 else "")
 	skill_button.text = "POWER · %.1fs" % model.skill_cooldown if model.skill_cooldown > 0 else "POWER STRIKE\nK / 3 · 25 mana"
 	skill_button.disabled = model.weapon == "none"
-	if not paused and model.health > 0 and not model.complete():
-		notice.text = "No weapon equipped — return to Builder to choose one." if model.weapon == "none" else "Your exact builder equipment is active. J attacks; K powers up the selected weapon."
 	queue_redraw()
-
-func _mark(done: bool) -> String:
-	return "✓" if done else "○"
 
 func _draw() -> void:
 	draw_rect(Rect2(0, 0, 1152, 648), Color("82aea0"))
@@ -314,9 +306,6 @@ func _draw() -> void:
 	for platform in Encounter.PLATFORMS:
 		draw_style_box(_ledge_style(), platform)
 		draw_line(platform.position, platform.position + Vector2(platform.size.x, 0), Color("d2d69c"), 5)
-	_sign(Vector2(110, 447), "PRACTICE GROVE")
-	_sign(Vector2(945, 447), "JUMP TO THE LEDGES")
-	_sign(Vector2(1650, 447), "OPTIONAL ELITE →")
 	for enemy in model.enemies:
 		_draw_enemy(enemy)
 	for drop in model.loot:
@@ -324,7 +313,6 @@ func _draw() -> void:
 		draw_circle(at, 15, Color("f2c45f"))
 		draw_rect(Rect2(at - Vector2(9,8), Vector2(18,16)), Color("805839"))
 		draw_line(at + Vector2(0,-8), at + Vector2(0,8), CREAM, 2)
-		draw_string(ThemeDB.fallback_font, at + Vector2(-25,-24), "LOOT", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, CREAM)
 	for projectile in model.projectiles:
 		var point: Vector2 = projectile.position
 		if model.weapon in ["staff", "branch_staff"]:
@@ -338,21 +326,14 @@ func _draw() -> void:
 	if not model.is_ranged() and model.attack_kind == "power" and model.attack_time > .35 and model.attack_time < .5:
 		draw_arc(model.position + Vector2(0, -55), 115, -1.3 if model.attack_facing > 0 else 1.85, 1.3 if model.attack_facing > 0 else 4.45, 30, Color("fff2a0"), 7, true)
 	draw_set_transform(Vector2.ZERO)
-	draw_rect(Rect2(0, 0, 1152, 187), Color(.063, .106, .173, .95))
-	draw_rect(Rect2(0, 530, 1152, 118), Color("101b2c"))
 	if paused or model.health <= 0:
-		draw_rect(Rect2(0, 187, 1152, 343), Color(0, .05, .05, .35))
+		draw_rect(Rect2(0, 0, 1152, 648), Color(0, .05, .05, .35))
 
 func _ledge_style() -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color("6a6849")
 	style.set_corner_radius_all(5)
 	return style
-
-func _sign(at: Vector2, title: String) -> void:
-	draw_line(at, at + Vector2(0, 33), Color("615238"), 5)
-	draw_rect(Rect2(at - Vector2(74, 28), Vector2(160, 30)), Color("ece0b6"))
-	draw_string(ThemeDB.fallback_font, at + Vector2(-67, -8), title, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, INK)
 
 func _draw_enemy(enemy: Dictionary) -> void:
 	if enemy.hp <= 0:

@@ -160,7 +160,7 @@ func step(delta: float, direction: float, guard_held: bool, muzzle := Vector2.IN
 					enemy.hp = enemy.max_hp
 					enemy.state = "idle"
 					enemy.timer = 0.0
-			events.append({"text": "Recovered in the same clearing", "position": position})
+			events.append({"text": "Recovered", "position": position})
 		return
 	mana_delay = maxf(0, mana_delay - delta)
 	if mana_delay <= 0:
