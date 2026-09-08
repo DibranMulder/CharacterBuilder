@@ -1,6 +1,11 @@
 extends SceneTree
 
 const Builder := preload("res://main.tscn")
+const LINEAGE_NAMES := {
+	"bogkin": "Tidekin", "human": "Humans", "centaur": "Grove Centaurs",
+	"fae": "Aeralith", "frost_troll": "Crag Trolls", "goblin": "Deep Goblins",
+	"duneborn": "Sunscour", "frostling": "Rimeborn",
+}
 
 
 func _initialize() -> void:
@@ -43,6 +48,11 @@ func _run() -> void:
 		return
 	for race_index in builder.race_ids.size():
 		builder._select_race(race_index)
+		var lineage_id: String = builder.race_ids[race_index]
+		var expected_name: String = LINEAGE_NAMES[lineage_id]
+		if CharacterCatalog.race(lineage_id).name != expected_name or builder.race_selector.get_item_text(race_index) != expected_name or builder.title_label.text != expected_name:
+			_fail("lineage catalog, selector and title must use %s" % expected_name)
+			return
 		if builder.avatar.loadout != CharacterCatalog.reference_loadout(builder.race_ids[race_index]):
 			_fail("selecting %s did not apply its complete reference kit" % builder.race_ids[race_index])
 			return

@@ -6,9 +6,9 @@ const OUTPUT_PATH := "res://artifacts/shield_variants_showcase.png"
 const VIEWPORT_SIZE := Vector2i(1200,800)
 const TILE_SIZE := Vector2(400,400)
 const VARIANTS := [
-	{"title":"BOGKIN / MARSH SHIELD", "race":"bogkin", "shield":"marsh_shield"},
+	{"title":"TIDEKIN / MARSH SHIELD", "race":"bogkin", "shield":"marsh_shield"},
 	{"title":"HUMAN / ADVENTURER SHIELD", "race":"human", "shield":"shield"},
-	{"title":"DUNEBORN / DUNE SHIELD", "race":"duneborn", "shield":"dune_shield"},
+	{"title":"SUNSCOUR / DUNE SHIELD", "race":"duneborn", "shield":"dune_shield"},
 ]
 
 

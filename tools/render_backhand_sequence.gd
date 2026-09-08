@@ -42,7 +42,7 @@ func _render() -> void:
 		push_error("Could not save %s" % OUTPUT_PATH)
 		quit(1)
 		return
-	print("PASS: rendered Human and Frost Troll five-stage backhand sequences to %s" % OUTPUT_PATH)
+	print("PASS: rendered Human and Crag Troll five-stage backhand sequences to %s" % OUTPUT_PATH)
 	quit()
 
 

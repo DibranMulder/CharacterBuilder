@@ -1,4 +1,4 @@
-# Duneborn reference-art surfaces
+# Sunscour reference-art surfaces
 
 The third character in `dark-lineages.png` guides the bronze lamellar shoulder
 mantle, rust-red split robe, brown straps and boots, cape, and burgundy wrapped

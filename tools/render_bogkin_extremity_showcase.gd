@@ -42,7 +42,7 @@ func _render() -> void:
 		push_error("Could not save %s" % OUTPUT_PATH)
 		quit(1)
 		return
-	print("PASS: rendered Bogkin webbed extremities in six runtime poses to %s" % OUTPUT_PATH)
+	print("PASS: rendered Tidekin webbed extremities in six runtime poses to %s" % OUTPUT_PATH)
 	quit()
 
 

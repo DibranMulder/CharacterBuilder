@@ -38,7 +38,7 @@ func _render() -> void:
 		push_error("Could not save %s" % OUTPUT_PATH)
 		quit(1)
 		return
-	print("PASS: rendered Frostling fur coat through casting, locomotion, and rear climb to %s" % OUTPUT_PATH)
+	print("PASS: rendered Rimeborn fur coat through casting, locomotion, and rear climb to %s" % OUTPUT_PATH)
 	quit()
 
 

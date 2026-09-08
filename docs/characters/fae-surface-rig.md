@@ -1,6 +1,6 @@
-# Fae reference-art surfaces
+# Aeralith reference-art surfaces
 
-The Fae is rebuilt from the rightmost character in `light-lineages.png`, using
+The Aeralith is rebuilt from the rightmost character in `light-lineages.png`, using
 three new paintings: `fae_reference_base_v2.png`,
 `fae_reference_clothes_v2.png`, and `fae_reference_wings_v2.png`. The older
 sources are preserved. The new head and ponytail, cream base torso, arms, legs
@@ -22,7 +22,7 @@ swappable through the original equipment system.
 The body and tunic use the shared torso mesh with optional front/rear textures,
 material, artwork orientation and hem length. The tunic's lower rows follow
 the hip, while the upper chest follows the torso. This shares the human and
-centaur surface technique without flattening the Fae into one rigid sprite.
+centaur surface technique without flattening the Aeralith into one rigid sprite.
 
 New angular insect-wing paintings replace the old leaf-shaped membranes on
 the same animated wing pivots. The membrane shader keeps the blue-gray fill

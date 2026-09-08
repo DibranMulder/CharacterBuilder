@@ -40,7 +40,7 @@ func _render() -> void:
 		quit(1)
 		return
 	Engine.time_scale = 1.0
-	print("PASS: rendered Goblin crossbow rest, fire, locomotion, and climb states to %s" % OUTPUT_PATH)
+	print("PASS: rendered Deep Goblin crossbow rest, fire, locomotion, and climb states to %s" % OUTPUT_PATH)
 	quit()
 
 

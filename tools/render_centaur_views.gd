@@ -35,7 +35,7 @@ func _render() -> void:
 		push_error("Could not save %s" % OUTPUT_PATH)
 		quit(1)
 		return
-	print("PASS: rendered Centaur side and climbing views to %s" % OUTPUT_PATH)
+	print("PASS: rendered Grove Centaur side and climbing views to %s" % OUTPUT_PATH)
 	quit()
 
 

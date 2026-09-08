@@ -30,12 +30,12 @@ const REFERENCE_LOADOUTS := {
 	"frostling": {"weapon":"staff", "offhand":"none", "armor":"fur_coat", "pants":"cloth", "boots":"leather", "head":"hood", "back":"pack", "accessory":"none"},
 }
 
-# Working names derived from the two supplied concept illustrations. Rename freely;
-# stable IDs are deliberately separate from display names.
+# Working Lineage names from docs/game/0008-playable-lineage-art-direction.md.
+# Legacy rig IDs stay stable for saved loadouts, artwork, and animation tools.
 const RACES := {
 	"bogkin": {
-		"name": "Bogkin",
-		"tagline": "Spring-legged marsh wardens",
+		"name": "Tidekin",
+		"tagline": "Amphibious navigators of reefs and tides",
 		"skin": Color("42b9a5"), "accent": Color("f2a65a"),
 		"visual": {"face": "frog", "hair_style": "none", "eye": Color("b8892e"), "boot": Color("795238")},
 		# The light-lineage sheet places the frogfolk at roughly two-thirds of the
@@ -53,7 +53,7 @@ const RACES := {
 		],
 	},
 	"human": {
-		"name": "Human", "tagline": "Versatile frontier adventurers",
+		"name": "Humans", "tagline": "Road builders and adventurers of the Open Lands",
 		"skin": Color("f0bd91"), "accent": Color("4778b8"),
 		"visual": {"hair_style": "crop", "hair": Color("71482c"), "eye": Color("4b3522"), "boot": Color("67462f")},
 		"scale": 0.92, "head": Vector2(48, 52), "torso": Vector2(52, 72),
@@ -65,7 +65,7 @@ const RACES := {
 		],
 	},
 	"centaur": {
-		"name": "Centaur", "tagline": "Swift guardians of the old groves",
+		"name": "Grove Centaurs", "tagline": "Swift guardians of the Elder Forests",
 		"skin": Color("a66f45"), "accent": Color("6d9b57"),
 		"visual": {"hair_style": "long", "hair": Color("4a3328"), "eye": Color("39291e"), "boot": Color("392c24")},
 		"scale": 0.9, "head": Vector2(48, 54), "torso": Vector2(70, 70),
@@ -79,7 +79,7 @@ const RACES := {
 		],
 	},
 	"fae": {
-		"name": "Fae", "tagline": "Airborne keepers of wild magic",
+		"name": "Aeralith", "tagline": "Wind-shaped navigators of the Sky Reaches",
 		"skin": Color("f2c29b"), "accent": Color("e05b52"),
 		"visual": {"hair_style": "ponytail", "hair": Color("24272a"), "eye": Color("47301e"), "boot": Color("ded4bf"), "body_shape": "slender"},
 		# The reference's poised winged figure is approximately Human-height, not
@@ -96,7 +96,7 @@ const RACES := {
 		],
 	},
 	"frost_troll": {
-		"name": "Frost Troll", "tagline": "Mountain-born breakers",
+		"name": "Crag Trolls", "tagline": "Storm-hardened clans of the Broken Mountains",
 		"skin": Color("7195a9"), "accent": Color("687047"),
 		"visual": {"hair_style": "crest", "hair": Color("343b3e"), "eye": Color("332c25"), "boot": Color("4b4238"), "body_shape": "top_heavy", "skin_pattern": "mottled"},
 		"scale": 1.16, "head": Vector2(70, 64), "torso": Vector2(136, 86),
@@ -110,7 +110,7 @@ const RACES := {
 		],
 	},
 	"goblin": {
-		"name": "Goblin", "tagline": "Quick-handed tunnel inventors",
+		"name": "Deep Goblins", "tagline": "Ingenious tunnel societies of the Underdeep",
 		"skin": Color("91a44a"), "accent": Color("b77c3f"),
 		"visual": {"hair_style": "crop", "hair": Color("493527"), "eye": Color("d7a63d"), "boot": Color("55402d")},
 		"scale": 0.8, "head": Vector2(58, 46), "torso": Vector2(70, 54),
@@ -123,7 +123,7 @@ const RACES := {
 		],
 	},
 	"duneborn": {
-		"name": "Duneborn", "tagline": "Disciplined travelers of the glass sea",
+		"name": "Sunscour", "tagline": "Desert travelers and keepers of water routes",
 		"skin": Color("bf825d"), "accent": Color("8d493d"),
 		"visual": {"hair_style": "none", "hair": Color("302823"), "eye": Color("9b6b2e"), "boot": Color("6b4a35"), "body_shape": "lean"},
 		"scale": 0.94, "head": Vector2(50, 56), "torso": Vector2(90, 74),
@@ -136,7 +136,7 @@ const RACES := {
 		],
 	},
 	"frostling": {
-		"name": "Frostling", "tagline": "Small mystics of the aurora",
+		"name": "Rimeborn", "tagline": "Cold-adapted keepers of warmth in the Ice Lands",
 		"skin": Color("8795a7"), "accent": Color("37658b"),
 		"visual": {"hair_style": "shaggy", "hair": Color("e3e7e5"), "eye": Color("73c9ef"), "boot": Color("3b5366"), "body_shape": "compact"},
 		"scale": 0.84, "head": Vector2(61, 57), "torso": Vector2(80, 55),

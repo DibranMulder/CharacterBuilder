@@ -38,7 +38,7 @@ func _render() -> void:
 		push_error("Could not save %s" % OUTPUT_PATH)
 		quit(1)
 		return
-	print("PASS: rendered Duneborn lamellar front, motion, and rear climb states to %s" % OUTPUT_PATH)
+	print("PASS: rendered Sunscour lamellar front, motion, and rear climb states to %s" % OUTPUT_PATH)
 	quit()
 
 

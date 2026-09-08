@@ -40,5 +40,5 @@ func _render() -> void:
 	if result != OK:
 		quit(1)
 		return
-	print("PASS: rendered Fae reference, live side and rear views")
+	print("PASS: rendered Aeralith reference, live side and rear views")
 	quit()

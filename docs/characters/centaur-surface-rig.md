@@ -1,4 +1,4 @@
-# Centaur painted surface rig
+# Grove Centaur painted surface rig
 
 The upper artwork is `centaur_reference_upper_v3.png`, drawn using
 `light-lineages.png` itself as the reference. The side horse anatomy now uses

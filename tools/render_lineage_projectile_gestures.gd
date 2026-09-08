@@ -5,10 +5,10 @@ const OUTPUT_PATH := "res://artifacts/lineage_projectile_gestures.png"
 const VIEWPORT_SIZE := Vector2i(1200,760)
 const TILE_SIZE := Vector2(600,380)
 const SAMPLES := [
-	{"title":"CENTAUR / GALLOP SHOT / DRAW", "race":"centaur", "release":false},
-	{"title":"CENTAUR / GALLOP SHOT / RELEASE", "race":"centaur", "release":true},
-	{"title":"GOBLIN / SNAP SHOT / AIM", "race":"goblin", "release":false},
-	{"title":"GOBLIN / SNAP SHOT / RELEASE", "race":"goblin", "release":true},
+	{"title":"GROVE CENTAURS / GALLOP SHOT / DRAW", "race":"centaur", "release":false},
+	{"title":"GROVE CENTAURS / GALLOP SHOT / RELEASE", "race":"centaur", "release":true},
+	{"title":"DEEP GOBLINS / SNAP SHOT / AIM", "race":"goblin", "release":false},
+	{"title":"DEEP GOBLINS / SNAP SHOT / RELEASE", "race":"goblin", "release":true},
 ]
 
 

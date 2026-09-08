@@ -17,7 +17,7 @@ func _render() -> void:
 			_add_rect(canvas, Rect2(origin + Vector2(8, 8), Vector2(384, 364)), Color("192b43"), -90)
 			var label := Label.new()
 			label.position = origin + Vector2(20, 20)
-			label.text = "%s / %s" % [race.to_upper(), facing.to_upper()]
+			label.text = "%s / %s" % [CharacterCatalog.race(race).name.to_upper(), facing.to_upper()]
 			canvas.add_child(label)
 			var avatar := Avatar.new()
 			avatar.position = origin + Vector2(200, 335)

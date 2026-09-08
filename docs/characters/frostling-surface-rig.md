@@ -1,4 +1,4 @@
-# Frostling reference-art surfaces
+# Rimeborn reference-art surfaces
 
 The rightmost character in `dark-lineages.png` guides the gray-blue anatomy,
 large icy eyes, shaggy white hair, navy coat, ivory fur trim and bedroll pack.

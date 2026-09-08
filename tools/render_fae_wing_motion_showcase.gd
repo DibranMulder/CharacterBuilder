@@ -36,7 +36,7 @@ func _render() -> void:
 	for index in SAMPLES.size():
 		_add_sample(canvas,Vector2(index%3,index/3)*TILE_SIZE,SAMPLES[index],index)
 	if _render_failed:
-		push_error("Fae wing showcase could not stage every required gesture effect")
+		push_error("Aeralith wing showcase could not stage every required gesture effect")
 		quit(1)
 		return
 	Engine.time_scale = 0.0
@@ -49,7 +49,7 @@ func _render() -> void:
 		quit(1)
 		return
 	Engine.time_scale = 1.0
-	print("PASS: rendered Fae wing motion contract to %s" % OUTPUT_PATH)
+	print("PASS: rendered Aeralith wing motion contract to %s" % OUTPUT_PATH)
 	quit()
 
 
@@ -84,7 +84,7 @@ func _add_sample(canvas: Node2D,origin: Vector2,sample: Dictionary,index: int) -
 			avatar._active_tween.pause()
 			if avatar._gesture_effects.is_empty() or not is_instance_valid(avatar._gesture_effects[-1]):
 				_render_failed = true
-				push_error("Missing completed-impact effect for Fae gesture %d" % gesture_index)
+				push_error("Missing completed-impact effect for Aeralith gesture %d" % gesture_index)
 				return
 			var effect: Node2D = avatar._gesture_effects[-1]
 			effect.call("set_progress",.42)

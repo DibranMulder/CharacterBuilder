@@ -1,4 +1,4 @@
-# Frost Troll reference-art surfaces
+# Crag Troll reference-art surfaces
 
 The leftmost character in `dark-lineages.png` guides the new troll: broad
 slate-blue mottled anatomy, a friendly tusked face, dark crest, thick arms,

@@ -38,7 +38,7 @@ func _render() -> void:
 		push_error("Could not save %s" % OUTPUT_PATH)
 		quit(1)
 		return
-	print("PASS: rendered Centaur woodland harness through bow, quadruped motion, and rear climb to %s" % OUTPUT_PATH)
+	print("PASS: rendered Grove Centaur woodland harness through bow, quadruped motion, and rear climb to %s" % OUTPUT_PATH)
 	quit()
 
 

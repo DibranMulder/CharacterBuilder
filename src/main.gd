@@ -27,6 +27,29 @@ func _ready() -> void:
 	_build_ui()
 	_build_motion_controls()
 	_select_race(race_ids.find("human"))
+	if get_tree().has_meta("training_character"):
+		var selection: Dictionary = get_tree().get_meta("training_character")
+		_select_race(race_ids.find(selection.lineage))
+		avatar.configure(selection.lineage, selection.loadout.duplicate())
+		avatar.set_facing(selection.get("facing", &"right"))
+		_sync_selectors()
+		_rebuild_weapon_attacks()
+	var play := Button.new()
+	play.text = "Play training clearing"
+	play.position = Vector2(945, 18)
+	play.size = Vector2(185, 40)
+	play.tooltip_text = "Play with this exact lineage, weapon, and equipment configuration."
+	play.pressed.connect(_play_training_clearing)
+	add_child(play)
+
+
+func _play_training_clearing() -> void:
+	get_tree().set_meta("training_character", {
+		"lineage": avatar.race_id,
+		"loadout": avatar.loadout.duplicate(),
+		"facing": avatar.facing,
+	})
+	get_tree().change_scene_to_file("res://prototypes/training_clearing/training_clearing.tscn")
 
 
 func _build_background() -> void:
@@ -55,9 +78,9 @@ func _build_ui() -> void:
 	panel.add_theme_stylebox_override("panel",_panel_style(Color("202b3d"))); add_child(panel)
 	var column := VBoxContainer.new(); column.add_theme_constant_override("separation",2); panel.add_child(column)
 	var heading := Label.new(); heading.text="LINEAGE FORGE"; heading.add_theme_font_size_override("font_size",28); heading.add_theme_color_override("font_color",Color("77d4cf")); column.add_child(heading)
-	var intro := Label.new(); intro.text="Build race, gear, and motion."; intro.add_theme_color_override("font_color",Color("aebdd0")); column.add_child(intro)
+	var intro := Label.new(); intro.text="Build lineage, gear, and motion."; intro.add_theme_color_override("font_color",Color("aebdd0")); column.add_child(intro)
 	column.add_child(HSeparator.new())
-	column.add_child(_label("Race"))
+	column.add_child(_label("Lineage"))
 	race_selector=OptionButton.new(); race_ids=CharacterCatalog.race_ids()
 	for id in race_ids: race_selector.add_item(CharacterCatalog.race(id).name)
 	race_selector.item_selected.connect(_select_race); column.add_child(race_selector)
@@ -74,7 +97,7 @@ func _build_ui() -> void:
 	column.add_child(_label("Weapon attacks"))
 	weapon_attack_box=HBoxContainer.new(); weapon_attack_box.add_theme_constant_override("separation",6); column.add_child(weapon_attack_box)
 	_rebuild_weapon_attacks()
-	column.add_child(_label("Race gestures"))
+	column.add_child(_label("Lineage gestures"))
 	gesture_box=HBoxContainer.new(); gesture_box.add_theme_constant_override("separation",6); column.add_child(gesture_box)
 
 
@@ -150,5 +173,5 @@ func _sync_selectors() -> void:
 	for slot in gear_selectors:
 		var selector: OptionButton=gear_selectors[slot]; var items:=CharacterCatalog.items_for(slot)
 		selector.disabled = not avatar.supports_equipment_slot(slot)
-		selector.tooltip_text = "Not used by this race" if selector.disabled else ""
+		selector.tooltip_text = "Not used by this lineage" if selector.disabled else ""
 		selector.select(items.find(avatar.loadout[slot]))

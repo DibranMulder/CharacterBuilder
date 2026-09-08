@@ -33,7 +33,7 @@ func _render() -> void:
 		quit(1)
 		return
 	Engine.time_scale = 1.0
-	print("PASS: rendered eight-phase Centaur gallop to %s" % OUTPUT_PATH)
+	print("PASS: rendered eight-phase Grove Centaur gallop to %s" % OUTPUT_PATH)
 	quit()
 
 

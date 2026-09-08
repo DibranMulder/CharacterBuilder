@@ -10,7 +10,7 @@ const SAMPLES := [
 	{"title":"HUMAN / RELEASE", "race":"human", "time":.50},
 	{"title":"HUMAN / RECOIL", "race":"human", "time":.57},
 	{"title":"HUMAN / RECOVER", "race":"human", "time":.68},
-	{"title":"CENTAUR / RELEASE", "race":"centaur", "time":.50},
+	{"title":"GROVE CENTAURS / RELEASE", "race":"centaur", "time":.50},
 ]
 
 

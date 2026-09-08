@@ -1,4 +1,4 @@
-# Goblin reference-art surfaces
+# Deep Goblin reference-art surfaces
 
 The second character in `dark-lineages.png` guides the goblin's large sideways
 ears, amber eyes, olive-green skin, compact body, purple neck scarf, worn
@@ -9,7 +9,7 @@ clothing paintings are stored in `goblin_reference_base_v2.png` and
 `GoblinPaintedAtlas` owns the crops. `GoblinAppearance` fits front/rear body
 and vest paintings to the shared torso mesh, with the garment hem following
 the hip. Whole-arm and whole-leg textures use the same continuous two-bone
-surfaces as the Human and Fae. No separate upper/lower limb sprites remain
+surfaces as the Human and Aeralith. No separate upper/lower limb sprites remain
 visible. The head's short neck overlaps the scarf and upper chest.
 
 Boots, goggles and backpack use optional texture/rectangle overrides on their

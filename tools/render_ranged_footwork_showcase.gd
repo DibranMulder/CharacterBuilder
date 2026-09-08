@@ -43,7 +43,7 @@ func _add_action(canvas: Node2D,origin: Vector2,race_id: String,action: Dictiona
 	_add_rect(canvas,Rect2(origin+Vector2(8,322),Vector2(TILE_SIZE.x-16,50)),Color("21384c"),-80)
 	var title := Label.new()
 	title.position = origin+Vector2(22,18)
-	title.text = "%s / %s" % [String(race_id).to_upper(),action.name]
+	title.text = "%s / %s" % [String(CharacterCatalog.race(race_id).name).to_upper(),action.name]
 	title.add_theme_font_size_override("font_size",20)
 	title.add_theme_color_override("font_color",Color("f2d181"))
 	canvas.add_child(title)

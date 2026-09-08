@@ -38,7 +38,7 @@ func _render() -> void:
 		push_error("Could not save %s" % OUTPUT_PATH)
 		quit(1)
 		return
-	print("PASS: rendered Frost Troll jerkin through two-handed attacks, run, and rear climb to %s" % OUTPUT_PATH)
+	print("PASS: rendered Crag Troll jerkin through two-handed attacks, run, and rear climb to %s" % OUTPUT_PATH)
 	quit()
 
 
