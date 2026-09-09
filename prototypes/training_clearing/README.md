@@ -24,7 +24,7 @@ implemented yet.
 Walk within 75 world units of a dropped bag to collect it. Ordinary enemies drop
 8 coins and one potion of each type; the second kill also drops a crossbow.
 The elite drops 30 coins, both potions, and an axe. Drops are deterministic for
-testing, not a final loot table. Coins have no spending destination yet.
+testing, not a final loot table. Spend coins at Rowan's trading post.
 
 Press **I** (or Pouch) to pause combat and inspect the pouch and equipped slots.
 Select an item to compare weapon damage, then Equip; the previous item returns
@@ -54,6 +54,47 @@ button remain available. Filters, sorting and paging do not discard items.
 are inspectable here and remain usable via H/M after closing the paused pouch.
 Only the eight implemented equipment slots and real prototype stats are shown;
 the mockup's future talents, rarity system and extra slots are not implied.
+
+## Elder Rowan and local trading
+
+Rowan tends the stall near the starting area (home x=330), taking short, slow
+walks between x=306 and x=346, with five-second rests. He stops and faces nearby
+players rather than walking away from them. Approach
+within 115 units and press **E** or tap his contextual button. Interaction is
+unavailable while airborne, dead, attacking, with a projectile in flight, or
+within 220 horizontal units of a living enemy. Dialogue pauses the local world,
+frames the player and merchant above the panel, and hides combat controls.
+
+The portrait, parchment dialogue and brass action buttons follow
+`designs/npc-interaction-mockup.png`. **Trade** opens a pouch-style shop: Rowan's
+stock on the left, your unequipped items and potion stacks in the middle, and
+item information/weapon comparison on the right. Select a tile and use **Buy
+one** or **Sell one**. Purchases enter the pouch, never auto-equip. Esc returns
+from the shop to dialogue; another Esc closes dialogue and resumes gameplay.
+
+HP/mana potions cost 6 coins, basic weapons 24–36, and shields 18. Stock is
+unlimited for this experiment. Sell prices are 40% of stock price (rounded down,
+minimum 1); other valid equipment sells for 5. Each action is atomic and checks
+the inventory revision: stale or repeated requests cannot sell a replacement
+item or charge twice. Equipped items cannot be sold directly. Prices are local
+tuning values, not the final economy. Trade survives death but resets with R or
+leaving the clearing; no backend or disk saves are involved.
+
+`trader.gd` owns prices and transactions; `encounter.gd` gates proximity/safety;
+Rowan breathes and shifts his weight through a continuous painted mesh, with
+alternating small steps while walking and a fixed contact shadow. The source
+illustration's perspective put the far boot 6.5 pixels above the floor; the
+mesh separately grounds both soles and the staff instead of lowering the entire
+sprite. Conversation plants both feet immediately and freezes his patrol; closing
+it gives a four-second rest. Interaction distances follow his actual position.
+Occasional reusable Chronicle parchment speech balloons appear for 3.5 seconds,
+with a 13-second break. They are suppressed during combat, menus and conversation
+and outside a 340-unit listening range. These are ambient lines, not tutorial hints.
+
+`shop_panel.gd` reuses the pouch tile and panel implementation. Rowan's generated
+sprite uses the same magenta-key treatment as existing equipment. No quest or
+reputation rewards are implemented yet. `capture_rowan.gd` renders dialogue and
+shop screenshots with staged inventory for visual checks.
 
 Move with A/D or arrows; Space jumps; J/1 attacks with the equipped weapon;
 hold Shift/2 to Guard when a shield is equipped. K/3 powers up the equipped

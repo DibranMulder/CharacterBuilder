@@ -1,9 +1,12 @@
 extends RefCounted
 ## Local, throwaway gameplay model. Does sword/guard combat feel readable?
-## No networking, persistence, inventory, or production progression.
+## Local inventory/trading, but no networking, persistence or production progression.
 
 const FLOOR_Y := 480.0
 const WORLD_WIDTH := 2200.0
+const ROWAN_POSITION := Vector2(330,480)
+var rowan = preload("res://prototypes/training_clearing/rowan_behavior.gd").new()
+const Trader = preload("res://prototypes/training_clearing/trader.gd")
 const PLATFORMS := [Rect2(710, 390, 170, 18), Rect2(950, 325, 150, 18)]
 var position := Vector2(160, FLOOR_Y)
 var velocity := Vector2.ZERO
@@ -37,6 +40,24 @@ var projectiles: Array[Dictionary] = []
 var inventory = preload("res://prototypes/training_clearing/inventory.gd").new()
 var loot: Array[Dictionary] = []
 var potion_cooldown := 0.0
+
+func can_talk_to_rowan() -> bool:
+	if health <= 0 or not grounded or position.distance_to(rowan.position) > 115 or attack_time > 0 or not projectiles.is_empty():
+		return false
+	for enemy in enemies:
+		if enemy.hp > 0 and absf(enemy.x-position.x) < 220:
+			return false
+	return true
+
+func buy_from_rowan(offer_index: int, revision: int) -> Dictionary:
+	if not can_talk_to_rowan():
+		return {"ok":false,"message":"Return to Rowan when it is safe to trade."}
+	return Trader.buy(inventory,offer_index,revision)
+
+func sell_to_rowan(index: int, potion: String, revision: int) -> Dictionary:
+	if not can_talk_to_rowan():
+		return {"ok":false,"message":"Return to Rowan when it is safe to trade."}
+	return Trader.sell(inventory,index,potion,revision)
 
 func use_potion(kind: String) -> Dictionary:
 	if health <= 0 or potion_cooldown > 0 or not kind in ["hp", "mana"]:
@@ -142,6 +163,11 @@ func jump() -> bool:
 
 func step(delta: float, direction: float, guard_held: bool, muzzle := Vector2.INF) -> void:
 	events.clear()
+	var peaceful := health > 0 and attack_time <= 0 and projectiles.is_empty()
+	for enemy in enemies:
+		if enemy.hp > 0 and absf(enemy.x-position.x) < 220:
+			peaceful = false
+	rowan.step(delta,position,peaceful)
 	potion_cooldown = maxf(0, potion_cooldown - delta)
 	skill_cooldown = maxf(0, skill_cooldown - delta)
 	invulnerable = maxf(0, invulnerable - delta)

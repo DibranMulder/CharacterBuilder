@@ -214,7 +214,7 @@ func _notification(what: int) -> void:
 			tile.queue_redraw()
 
 func _sort() -> void:
-	model.inventory.items.sort_custom(func(a,b): return (a.slot+a.id) < (b.slot+b.id))
+	model.inventory.sort_items()
 	refresh()
 
 func _draw() -> void:

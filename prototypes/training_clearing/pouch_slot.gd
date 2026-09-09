@@ -9,6 +9,8 @@ var selected := false
 var compatible := false
 var locked := false
 var hovered := false
+var drag_enabled := true
+var price := 0
 static var textures := {}
 static var regions := {}
 const ART := {
@@ -55,7 +57,7 @@ func _gui_input(event: InputEvent) -> void:
 		accept_event()
 
 func _get_drag_data(_at: Vector2) -> Variant:
-	if item.id == "none" or item.slot == "potion" or locked:
+	if not drag_enabled or item.id == "none" or item.slot == "potion" or locked:
 		return null
 	owner_panel.select_tile(self)
 	var data := {"panel":owner_panel, "index":bag_index, "slot":equipment_slot, "item":item.duplicate()}
@@ -124,3 +126,7 @@ func _draw() -> void:
 	if count > 0:
 		draw_circle(size-Vector2(12,13),11,Color("101b2c"))
 		draw_string(font,size-Vector2(17,8),str(count),0,-1,13,Color("fff5d6"))
+	if price > 0:
+		draw_rect(Rect2(5,size.y-18,size.x-10,14),Color("101b2c"))
+		draw_circle(Vector2(13,size.y-11),3,Color("f2c45f"))
+		draw_string(font,Vector2(20,size.y-7),str(price),0,-1,11,Color("fff5d6"))

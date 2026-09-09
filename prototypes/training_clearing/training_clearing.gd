@@ -29,6 +29,12 @@ var attack_button: Button
 var guard_button: Button
 var builder_button: Button
 var restart_button: Button
+var rowan: Node2D
+var rowan_balloon: Panel
+var talk_button: Button
+var dialogue: Control
+var shop: Control
+var paused_before_rowan := false
 
 func _ready() -> void:
 	RenderingServer.set_default_clear_color(Color("182e2e"))
@@ -48,11 +54,19 @@ func _ready() -> void:
 	add_child(resources)
 	resources.player_name = CharacterCatalog.race(avatar.race_id).name.to_upper()
 	resources.set_character(avatar.race_id,avatar.loadout)
+	rowan = preload("res://prototypes/training_clearing/rowan_visual.gd").new()
+	rowan.z_index = 90
+	add_child(rowan)
+	rowan_balloon = preload("res://src/ui/speech_balloon.gd").new()
+	rowan_balloon.z_index = 180
+	add_child(rowan_balloon)
 	_build_ui()
 	get_window().focus_exited.connect(_lose_focus)
 	_update_view(0)
 
 func _build_ui() -> void:
+	talk_button = _button("E · Rowan",Vector2.ZERO,Vector2(115,40))
+	talk_button.pressed.connect(_talk_to_rowan)
 	hud = _label("", Vector2(1010, 112), 15)
 	notice = _label("", Vector2(484, 24), 18)
 	builder_button = _button("Builder", Vector2(1010, 66), Vector2(112, 38))
@@ -116,12 +130,17 @@ func _button(value: String, at: Vector2, dimensions: Vector2) -> Button:
 func _unhandled_key_input(event: InputEvent) -> void:
 	if not event is InputEventKey or not event.pressed or event.echo:
 		return
+	if is_instance_valid(shop) or is_instance_valid(dialogue):
+		if event.physical_keycode == KEY_ESCAPE:
+			_back_to_rowan() if is_instance_valid(shop) else _close_rowan()
+		return
 	if event.physical_keycode == KEY_I or (is_instance_valid(inventory_panel) and event.physical_keycode == KEY_ESCAPE):
 		_toggle_inventory()
 		return
 	if is_instance_valid(inventory_panel):
 		return
 	match event.physical_keycode:
+		KEY_E: _talk_to_rowan()
 		KEY_H: _potion("hp")
 		KEY_M: _potion("mana")
 		KEY_SPACE, KEY_W, KEY_UP: _jump()
@@ -131,7 +150,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		KEY_R: _restart()
 
 func _input(event: InputEvent) -> void:
-	if is_instance_valid(inventory_panel):
+	if is_instance_valid(inventory_panel) or is_instance_valid(dialogue) or is_instance_valid(shop):
 		return
 	# Track each finger independently instead of relying on single-mouse emulation.
 	if event is InputEventScreenTouch:
@@ -171,7 +190,7 @@ func _attack(power: bool) -> void:
 			feedback.push({"kind":"notice", "text":model.last_rejection, "position":model.position + Vector2(0,-170)})
 
 func _toggle_pause() -> void:
-	if is_instance_valid(inventory_panel):
+	if is_instance_valid(inventory_panel) or is_instance_valid(dialogue) or is_instance_valid(shop):
 		return
 	paused = not paused
 	avatar.process_mode = Node.PROCESS_MODE_DISABLED if paused else Node.PROCESS_MODE_INHERIT
@@ -185,6 +204,7 @@ func _lose_focus() -> void:
 		_toggle_pause()
 
 func _restart() -> void:
+	_close_rowan()
 	if is_instance_valid(inventory_panel):
 		_toggle_inventory()
 	var selected_facing: float = model.facing
@@ -205,6 +225,7 @@ func _restart() -> void:
 	fingers.clear()
 
 func _toggle_inventory() -> void:
+	if is_instance_valid(dialogue) or is_instance_valid(shop): return
 	if is_instance_valid(inventory_panel):
 		inventory_panel.queue_free()
 		inventory_panel = null
@@ -219,6 +240,42 @@ func _toggle_inventory() -> void:
 	inventory_panel.closed.connect(_toggle_inventory)
 	inventory_panel.equipment_changed.connect(_equipment_changed)
 	add_child(inventory_panel)
+
+func _talk_to_rowan() -> void:
+	if paused or is_instance_valid(inventory_panel) or not model.can_talk_to_rowan(): return
+	paused_before_rowan = paused
+	model.rowan.begin_conversation(model.position)
+	_toggle_pause()
+	dialogue = preload("res://prototypes/training_clearing/rowan_dialogue.gd").new()
+	dialogue.closed.connect(_close_rowan)
+	dialogue.trade_requested.connect(_open_shop)
+	add_child(dialogue)
+	_update_view(0)
+
+func _open_shop() -> void:
+	if not is_instance_valid(dialogue) or is_instance_valid(shop) or not model.can_talk_to_rowan(): return
+	dialogue.hide()
+	shop = preload("res://prototypes/training_clearing/shop_panel.gd").new()
+	shop.model = model
+	shop.closed.connect(_back_to_rowan)
+	add_child(shop)
+
+func _back_to_rowan() -> void:
+	if is_instance_valid(shop):
+		shop.queue_free()
+		shop = null
+	if is_instance_valid(dialogue): dialogue.show()
+
+func _close_rowan() -> void:
+	if not is_instance_valid(dialogue) and not is_instance_valid(shop): return
+	if is_instance_valid(shop): shop.queue_free()
+	if is_instance_valid(dialogue): dialogue.queue_free()
+	shop = null
+	dialogue = null
+	model.rowan.end_conversation()
+	paused = paused_before_rowan
+	avatar.process_mode = Node.PROCESS_MODE_DISABLED if paused else Node.PROCESS_MODE_INHERIT
+	_update_view(0)
 
 func _equipment_changed() -> void:
 	var facing_direction: StringName = avatar.facing
@@ -253,7 +310,20 @@ func _update_view(delta: float) -> void:
 	position = (viewport_size - Vector2(1152, 648) * factor) * .5
 	camera_x = lerpf(camera_x, clampf(model.position.x - 430, 0, 1048), minf(1, delta * 8))
 	camera_y = lerpf(camera_y, minf(0, model.position.y - 425), minf(1, delta * 10))
+	if is_instance_valid(dialogue):
+		camera_x = model.rowan.position.x-550
+		camera_y = 80
+	for child in get_children():
+		if child is Button and child.position.y >= 530:
+			child.visible = not is_instance_valid(dialogue)
 	avatar.position = model.position - Vector2(camera_x, camera_y + 8)
+	rowan.position = model.rowan.position-Vector2(camera_x,camera_y)
+	var npc_delta := delta if not paused or is_instance_valid(dialogue) else 0.0
+	rowan.advance(npc_delta,model.rowan.walking,model.rowan.facing)
+	rowan_balloon.position = rowan.position+Vector2(-119,-328)
+	rowan_balloon.show_line(model.rowan.speech if not paused else "")
+	talk_button.position = rowan.position+Vector2(-58,-250)
+	talk_button.visible = not paused and model.can_talk_to_rowan()
 	var direction: StringName = &"right" if model.facing > 0 else &"left"
 	if avatar.facing != direction:
 		avatar.set_facing(direction)
@@ -274,8 +344,8 @@ func _update_view(delta: float) -> void:
 	feedback.camera = Vector2(camera_x, camera_y)
 	feedback.queue_redraw()
 	hud.text = "%d coins" % model.inventory.coins
-	builder_button.visible = paused
-	restart_button.visible = paused
+	builder_button.visible = paused and not is_instance_valid(dialogue)
+	restart_button.visible = paused and not is_instance_valid(dialogue)
 	guard_button.disabled = not model.can_guard
 	guard_button.text = "GUARD\nShift / 2" if model.can_guard else "NO SHIELD"
 	attack_button.disabled = model.weapon == "none"
@@ -285,6 +355,7 @@ func _update_view(delta: float) -> void:
 	hp_button.disabled = paused or model.health <= 0 or model.health >= 100 or model.inventory.potions.hp == 0 or model.potion_cooldown > 0
 	mana_button.disabled = paused or model.health <= 0 or model.mana >= 100 or model.inventory.potions.mana == 0 or model.potion_cooldown > 0
 	notice.text = "Paused" if paused else ("Recovering · %.1fs" % model.death_time if model.health <= 0 else "")
+	if is_instance_valid(dialogue): notice.text = ""
 	skill_button.text = "POWER · %.1fs" % model.skill_cooldown if model.skill_cooldown > 0 else "POWER STRIKE\nK / 3 · 25 mana"
 	skill_button.disabled = model.weapon == "none"
 	queue_redraw()
@@ -298,14 +369,15 @@ func _draw() -> void:
 		draw_circle(Vector2(x + 25, 180), 94, Color("71998a"))
 		draw_circle(Vector2(x - 20, 120), 82, Color("71998a"))
 	draw_set_transform(Vector2(-camera_x, -camera_y))
-	draw_rect(Rect2(0, 480, 2200, 168), Color("655f42"))
-	draw_rect(Rect2(0, 479, 2200, 12), Color("aec181"))
+	draw_rect(Rect2(-400, 480, 2600, 248), Color("655f42"))
+	draw_rect(Rect2(-400, 479, 2600, 12), Color("aec181"))
 	for i in 75:
 		var x := float(i * 31)
 		draw_line(Vector2(x, 480), Vector2(x + 5, 469 - i % 5), Color("5c7e4c"), 2)
 	for platform in Encounter.PLATFORMS:
 		draw_style_box(_ledge_style(), platform)
 		draw_line(platform.position, platform.position + Vector2(platform.size.x, 0), Color("d2d69c"), 5)
+	_draw_rowan_stall()
 	for enemy in model.enemies:
 		_draw_enemy(enemy)
 	for drop in model.loot:
@@ -334,6 +406,19 @@ func _ledge_style() -> StyleBoxFlat:
 	style.bg_color = Color("6a6849")
 	style.set_corner_radius_all(5)
 	return style
+
+func _draw_rowan_stall() -> void:
+	var at := Encounter.ROWAN_POSITION+Vector2(76,0)
+	for x in [-20,110]: draw_line(at+Vector2(x,0),at+Vector2(x,-202),Color("59412b"),6)
+	draw_colored_polygon(PackedVector2Array([at+Vector2(-34,-207),at+Vector2(118,-207),at+Vector2(142,-163),at+Vector2(-46,-163)]),Color("ad8650"))
+	for i in 6:
+		draw_line(at+Vector2(-25+i*28,-202),at+Vector2(-34+i*33,-166),Color("d2b575"),7,true)
+	draw_rect(Rect2(at+Vector2(-17,-78),Vector2(121,78)),Color("634e35"))
+	draw_rect(Rect2(at+Vector2(-23,-86),Vector2(135,10)),Color("b48e54"))
+	for i in 4:
+		var bottle := at+Vector2(4+i*24,-100)
+		draw_circle(bottle,9,Color("9a513c") if i%2==0 else Color("427d99"))
+		draw_rect(Rect2(bottle+Vector2(-3,-15),Vector2(6,9)),Color("c4b38a"))
 
 func _draw_enemy(enemy: Dictionary) -> void:
 	if enemy.hp <= 0:
