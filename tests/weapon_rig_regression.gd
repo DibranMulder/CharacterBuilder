@@ -174,8 +174,8 @@ func _run() -> void:
 		_fail("authored pack must preserve its compact rear silhouette")
 	if GearVisual.STORYBOOK_QUIVER.get_size() != Vector2(62,100):
 		_fail("authored quiver must preserve its diagonal rear silhouette")
-	if GearVisual.STORYBOOK_SCARF.get_size() != Vector2(66,58) or GearVisual.STORYBOOK_SCARF_BACK.get_size() != Vector2(66,58):
-		_fail("authored scarf views must share the neck socket dimensions")
+	if GearVisual.PAINTED_SCARF.get_size() != Vector2(1536,1024):
+		_fail("scarf must use the high-resolution paired painted atlas")
 	if GearVisual.STORYBOOK_AMULET.get_size() != Vector2(48,38):
 		_fail("authored amulet must preserve its upper-chest socket dimensions")
 	if GearVisual.STORYBOOK_GOGGLES.get_size() != Vector2(56,18) or GearVisual.STORYBOOK_GOGGLES_BACK.get_size() != Vector2(56,10):
@@ -209,8 +209,8 @@ func _run() -> void:
 	if not keyed_visual.material is ShaderMaterial:
 		_fail("authored goggles must key their generated magenta production field")
 	keyed_visual.setup("accessory","scarf",Color.WHITE)
-	if not keyed_visual.material is ShaderMaterial or keyed_visual.material.get_shader_parameter("use_magenta_key") or not keyed_visual.material.get_shader_parameter("use_accent_dye"):
-		_fail("goggle chroma key must clear while the genuine-alpha scarf keeps lineage dye")
+	if not keyed_visual.material is ShaderMaterial or not keyed_visual.material.get_shader_parameter("use_magenta_key") or not keyed_visual.material.get_shader_parameter("use_accent_dye"):
+		_fail("painted scarf must remove its source field and keep lineage dye")
 	for dyeable_piece in [["head","hood"],["back","cape"],["back","long_cape"]]:
 		keyed_visual.setup(dyeable_piece[0],dyeable_piece[1],Color("f2a65a"))
 		if not keyed_visual.material is ShaderMaterial or not keyed_visual.material.get_shader_parameter("use_accent_dye") or keyed_visual.material.get_shader_parameter("use_magenta_key"):

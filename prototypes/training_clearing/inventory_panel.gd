@@ -1,6 +1,8 @@
 extends Panel
 signal equipment_changed
 signal closed
+signal skills_requested
+signal disciplines_requested
 const Tile = preload("res://prototypes/training_clearing/pouch_slot.gd")
 const Preview = preload("res://prototypes/training_clearing/vanguard_visual.gd")
 const Chronicle = preload("res://src/ui/chronicle_theme.gd")
@@ -35,9 +37,7 @@ func _ready() -> void:
 	var background := StyleBoxFlat.new()
 	background.bg_color = Color("101b2c")
 	add_theme_stylebox_override("panel", background)
-	_label("GEAR & POUCH",Vector2(446,18),27,true,Color("f2c45f"))
-	_label("THE CHRONICLE",Vector2(36,24),17,true,GOLD)
-	_button("Close · I / Esc",Vector2(990,18),Vector2(136,34),func(): closed.emit())
+	preload("res://src/ui/chronicle_menu_header.gd").install(self,"pouch","I",func(): closed.emit(),func(): pass,func(): skills_requested.emit(),true,func(): disciplines_requested.emit())
 	_label("ITEM POUCH",Vector2(120,98),23,true,INK)
 	_label("GEAR OVERVIEW",Vector2(501,98),23,true,INK)
 	heading = _label("",Vector2(35,132),12,false,INK)
@@ -218,22 +218,11 @@ func _sort() -> void:
 	refresh()
 
 func _draw() -> void:
-	draw_rect(Rect2(9,9,1134,62),GOLD,false,2)
-	draw_rect(Rect2(14,14,1124,52),Color("655333"),false,1)
-	draw_polyline(PackedVector2Array([Vector2(421,14),Vector2(412,24),Vector2(412,54),Vector2(421,66),Vector2(730,66),Vector2(741,54),Vector2(741,24),Vector2(730,14),Vector2(421,14)]),GOLD,2,true)
-	for panel in [Rect2(16,86,390,518),Rect2(416,86,414,518)]:
+	for panel in [Rect2(20,87,386,510),Rect2(416,87,407,510)]:
 		_parchment(panel)
-	draw_style_box(theme.get_stylebox("panel","InkPanel"),Rect2(841,86,294,518))
-	for corner in [Vector2(850,95),Vector2(1126,95),Vector2(850,595),Vector2(1126,595)]:
-		var direction := Vector2(1 if corner.x < 1000 else -1,1 if corner.y < 300 else -1)
-		draw_polyline(PackedVector2Array([corner+Vector2(0,20)*direction,corner,corner+Vector2(20,0)*direction]),GOLD,1,true)
-		draw_polyline(PackedVector2Array([corner+Vector2(0,10)*direction,corner+Vector2(8,8)*direction,corner+Vector2(10,0)*direction]),GOLD,1,true)
+	draw_style_box(theme.get_stylebox("panel","InkPanel"),Rect2(835,87,297,510))
 	for y in [318,508]:
 		draw_line(Vector2(861,y),Vector2(1116,y),Color("695b40"),1)
-	for x in [25,1127]:
-		var gem := PackedVector2Array([Vector2(x,26),Vector2(x+8,40),Vector2(x,56),Vector2(x-8,40)])
-		draw_colored_polygon(gem,Color("72d6e5"))
-		draw_polyline(PackedVector2Array([gem[0],gem[1],gem[2],gem[3],gem[0]]),GOLD,1,true)
 	draw_arc(Vector2(623,360),150,-2.8,2.8,48,Color("b39a63"),1,true)
 	var selected: Dictionary = {}
 	if selected_index >= 0 and selected_index < model.inventory.items.size():

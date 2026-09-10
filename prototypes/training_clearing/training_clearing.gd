@@ -4,6 +4,8 @@ extends Node2D
 const Encounter := preload("res://prototypes/training_clearing/encounter.gd")
 const Avatar := preload("res://prototypes/training_clearing/vanguard_visual.gd")
 const Chronicle := preload("res://src/ui/chronicle_theme.gd")
+const Profiles = preload("res://src/discipline_profiles.gd")
+var save_timer := 0.0
 const INK := Color("203c38")
 const CREAM := Color("f6edce")
 var model = Encounter.new()
@@ -16,12 +18,16 @@ var touch_right := false
 var touch_guard := false
 var paused := false
 var feedback := preload("res://prototypes/training_clearing/combat_overlay.gd").new()
+var reaction := preload("res://src/ui/combat_reaction.gd").new()
 var resources := preload("res://prototypes/training_clearing/resource_hud.gd").new()
 var hud: Label
 var notice: Label
 var skill_button: Button
+var skill_buttons: Array[Button] = []
 var last_pose := ""
 var inventory_panel: Panel
+var skill_overview: Control
+var paused_before_skills := false
 var paused_before_inventory := false
 var hp_button: Button
 var mana_button: Button
@@ -48,6 +54,7 @@ func _ready() -> void:
 	avatar.configure(selection.lineage, selection.loadout.duplicate())
 	model.configure_equipment(avatar.loadout)
 	model.inventory.configure(avatar.race_id, avatar.loadout)
+	model.progression = Profiles.get_profile(get_tree(),avatar.race_id)
 	model.facing = -1.0 if selection.get("facing", &"right") == &"left" else 1.0
 	avatar.scale = Vector2.ONE * .69
 	add_child(feedback)
@@ -75,6 +82,7 @@ func _build_ui() -> void:
 	restart_button = _button("Restart · R", Vector2(872, 66), Vector2(128, 38))
 	restart_button.pressed.connect(_restart)
 	_button("Pouch · I", Vector2(1010,20), Vector2(112,38)).pressed.connect(_toggle_inventory)
+	_button("Skills · L", Vector2(738,20), Vector2(124,38)).pressed.connect(_toggle_skills)
 	hp_button = _button("", Vector2(366,536), Vector2(144,48))
 	hp_button.pressed.connect(_potion.bind("hp"))
 	mana_button = _button("", Vector2(522,536), Vector2(144,48))
@@ -101,6 +109,15 @@ func _build_ui() -> void:
 	skill_button = _button("", Vector2(982, 548), Vector2(144, 70))
 	skill_button.theme_type_variation = "PrimaryButton"
 	skill_button.pressed.connect(_attack.bind(true))
+	for i in model.lineage_kit().size():
+		var tile := preload("res://src/ui/skill_tile.gd").new()
+		tile.position = Vector2(112+i*52,116)
+		tile.size = Vector2(48,70)
+		tile.z_index = 210
+		tile.configure(model.lineage_kit()[i],str(i+3))
+		tile.pressed.connect(_lineage_skill.bind(i))
+		add_child(tile)
+		skill_buttons.append(tile)
 
 func _label(value: String, at: Vector2, size: int) -> Label:
 	var label := Label.new()
@@ -134,6 +151,13 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		if event.physical_keycode == KEY_ESCAPE:
 			_back_to_rowan() if is_instance_valid(shop) else _close_rowan()
 		return
+	if is_instance_valid(skill_overview):
+		if event.physical_keycode in [KEY_ESCAPE,KEY_L]: _toggle_skills()
+		elif event.physical_keycode == KEY_I: _skills_to_pouch()
+		return
+	if event.physical_keycode == KEY_L:
+		_toggle_skills()
+		return
 	if event.physical_keycode == KEY_I or (is_instance_valid(inventory_panel) and event.physical_keycode == KEY_ESCAPE):
 		_toggle_inventory()
 		return
@@ -145,43 +169,27 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		KEY_M: _potion("mana")
 		KEY_SPACE, KEY_W, KEY_UP: _jump()
 		KEY_J, KEY_1: _attack(false)
-		KEY_K, KEY_3: _attack(true)
+		KEY_K: _attack(true)
+		KEY_3, KEY_4, KEY_5, KEY_6, KEY_7, KEY_8: _lineage_skill(event.physical_keycode-KEY_3)
 		KEY_ESCAPE: _toggle_pause()
 		KEY_R: _restart()
 
-func _input(event: InputEvent) -> void:
-	if is_instance_valid(inventory_panel) or is_instance_valid(dialogue) or is_instance_valid(shop):
-		return
-	# Track each finger independently instead of relying on single-mouse emulation.
-	if event is InputEventScreenTouch:
-		if not event.pressed:
-			fingers.erase(event.index)
-		else:
-			var local: Vector2 = (event.position - position) / scale
-			if Rect2(26, 548, 82, 70).has_point(local):
-				fingers[event.index] = "left"
-			elif Rect2(118, 548, 82, 70).has_point(local):
-				fingers[event.index] = "right"
-			elif Rect2(712, 548, 125, 70).has_point(local):
-				fingers[event.index] = "guard"
-			elif Rect2(226, 548, 105, 70).has_point(local):
-				_jump()
-			elif Rect2(847, 548, 125, 70).has_point(local):
-				_attack(false)
-			elif Rect2(982, 548, 144, 70).has_point(local):
-				_attack(true)
-			else:
-				return
-		touch_left = "left" in fingers.values()
-		touch_right = "right" in fingers.values()
-		touch_guard = "guard" in fingers.values()
-		get_viewport().set_input_as_handled()
+func _lineage_skill(slot: int) -> void:
+	if paused: return
+	if model.begin_lineage_skill(slot):
+		avatar.present_arena_action(model.active_skill,model.attack_animation())
+		last_pose = "attack"
+	elif not model.last_rejection.is_empty():
+		feedback.push({"kind":"notice","text":model.last_rejection,"position":model.position+Vector2(0,-170)})
 
 func _jump() -> void:
 	if not paused:
 		model.jump()
 
 func _attack(power: bool) -> void:
+	if power:
+		_lineage_skill(4)
+		return
 	if not paused and model.begin_attack(power):
 		avatar.play_weapon_attack(model.attack_animation())
 		last_pose = "attack"
@@ -190,7 +198,7 @@ func _attack(power: bool) -> void:
 			feedback.push({"kind":"notice", "text":model.last_rejection, "position":model.position + Vector2(0,-170)})
 
 func _toggle_pause() -> void:
-	if is_instance_valid(inventory_panel) or is_instance_valid(dialogue) or is_instance_valid(shop):
+	if is_instance_valid(skill_overview) or is_instance_valid(inventory_panel) or is_instance_valid(dialogue) or is_instance_valid(shop):
 		return
 	paused = not paused
 	avatar.process_mode = Node.PROCESS_MODE_DISABLED if paused else Node.PROCESS_MODE_INHERIT
@@ -204,6 +212,9 @@ func _lose_focus() -> void:
 		_toggle_pause()
 
 func _restart() -> void:
+	_save_progress()
+	reaction = preload("res://src/ui/combat_reaction.gd").new()
+	if is_instance_valid(skill_overview): _toggle_skills()
 	_close_rowan()
 	if is_instance_valid(inventory_panel):
 		_toggle_inventory()
@@ -212,6 +223,7 @@ func _restart() -> void:
 	model.configure_equipment(avatar.loadout)
 	model.inventory.configure(avatar.race_id, avatar.loadout)
 	model.facing = selected_facing
+	model.progression = Profiles.get_profile(get_tree(),avatar.race_id)
 	feedback.reset()
 	paused = false
 	avatar.process_mode = Node.PROCESS_MODE_INHERIT
@@ -225,7 +237,7 @@ func _restart() -> void:
 	fingers.clear()
 
 func _toggle_inventory() -> void:
-	if is_instance_valid(dialogue) or is_instance_valid(shop): return
+	if is_instance_valid(skill_overview) or is_instance_valid(dialogue) or is_instance_valid(shop): return
 	if is_instance_valid(inventory_panel):
 		inventory_panel.queue_free()
 		inventory_panel = null
@@ -239,7 +251,32 @@ func _toggle_inventory() -> void:
 	inventory_panel.model = model
 	inventory_panel.closed.connect(_toggle_inventory)
 	inventory_panel.equipment_changed.connect(_equipment_changed)
+	inventory_panel.skills_requested.connect(_toggle_skills)
+	inventory_panel.disciplines_requested.connect(func(): _toggle_skills(); skill_overview.show_disciplines())
 	add_child(inventory_panel)
+
+func _toggle_skills() -> void:
+	if is_instance_valid(dialogue) or is_instance_valid(shop): return
+	if is_instance_valid(skill_overview):
+		skill_overview.queue_free()
+		skill_overview = null
+		paused = paused_before_skills
+		avatar.process_mode = Node.PROCESS_MODE_DISABLED if paused else Node.PROCESS_MODE_INHERIT
+		return
+	if is_instance_valid(inventory_panel): _toggle_inventory()
+	paused_before_skills = paused
+	if not paused: _toggle_pause()
+	skill_overview = preload("res://src/ui/skill_overview.gd").new()
+	skill_overview.lineage = avatar.race_id
+	skill_overview.progression = model.progression
+	skill_overview.combat_model = model
+	skill_overview.closed.connect(_toggle_skills)
+	skill_overview.pouch_requested.connect(_skills_to_pouch)
+	add_child(skill_overview)
+
+func _skills_to_pouch() -> void:
+	_toggle_skills()
+	_toggle_inventory()
 
 func _talk_to_rowan() -> void:
 	if paused or is_instance_valid(inventory_panel) or not model.can_talk_to_rowan(): return
@@ -291,16 +328,32 @@ func _potion(kind: String) -> void:
 	var event: Dictionary = model.use_potion(kind)
 	if not event.is_empty():
 		feedback.push(event)
+		reaction.receive(event)
 	_update_view(0)
 
 func _physics_process(delta: float) -> void:
 	if not paused:
+		reaction.advance(delta)
 		var direction := float(touch_right or Input.is_physical_key_pressed(KEY_D) or Input.is_physical_key_pressed(KEY_RIGHT)) - float(touch_left or Input.is_physical_key_pressed(KEY_A) or Input.is_physical_key_pressed(KEY_LEFT))
-		var muzzle: Vector2 = to_local(avatar.projectile_socket()) + Vector2(camera_x, camera_y)
+		var socket: Vector2 = avatar.skill_projectile_socket(model.active_skill) if model.attack_kind == "lineage" else avatar.projectile_socket()
+		var muzzle: Vector2 = to_local(socket) + Vector2(camera_x, camera_y)
+		var available := []
+		for skill in model.lineage_kit(): available.append(model.progression.allows(skill))
 		model.step(delta, direction, touch_guard or Input.is_physical_key_pressed(KEY_SHIFT) or Input.is_physical_key_pressed(KEY_2), muzzle)
+		for i in available.size():
+			if not available[i] and model.progression.allows(model.lineage_kit()[i]):
+				feedback.push({"kind":"level","text":"Unlocked: "+model.lineage_kit()[i].name,"position":model.position+Vector2(0,-220)})
 		for event in model.events:
 			feedback.push(event)
+			if event.get("kind","") in ["taken","blocked","ward","heal"]: reaction.receive(event)
 		feedback.advance(delta)
+		for notice_text in model.progression.notices:
+			feedback.push({"kind":"level","text":notice_text,"position":model.position+Vector2(0,-180)})
+		model.progression.notices.clear()
+		save_timer += delta
+		if save_timer >= 10:
+			_save_progress()
+			save_timer = 0
 	_update_view(delta)
 
 func _update_view(delta: float) -> void:
@@ -314,22 +367,29 @@ func _update_view(delta: float) -> void:
 		camera_x = model.rowan.position.x-550
 		camera_y = 80
 	for child in get_children():
-		if child is Button and child.position.y >= 530:
-			child.visible = not is_instance_valid(dialogue)
-	avatar.position = model.position - Vector2(camera_x, camera_y + 8)
+		if child is Button and child not in skill_buttons:
+			child.visible = paused and child.position.y < 100 and not is_instance_valid(dialogue) and not is_instance_valid(inventory_panel) and not is_instance_valid(skill_overview)
+	for i in skill_buttons.size():
+		var tile := skill_buttons[i]
+		tile.cooldown = model.lineage_cooldowns[i]
+		tile.cooldown_max = tile.skill.cooldown
+		tile.mana_available = model.mana >= tile.skill.mana
+		tile.locked = not model.progression.allows(tile.skill)
+		tile.tooltip_text = "%s\n%s\n%s"%[tile.skill.name,tile.skill.description,model.progression.requirement_text(tile.skill)]
+		tile.disabled = tile.locked or paused or model.health <= 0 or model.attack_time > 0 or model.guarding or tile.cooldown > 0 or not tile.mana_available
+		tile.queue_redraw()
+	avatar.position = model.position - Vector2(camera_x, camera_y + 8)+reaction.offset()
 	rowan.position = model.rowan.position-Vector2(camera_x,camera_y)
 	var npc_delta := delta if not paused or is_instance_valid(dialogue) else 0.0
 	rowan.advance(npc_delta,model.rowan.walking,model.rowan.facing)
 	rowan_balloon.position = rowan.position+Vector2(-119,-328)
 	rowan_balloon.show_line(model.rowan.speech if not paused else "")
 	talk_button.position = rowan.position+Vector2(-58,-250)
-	talk_button.visible = not paused and model.can_talk_to_rowan()
+	talk_button.visible = false
 	var direction: StringName = &"right" if model.facing > 0 else &"left"
 	if avatar.facing != direction:
 		avatar.set_facing(direction)
-	avatar.modulate = Color("ffffff") if model.invulnerable <= 0 else Color("aadce0")
-	if feedback.hurt_time > 0:
-		avatar.modulate = Color("ff8575")
+	avatar.modulate = reaction.tint()
 	avatar.visible = model.health > 0
 	if model.health > 0 and model.attack_time <= 0 and not paused:
 		var pose := "guard" if model.guarding else ("air" if not model.grounded else ("run" if absf(model.velocity.x) > 20 else "idle"))
@@ -344,8 +404,6 @@ func _update_view(delta: float) -> void:
 	feedback.camera = Vector2(camera_x, camera_y)
 	feedback.queue_redraw()
 	hud.text = "%d coins" % model.inventory.coins
-	builder_button.visible = paused and not is_instance_valid(dialogue)
-	restart_button.visible = paused and not is_instance_valid(dialogue)
 	guard_button.disabled = not model.can_guard
 	guard_button.text = "GUARD\nShift / 2" if model.can_guard else "NO SHIELD"
 	attack_button.disabled = model.weapon == "none"
@@ -359,6 +417,12 @@ func _update_view(delta: float) -> void:
 	skill_button.text = "POWER · %.1fs" % model.skill_cooldown if model.skill_cooldown > 0 else "POWER STRIKE\nK / 3 · 25 mana"
 	skill_button.disabled = model.weapon == "none"
 	queue_redraw()
+
+func _save_progress() -> void:
+	if Profiles.save(get_tree()) != OK: push_warning("Discipline progress could not be saved locally.")
+
+func _exit_tree() -> void:
+	_save_progress()
 
 func _draw() -> void:
 	draw_rect(Rect2(0, 0, 1152, 648), Color("82aea0"))

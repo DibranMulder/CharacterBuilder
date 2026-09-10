@@ -1,5 +1,8 @@
 extends Control
 ## Painted item tile, shared by the pouch and equipment destinations.
+const Chronicle = preload("res://src/ui/chronicle_theme.gd")
+var chronicle_theme: Theme
+var empty_frame: StyleBox
 var owner_panel: Control
 var item := {"id":"none", "slot":""}
 var bag_index := -1
@@ -42,6 +45,9 @@ static func art_for(data: Dictionary) -> Texture2D:
 	return textures[path]
 
 func _ready() -> void:
+	chronicle_theme = Chronicle.create()
+	empty_frame = chronicle_theme.get_stylebox("panel","ParchmentPanel").duplicate()
+	empty_frame.set("parchment",false)
 	var keyed := ShaderMaterial.new()
 	keyed.shader = preload("res://prototypes/training_clearing/pouch_art.gdshader")
 	material = keyed
@@ -82,15 +88,9 @@ func _draw() -> void:
 	var dark: bool = not equipment_slot.is_empty() or item.id != "none"
 	var edge := Color("72d6e5") if compatible else (Color("f2c45f") if selected or hovered else Color("a98b53"))
 	var rect := Rect2(Vector2.ONE * 2, size - Vector2.ONE * 4)
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color("263532") if dark else Color("ccb887")
-	style.border_color = edge
-	style.set_border_width_all(2 if selected or compatible else 1)
-	style.set_corner_radius_all(5)
-	draw_style_box(style, rect)
-	draw_rect(rect.grow(-4), Color(edge, .35), false, 1)
-	for corner in [Vector2(5,5), Vector2(size.x-5,5), Vector2(5,size.y-5), size-Vector2(5,5)]:
-		draw_circle(corner, 2, edge)
+	draw_style_box(chronicle_theme.get_stylebox("panel","InkPanel") if dark else empty_frame,rect)
+	if selected or hovered or compatible:
+		draw_rect(rect.grow(-3),edge,false,2)
 	var texture := art_for(item)
 	var area := Rect2(9,7,size.x-18,size.y-24 if not equipment_slot.is_empty() else size.y-14)
 	if texture != null:

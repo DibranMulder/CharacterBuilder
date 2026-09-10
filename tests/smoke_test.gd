@@ -23,7 +23,7 @@ func _initialize() -> void:
 		assert(avatar.available_gestures().size() == 3)
 		for slot in CharacterCatalog.SLOT_ORDER:
 			for item in CharacterCatalog.items_for(slot):
-				if avatar.supports_equipment_slot(slot):
+				if avatar.supports_equipment_slot(slot) and CharacterCatalog.supports_item(race_id,slot,item):
 					assert(avatar.equip(slot, item), "%s rejected %s" % [slot, item])
 				else:
 					assert(not avatar.equip(slot,item), "%s accepted unsupported %s" % [race_id,slot])

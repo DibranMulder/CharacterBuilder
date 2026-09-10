@@ -1,6 +1,6 @@
 extends RefCounted
 ## Local, throwaway gameplay model. Does sword/guard combat feel readable?
-## Local inventory/trading, but no networking, persistence or production progression.
+## Local inventory/trading and optional hero Discipline progression; no networking.
 
 const FLOOR_Y := 480.0
 const WORLD_WIDTH := 2200.0
@@ -40,6 +40,79 @@ var projectiles: Array[Dictionary] = []
 var inventory = preload("res://prototypes/training_clearing/inventory.gd").new()
 var loot: Array[Dictionary] = []
 var potion_cooldown := 0.0
+var progression
+var lineage_cooldowns := [0.0,0.0,0.0,0.0,0.0,0.0]
+var active_skill: Dictionary = {}
+var ward := 0.0
+var ward_time := 0.0
+
+func lineage_kit() -> Array[Dictionary]:
+	return preload("res://prototypes/sparring_arena/lineage_skills.gd").combat_kit(inventory.lineage)
+
+func begin_lineage_skill(slot: int) -> bool:
+	last_rejection = ""
+	if slot < 0 or slot >= lineage_cooldowns.size() or health <= 0 or attack_time > 0 or guarding or lineage_cooldowns[slot] > 0:
+		return false
+	var skill := lineage_kit()[slot]
+	if progression != null and not progression.allows(skill):
+		last_rejection = progression.requirement_text(skill)
+		return false
+	if mana < skill.mana:
+		last_rejection = "NOT ENOUGH MANA"
+		return false
+	active_skill = skill.duplicate()
+	attack_kind = "lineage"
+	attack_time = skill.windup + skill.recovery
+	attack_hit = false
+	attack_facing = facing
+	mana -= skill.mana
+	mana_delay = 1.2
+	lineage_cooldowns[slot] = skill.cooldown
+	return true
+
+func _release_lineage_skill(muzzle := Vector2.INF) -> void:
+	var skill := active_skill
+	match skill.kind:
+		"heal":
+			var amount := minf(skill.power,100-health)
+			health += amount
+			if progression != null: progression.award("focus",ceili(amount))
+			events.append({"kind":"heal","text":"+%d HP"%amount,"position":position+Vector2(0,-150),"impact":position+Vector2(0,-85)})
+		"ward":
+			ward = skill.power
+			ward_time = 5
+			events.append({"kind":"ward","text":"WARD %d"%ward,"position":position+Vector2(0,-150),"impact":position+Vector2(0,-85)})
+		"retreat": position.x = clampf(position.x-attack_facing*skill.reach,40,WORLD_WIDTH-40)
+		"bolt", "slowbolt", "rootbolt", "drain":
+			var origin: Vector2 = muzzle if muzzle.is_finite() else position+Vector2(attack_facing*35,-60)
+			var travel := Vector2(attack_facing,0)
+			var closest: float = skill.reach
+			for enemy in enemies:
+				var distance: float = (enemy.x-origin.x)*attack_facing
+				if enemy.hp > 0 and distance > 0 and distance < closest:
+					closest = distance
+					travel = (Vector2(enemy.x,FLOOR_Y-40)-origin).normalized()
+			projectiles.append({"position":origin,"velocity":travel*470,"direction":attack_facing,"life":skill.reach/470.0,"power":true,"skill":skill.duplicate()})
+		_:
+			var start := position
+			if skill.kind == "dash": position.x = clampf(position.x+attack_facing*minf(180,skill.reach),40,WORLD_WIDTH-40)
+			for enemy in enemies:
+				var dx: float = (enemy.x-start.x)*attack_facing
+				if enemy.hp > 0 and absf(start.y-FLOOR_Y) < 90 and ((absf(dx) <= skill.reach) if skill.kind == "pulse" else (dx >= -10 and dx <= skill.reach)):
+					_hit_lineage_skill(enemy,skill)
+
+func _hit_lineage_skill(enemy: Dictionary, skill: Dictionary) -> void:
+	var previous: float = enemy.hp
+	_damage_enemy(enemy,true,skill.power)
+	if progression != null:
+		progression.train_hit(previous-enemy.hp,skill.kind in ["bolt","slowbolt","rootbolt","drain"],true)
+	if skill.kind == "drain":
+		var amount := minf(100-health,(previous-enemy.hp)*.5)
+		health += amount
+		if amount > 0: events.append({"kind":"heal","text":"+%d HP"%amount,"position":position+Vector2(0,-150),"impact":position+Vector2(0,-85)})
+	if skill.kind == "rootbolt": enemy.rooted = .8
+	if skill.kind == "slowbolt": enemy.slowed = 2.0
+	if skill.kind == "pulse": enemy.x = clampf(enemy.x+signf(enemy.x-position.x)*50,40,WORLD_WIDTH-40)
 
 func can_talk_to_rowan() -> bool:
 	if health <= 0 or not grounded or position.distance_to(rowan.position) > 115 or attack_time > 0 or not projectiles.is_empty():
@@ -70,7 +143,8 @@ func use_potion(kind: String) -> Dictionary:
 	else:
 		mana += restored
 	potion_cooldown = 1.0
-	return {"kind":"xp" if kind == "hp" else "notice", "text":"+%d %s" % [restored, kind.to_upper()], "position":position + Vector2(0,-150)}
+	if progression != null: progression.award("survival",ceili(restored))
+	return {"kind":"heal" if kind == "hp" else "notice", "text":"+%d %s" % [restored, kind.to_upper()], "position":position + Vector2(0,-150), "impact":position+Vector2(0,-85)}
 
 func change_equipment(index: int, slot := "") -> bool:
 	if health <= 0 or attack_time > 0 or not projectiles.is_empty():
@@ -135,6 +209,8 @@ func _init() -> void:
 
 func begin_attack(power := false) -> bool:
 	last_rejection = ""
+	if power and progression != null:
+		return begin_lineage_skill(4)
 	if weapon == "none" or health <= 0 or attack_time > 0 or guarding:
 		return false
 	if power and skill_cooldown > 0:
@@ -170,6 +246,9 @@ func step(delta: float, direction: float, guard_held: bool, muzzle := Vector2.IN
 	rowan.step(delta,position,peaceful)
 	potion_cooldown = maxf(0, potion_cooldown - delta)
 	skill_cooldown = maxf(0, skill_cooldown - delta)
+	for i in lineage_cooldowns.size(): lineage_cooldowns[i] = maxf(0,lineage_cooldowns[i]-delta)
+	ward_time = maxf(0,ward_time-delta)
+	if ward_time <= 0: ward = 0
 	invulnerable = maxf(0, invulnerable - delta)
 	if health <= 0:
 		death_time -= delta
@@ -179,6 +258,8 @@ func step(delta: float, direction: float, guard_held: bool, muzzle := Vector2.IN
 			health = 100
 			mana = 100
 			stamina = 100
+			ward = 0
+			active_skill.clear()
 			invulnerable = 2
 			for enemy in enemies:
 				if enemy.hp > 0:
@@ -197,7 +278,9 @@ func step(delta: float, direction: float, guard_held: bool, muzzle := Vector2.IN
 	var speed := 105.0 if guarding else (90.0 if attack_time > 0 else 245.0)
 	velocity.x = move_toward(velocity.x, direction * speed, 1600 * delta)
 	var previous_y := position.y
+	var old_x := position.x
 	position.x = clampf(position.x + velocity.x * delta, 40, WORLD_WIDTH - 40)
+	if progression != null: progression.explore(position,not peaceful,absf(position.x-old_x))
 	velocity.y += 1500 * delta
 	position.y += velocity.y * delta
 	grounded = false
@@ -214,7 +297,11 @@ func step(delta: float, direction: float, guard_held: bool, muzzle := Vector2.IN
 	stamina = clampf(stamina + (-8.0 if guarding else 19.0) * delta, 0, 100)
 	if attack_time > 0:
 		attack_time = maxf(0, attack_time - delta)
-		if not attack_hit and attack_time <= weapon_feel().duration - weapon_feel().release:
+		if attack_kind == "lineage":
+			if not attack_hit and attack_time <= active_skill.recovery:
+				attack_hit = true
+				_release_lineage_skill(muzzle)
+		elif not attack_hit and attack_time <= weapon_feel().duration - weapon_feel().release:
 			attack_hit = true
 			if is_ranged():
 				var origin: Vector2 = muzzle if muzzle.is_finite() else position + Vector2(attack_facing * 35, -45)
@@ -241,7 +328,8 @@ func step(delta: float, direction: float, guard_held: bool, muzzle := Vector2.IN
 		for enemy in targets:
 			var center := Vector2(enemy.x, FLOOR_Y - 40)
 			if enemy.hp > 0 and Geometry2D.get_closest_point_to_segment(center, previous, projectile.position).distance_to(center) < 32:
-				_damage_enemy(enemy, projectile.power)
+				if projectile.has("skill"): _hit_lineage_skill(enemy,projectile.skill)
+				else: _damage_enemy(enemy, projectile.power)
 				projectile.life = 0
 				break
 	projectiles = projectiles.filter(func(shot): return shot.life > 0)
@@ -255,11 +343,13 @@ func step(delta: float, direction: float, guard_held: bool, muzzle := Vector2.IN
 				events.append({"kind":"level", "text":drop.label, "position":position + Vector2(0,-150)})
 		loot = loot.filter(func(drop): return not drop.collected)
 
-func _damage_enemy(enemy: Dictionary, power: bool) -> void:
+func _damage_enemy(enemy: Dictionary, power: bool, explicit_damage := -1.0) -> void:
 	if enemy.hp <= 0:
 		return
-	var damage: int = mini(int(enemy.hp), roundi(weapon_feel().damage * (2.1 if power else 1.0)))
+	var damage: int = mini(int(enemy.hp), roundi(explicit_damage if explicit_damage >= 0 else weapon_feel().damage * (2.1 if power else 1.0)))
 	enemy.hp = maxf(0, enemy.hp - damage)
+	if progression != null and explicit_damage < 0:
+		progression.train_hit(damage,weapon in ["staff","branch_staff"],power)
 	enemy.flash = .18
 	events.append({"kind":"power" if power else "dealt", "text":str(damage), "position":Vector2(enemy.x, FLOOR_Y-105), "impact":Vector2(enemy.x,FLOOR_Y-40)})
 	if power:
@@ -279,18 +369,21 @@ func _damage_enemy(enemy: Dictionary, power: bool) -> void:
 
 func _update_enemy(enemy: Dictionary, delta: float) -> void:
 	enemy.flash = maxf(0, enemy.flash - delta)
+	enemy.rooted = maxf(0,enemy.get("rooted",0.0)-delta)
+	enemy.slowed = maxf(0,enemy.get("slowed",0.0)-delta)
 	if enemy.hp <= 0 or health <= 0:
 		return
 	var dx: float = position.x - enemy.x
+	var movement := 0.0 if enemy.rooted > 0 else (.55 if enemy.slowed > 0 else 1.0)
 	if enemy.state == "idle":
 		enemy.facing = 1.0 if dx >= 0 else -1.0
 		if absf(dx) < 108 and absf(position.y - FLOOR_Y) < 95:
 			enemy.state = "windup"
 			enemy.timer = 1.05 if enemy.elite else .8
 		elif absf(dx) < 340 and absf(position.x - enemy.home) < 350:
-			enemy.x += signf(dx) * (65 if enemy.elite else 90) * delta
+			enemy.x += signf(dx) * (65 if enemy.elite else 90) * delta * movement
 		else:
-			enemy.x = move_toward(enemy.x, enemy.home, 70 * delta)
+			enemy.x = move_toward(enemy.x, enemy.home, 70 * delta * movement)
 		return
 	enemy.timer -= delta
 	if enemy.timer > 0:
@@ -303,16 +396,24 @@ func _update_enemy(enemy: Dictionary, delta: float) -> void:
 			var damage := 28.0 if enemy.elite else 15.0
 			var blocked: bool = guarding and -dx * facing > 0 and stamina >= 18
 			if blocked:
+				if progression != null: progression.award("defense",ceili(damage))
 				stamina -= 18
 				damage = roundf(damage * .2)
 				blocks += 1
 			elif guarding:
 				guarding = false
 				stamina = maxf(0, stamina - 18)
-			damage = minf(health, damage)
+			var absorbed := minf(ward,damage)
+			ward -= absorbed
+			if progression != null and absorbed > 0: progression.award("focus",ceili(absorbed))
+			damage = minf(health, damage-absorbed)
 			health = maxf(0, health - damage)
+			if progression != null: progression.award("stamina",ceili(damage))
 			invulnerable = .25
-			events.append({"kind":"blocked" if blocked else "taken", "text":"BLOCK −%d" % damage if blocked else "−%d HP" % damage, "position":position+Vector2(0,-150), "impact":position+Vector2(0,-85)})
+			if absorbed > 0:
+				events.append({"kind":"ward","text":"ABSORB %d"%absorbed,"position":position+Vector2(0,-150),"impact":position+Vector2(0,-85)})
+			if blocked or damage > 0:
+				events.append({"kind":"blocked" if blocked else "taken", "text":"BLOCK −%d" % damage if blocked else "−%d HP" % damage,"direction":signf(position.x-enemy.x), "position":position+Vector2(0,-150), "impact":position+Vector2(0,-85)})
 			if health <= 0:
 				projectiles.clear()
 				death_time = 2

@@ -166,6 +166,10 @@ static func items_for(slot: StringName) -> Array:
 	return EQUIPMENT.get(String(slot), ["none"])
 
 
+static func supports_item(lineage: String, slot: StringName, item: String) -> bool:
+	return item in items_for(slot) and not (lineage == "frost_troll" and slot == &"accessory" and item == "scarf")
+
+
 static func is_shield(item_id: String) -> bool:
 	return item_id in SHIELD_ITEMS
 

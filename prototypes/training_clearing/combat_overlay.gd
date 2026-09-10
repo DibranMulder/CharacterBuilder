@@ -9,6 +9,7 @@ var sequence := 0
 var font := SystemFont.new()
 const COLORS := {"dealt": Color("fff5d6"), "power": Color("f2c45f"),
 	"taken": Color("ff987f"), "blocked": Color("72d6e5"),
+	"heal": Color("b6e8a1"), "ward": Color("b9abf2"),
 	"xp": Color("b6d69a"), "level": Color("f2c45f"), "notice": Color("72d6e5")}
 
 func _init() -> void:
@@ -70,6 +71,16 @@ func _draw() -> void:
 			var center: Vector2 = item.impact - camera
 			var radius: float = 9 + item.age * 120
 			color.a = 1 - item.age / .22
+			if item.kind == "heal":
+				for side in [-1,1]:
+					var at := center+Vector2(side*radius,-item.age*90)
+					draw_line(at-Vector2(5,0),at+Vector2(5,0),color,3,true)
+					draw_line(at-Vector2(0,5),at+Vector2(0,5),color,3,true)
+				continue
+			if item.kind in ["blocked","ward"]:
+				var shield := PackedVector2Array([center+Vector2(-radius,-radius),center+Vector2(radius,-radius),center+Vector2(radius*.8,radius*.4),center+Vector2(0,radius),center+Vector2(-radius*.8,radius*.4),center+Vector2(-radius,-radius)])
+				draw_polyline(shield,color,3,true)
+				continue
 			draw_arc(center, radius, 0, TAU, 24, color, 3, true)
 			for ray in 6:
 				var direction := Vector2.from_angle(ray * TAU / 6)

@@ -41,6 +41,15 @@ func _ready() -> void:
 	play.tooltip_text = "Play with this exact lineage, weapon, and equipment configuration."
 	play.pressed.connect(_play_training_clearing)
 	add_child(play)
+	var arena := Button.new()
+	arena.text = "Sparring arena"
+	arena.position = Vector2(753,18)
+	arena.size = Vector2(180,40)
+	arena.theme = preload("res://src/ui/chronicle_theme.gd").create()
+	arena.pressed.connect(func():
+		get_tree().set_meta("training_character",{"lineage":avatar.race_id,"loadout":avatar.loadout.duplicate(),"facing":avatar.facing})
+		get_tree().change_scene_to_file("res://prototypes/sparring_arena/arena.tscn"))
+	add_child(arena)
 
 
 func _play_training_clearing() -> void:
@@ -174,4 +183,6 @@ func _sync_selectors() -> void:
 		var selector: OptionButton=gear_selectors[slot]; var items:=CharacterCatalog.items_for(slot)
 		selector.disabled = not avatar.supports_equipment_slot(slot)
 		selector.tooltip_text = "Not used by this lineage" if selector.disabled else ""
+		for index in items.size():
+			selector.set_item_disabled(index,not CharacterCatalog.supports_item(avatar.race_id,slot,items[index]))
 		selector.select(items.find(avatar.loadout[slot]))

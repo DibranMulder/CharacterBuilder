@@ -6,25 +6,57 @@ These are working names, not a declaration that all art direction is final.
 ## Language
 
 **Lineage**:
-A playable people's body, cultural origin, visual heritage, and Homeland,
-independent of their learned Combat Class.
+A playable people's body, cultural origin, Homeland, innate abilities and
+training affinities, independent of their learned Combat Class.
 _Avoid_: Race, class (when referring to a people)
 
 **Allegiance**:
 A Hero's permanent Light or Dark affiliation, inherited from their Lineage;
 it is not a measure of personal morality and cannot be switched.
 
+**Overall Level**:
+A Hero's 1–120 progression through adventures and meaningful activities,
+independent of individual Disciplines and Weapon Proficiencies.
+_Avoid_: Adventure Level, average Discipline level
+
 **Adventure Level**:
-A Hero's 1–120 adventure progression, governing encounter scale, equipment
-requirements, and Class Talent progression independently of Disciplines.
+The earlier name for the Hero progression now called Overall Level.
 
 **Class Talent Point**:
-A Hero-specific point for a Class Talent, earned every ten Adventure Levels
+A Hero-specific point for a Class Talent, earned every ten Overall Levels
 for a maximum of twelve at level 120.
 
 **Discipline**:
-One of twelve independently trained 1–99 skills expressing a Hero's breadth;
-their aggregate Overall Level does not award Class Talent Points.
+One of twelve independently trained 1–99 capabilities expressing a Hero's
+physical, mystical, or world-facing development.
+
+**Total Discipline Level**:
+The sum of a Hero's twelve Discipline levels, expressing breadth rather than
+encounter strength or eligibility for Class Talent Points.
+
+**Weapon Proficiency**:
+A Hero's learned 1–99 mastery of a Weapon Family, retained independently of
+individual weapons and granting access to that family's techniques or spells.
+
+**Lineage Affinity**:
+An innate training advantage or physical trait associated with a Lineage;
+it encourages certain builds without granting or removing Class permissions.
+
+**Lineage Skill**:
+An ability exclusive to a Hero's Lineage, sometimes enhanced by a compatible
+weapon without making that weapon necessary for the base ability.
+
+**Arcana**:
+The Discipline of shaping magical effects, including offensive, restorative,
+and protective magic.
+
+**Focus**:
+The Discipline of managing magical resources and sustaining deliberate
+spellcasting, distinct from a spell's power or resistance to hostile control.
+
+**Willpower**:
+The Discipline of mental resilience under threat, including resisting hostile
+magical control and maintaining concentration under pressure.
 
 **Map**:
 The player-facing name for one playable Zone, distinct from a Homeland or

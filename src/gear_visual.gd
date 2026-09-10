@@ -85,8 +85,7 @@ const STORYBOOK_CAPE := preload("res://assets/equipment/cape_storybook.png")
 const STORYBOOK_LONG_CAPE := preload("res://assets/equipment/long_cape_storybook_v3.png")
 const STORYBOOK_PACK := preload("res://assets/equipment/pack_storybook.png")
 const STORYBOOK_QUIVER := preload("res://assets/equipment/quiver_storybook.png")
-const STORYBOOK_SCARF := preload("res://assets/equipment/scarf_storybook.png")
-const STORYBOOK_SCARF_BACK := preload("res://assets/equipment/scarf_storybook_back.png")
+const PAINTED_SCARF := preload("res://assets/equipment/scarf_painted_atlas.png")
 const STORYBOOK_AMULET := preload("res://assets/equipment/amulet_storybook.png")
 const STORYBOOK_GOGGLES := preload("res://assets/equipment/goggles_storybook.png")
 const STORYBOOK_GOGGLES_BACK := preload("res://assets/equipment/goggles_storybook_back.png")
@@ -121,7 +120,7 @@ func setup(p_slot: String, p_item: String, p_accent: Color) -> GearVisual:
 	crossbow_loaded = true
 	two_handed = false
 	visible = item != "none"
-	var needs_magenta_key := (slot == "weapon" and item == "crossbow") or (slot == "armor" and item == "plate") or (slot == "accessory" and item == "goggles") or (slot == "pants" and item in ["cloth","ranger","baggy","leather","plate"])
+	var needs_magenta_key := (slot == "weapon" and item == "crossbow") or (slot == "armor" and item == "plate") or (slot == "accessory" and item in ["goggles","scarf"]) or (slot == "pants" and item in ["cloth","ranger","baggy","leather","plate"])
 	# The concept sheets repeat one material language while shifting their cloth
 	# accents per lineage. Recolor only the cool-blue textile families; leather,
 	# metal, glass, wood, and painted highlights retain their authored palettes.
@@ -275,6 +274,24 @@ func _draw_cloth(texture: Texture2D, origin: Vector2) -> void:
 		draw_mesh(_cloth_mesh, texture)
 	else:
 		draw_texture(texture, origin)
+
+
+func _draw_scarf() -> void:
+	var region := Rect2(850,295,615,385) if back_view else Rect2(72,295,640,425)
+	var size := Vector2(62,39) if back_view else Vector2(64,42)
+	var origin := Vector2(-32,4)
+	var key: Array = [region,rotation]
+	if not _cloth_mesh or key != _cloth_mesh_key:
+		var mesh := preload("res://src/cloth_surface.gd").mesh(size,origin,rotation)
+		var arrays := mesh.surface_get_arrays(0)
+		var uvs: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV]
+		for i in uvs.size():
+			uvs[i] = (region.position+uvs[i]*region.size)/PAINTED_SCARF.get_size()
+		arrays[Mesh.ARRAY_TEX_UV] = uvs
+		_cloth_mesh = ArrayMesh.new()
+		_cloth_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES,arrays)
+		_cloth_mesh_key = key
+	draw_mesh(_cloth_mesh,PAINTED_SCARF)
 
 
 func _draw_fitted_waist() -> void:
@@ -475,8 +492,7 @@ func _draw() -> void:
 		"accessory":
 			match item:
 				"scarf":
-					var scarf_texture := STORYBOOK_SCARF_BACK if back_view else STORYBOOK_SCARF
-					_draw_cloth(scarf_texture,Vector2(-33,-3))
+					_draw_scarf()
 				"amulet":
 					# A front-hanging pendant is occluded by the head and torso from the
 					# rear rather than being incorrectly painted over a climbing back.

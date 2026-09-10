@@ -28,6 +28,8 @@ func _capture() -> void:
 	for frame in 6:
 		await process_frame
 	print("Staged pose: ", scene.last_pose, " / ", scene.avatar.loadout)
+	RenderingServer.force_draw(false)
+	RenderingServer.force_draw(false)
 	var result := viewport.get_texture().get_image().save_png("res://artifacts/training_clearing.png")
 	print("Clearing preview saved" if result == OK else "Capture failed")
 	# Staged inventory contents for visual comparison, not starter rewards.
@@ -40,6 +42,8 @@ func _capture() -> void:
 	scene._update_view(0)
 	for frame in 3:
 		await process_frame
+	RenderingServer.force_draw(false)
+	RenderingServer.force_draw(false)
 	var inventory_result := viewport.get_texture().get_image().save_png("res://artifacts/training_inventory.png")
 	if inventory_result != OK:
 		quit(1)

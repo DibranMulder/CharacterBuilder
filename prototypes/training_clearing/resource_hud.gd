@@ -3,6 +3,7 @@ extends Node2D
 const Chronicle = preload("res://src/ui/chronicle_theme.gd")
 var model
 var player_name := ""
+var show_guard := true
 var font: Font = Chronicle.create().get_font("font","ChronicleHeading")
 var portrait := preload("res://src/ui/character_portrait.gd").new()
 var badge := Node2D.new()
@@ -71,7 +72,8 @@ func _draw() -> void:
 		var outward := Vector2.from_angle(angle)
 		draw_line(at,at+tangent*10,Chronicle.BRASS,1,true)
 		draw_colored_polygon(PackedVector2Array([at,at+outward*7+tangent*3,at+outward*5+tangent*12,at+tangent*9]),Color("b9954d"))
-	_bar(Rect2(366,600,300,18),model.stamina/100.0,Chronicle.TEAL,"GUARD  %d / 100" % model.stamina,11)
+	if show_guard:
+		_bar(Rect2(366,600,300,18),model.stamina/100.0,Chronicle.TEAL,"GUARD  %d / 100" % model.stamina,11)
 	badge.queue_redraw()
 
 func _draw_level() -> void:

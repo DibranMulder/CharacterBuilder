@@ -258,6 +258,7 @@ func _build_sprite() -> void:
 	var atlas := AtlasTexture.new()
 	atlas.atlas = source
 	atlas.region = region
+	atlas.filter_clip = true
 	_sprite.texture = atlas
 	_sprite.flip_h = horizontal_flip or (part_id == "head" and not back_view and FLIPPED_FRONT_HEADS.get(race_id,false))
 	var fitted_anatomy := SHARED_ANATOMY_TEXTURES.has(part_id) or (race_id == "frost_troll" and FROST_TROLL_ANATOMY_TEXTURES.has(part_id)) or (race_id == "centaur" and CENTAUR_EQUINE_TEXTURES.has(part_id))
@@ -281,6 +282,10 @@ func _build_sprite() -> void:
 	var authored_bogkin_extremity := race_id == "bogkin" and BOGKIN_EXTREMITY_REGIONS.has(part_id)
 	var tint_strength := .92 if SHARED_ANATOMY_TEXTURES.has(part_id) and race_id != "frost_troll" else (.72 if part_id in ["hand_open","hand_grip","hand_grip_back","foot"] and not authored_troll_extremity and not authored_bogkin_extremity else 0.0)
 	_sprite.material = _key_material(key_mode,anatomy_tint,tint_strength)
+	if part_id == "head":
+		var head_paint := ShaderMaterial.new()
+		head_paint.shader = preload("res://src/head_paint.gdshader")
+		_sprite.material = head_paint
 	if race_id in ["centaur", "fae"] and part_id == "head":
 		# Size the face independently of the waist-length hair. Both layers use
 		# identical source coordinates, so the head never separates from its mane.

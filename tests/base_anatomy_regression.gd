@@ -11,7 +11,8 @@ func _initialize() -> void:
 		var head: BaseAnatomyVisual = BaseAnatomy.new().setup(race_id,"head",Vector2(64,64))
 		assert(head.has_sprite(), "%s has no authored head sprite" % race_id)
 		var head_material: ShaderMaterial = head.get_node("Sprite").material
-		assert(head_material != null and "magenta_spill" in head_material.shader.code and "despill" in head_material.shader.code, "%s head keying does not remove antialiased magenta spill" % race_id)
+		assert(head_material != null and head_material.shader.resource_path == "res://src/head_paint.gdshader", "%s must use the shared subpixel head paint" % race_id)
+		assert(head.get_node("Sprite").texture.filter_clip,"Head atlas must isolate its cutout")
 		var front_texture: Texture2D = head.get_node("Sprite").texture
 		head.set_back_view(true)
 		var back_texture: Texture2D = head.get_node("Sprite").texture

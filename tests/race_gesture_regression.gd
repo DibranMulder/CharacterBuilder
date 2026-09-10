@@ -111,7 +111,7 @@ func _run() -> void:
 			if lower_body_delta < minimum_delta:
 				_fail("%s leaves its lower body inert at impact (%.1f degrees)" % [motion_id,lower_body_delta])
 				return
-			if avatar._gear.back.rotation_degrees < 7.0 or avatar._gear.accessory.rotation_degrees < 4.0:
+			if avatar._gear.back.rotation_degrees < 7.0 or (avatar.loadout.accessory == "scarf" and avatar._gear.accessory.rotation_degrees < 4.0):
 				_fail("%s impact leaves its cape or scarf rigid" % motion_id)
 				return
 			if race_id == "fae":

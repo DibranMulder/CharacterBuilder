@@ -356,6 +356,8 @@ func configure(new_race_id: String, new_loadout: Dictionary = {}) -> void:
 	race_id = new_race_id if CharacterCatalog.RACES.has(new_race_id) else "human"
 	for slot in new_loadout:
 		if loadout.has(slot): loadout[slot] = new_loadout[slot]
+	if not CharacterCatalog.supports_item(race_id,&"accessory",loadout.accessory):
+		loadout.accessory = "none"
 	if loadout.weapon in ["bow","crossbow"] or _has_two_handed_axe_loadout():
 		loadout.offhand = "none"
 	_rebuild()
@@ -365,6 +367,8 @@ func equip(slot: StringName, item_id: String) -> bool:
 	if not slot in CharacterCatalog.SLOT_ORDER or not item_id in CharacterCatalog.items_for(slot):
 		return false
 	if not supports_equipment_slot(slot):
+		return false
+	if not CharacterCatalog.supports_item(race_id,slot,item_id):
 		return false
 	var had_two_handed_axe := _has_two_handed_axe_loadout()
 	var had_crossbow: bool = loadout.weapon == "crossbow"
@@ -950,6 +954,17 @@ func _attach_gear(slot: String, parent: Node2D, at: Vector2, z: int) -> void:
 		visual.scale.y = float(_profile.get("armor_height_scale",1.0))
 	elif slot == "offhand" and loadout[slot] == "lantern":
 		visual.scale = Vector2.ONE*Gear.LANTERN_DISPLAY_SCALE
+	elif slot == "accessory" and loadout[slot] == "scarf":
+		# A collar follows neck/shoulder width, not one universal sprite size.
+		var fit: Vector2 = {
+			"bogkin":Vector2(.88,.70),"human":Vector2(.88,.85),
+			"centaur":Vector2(1.0,.9),"fae":Vector2(.8,.75),
+			"goblin":Vector2(.90,.65),
+			"duneborn":Vector2(1.12,.86),"frostling":Vector2(.94,.78)
+		}.get(race_id,Vector2.ONE)
+		visual.scale = fit
+		visual.z_index = 0 # Jaw and rear hair occlude the collar's upper edge.
+		visual.fitted_cloth = true
 	parent.add_child(visual); _gear[slot] = visual
 	if race_id == "human" and slot == "armor":
 		visual.bind_garment(_bones.hip, _bones.left_leg, _bones.right_leg, _bones.left_arm, _bones.right_arm)
@@ -1458,6 +1473,7 @@ func _swing(node: Node2D, windup: float, strike: float) -> void:
 
 func _animate_race_gesture(profile: Dictionary, motion_id: String) -> void:
 	var times: Array = profile.times
+	var recovery: float = profile.get("recovery_duration",.24)
 	var windup: Array = profile.windup.duplicate()
 	var impact: Array = profile.impact.duplicate()
 	if motion_id == "centaur_1":
@@ -1487,16 +1503,16 @@ func _animate_race_gesture(profile: Dictionary, motion_id: String) -> void:
 	_active_tween.tween_callback(_spawn_race_gesture_effect.bind(motion_id))
 	_active_tween.tween_interval(float(times[2]))
 	_active_tween.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	_active_tween.tween_property(_bones.torso,"rotation",_rest.torso.rotation,.24)
-	_active_tween.parallel().tween_property(_bones.left_arm,"rotation",_rest.left_arm.rotation,.24)
-	_active_tween.parallel().tween_property(_bones.left_forearm,"rotation",_rest.left_forearm.rotation,.24)
-	_active_tween.parallel().tween_property(_bones.right_arm,"rotation",_rest.right_arm.rotation,.24)
-	_active_tween.parallel().tween_property(_bones.right_forearm,"rotation",_rest.right_forearm.rotation,.24)
-	_active_tween.parallel().tween_property(_bones.rig,"position",_rest.rig.position,.24)
-	_queue_lower_body_recovery(.24)
-	_queue_wing_recovery(.24)
+	_active_tween.tween_property(_bones.torso,"rotation",_rest.torso.rotation,recovery)
+	_active_tween.parallel().tween_property(_bones.left_arm,"rotation",_rest.left_arm.rotation,recovery)
+	_active_tween.parallel().tween_property(_bones.left_forearm,"rotation",_rest.left_forearm.rotation,recovery)
+	_active_tween.parallel().tween_property(_bones.right_arm,"rotation",_rest.right_arm.rotation,recovery)
+	_active_tween.parallel().tween_property(_bones.right_forearm,"rotation",_rest.right_forearm.rotation,recovery)
+	_active_tween.parallel().tween_property(_bones.rig,"position",_rest.rig.position,recovery)
+	_queue_lower_body_recovery(recovery)
+	_queue_wing_recovery(recovery)
 	if motion_id == "centaur_1":
-		_active_tween.parallel().tween_method(_pose_centaur_rear, 1.0, 0.0, .24)
+		_active_tween.parallel().tween_method(_pose_centaur_rear, 1.0, 0.0, recovery)
 
 
 func _pose_centaur_rear(amount: float) -> void:

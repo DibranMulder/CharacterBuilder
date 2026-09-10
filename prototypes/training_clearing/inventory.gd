@@ -14,6 +14,8 @@ func sort_items() -> void:
 func configure(race_id: String, loadout: Dictionary) -> void:
 	lineage = race_id
 	equipped = loadout.duplicate()
+	if not CharacterCatalog.supports_item(lineage,&"accessory",equipped.get("accessory","none")):
+		equipped.accessory = "none"
 
 func grant(reward: Dictionary) -> void:
 	revision += 1
@@ -24,7 +26,7 @@ func grant(reward: Dictionary) -> void:
 		items.append(item.duplicate())
 
 func can_wear(slot: String, item: String) -> bool:
-	return slot in CharacterCatalog.EQUIPMENT and item in CharacterCatalog.EQUIPMENT[slot] and not (lineage == "centaur" and slot in ["pants", "boots"] and item != "none")
+	return slot in CharacterCatalog.EQUIPMENT and CharacterCatalog.supports_item(lineage,slot,item) and not (lineage == "centaur" and slot in ["pants", "boots"] and item != "none")
 
 func equip(index: int) -> bool:
 	if index < 0 or index >= items.size():
