@@ -1,0 +1,368 @@
+{
+  "status": "concept-art-not-runtime",
+  "lineages": {
+    "image": "lineages-all-eight.png",
+    "panels": [
+      "Tidekin — Springwater",
+      "Humans — Second Wind",
+      "Grove Centaurs — Grove Renewal",
+      "Aeralith — Zephyr Veil",
+      "Crag Trolls — Mountain Charge",
+      "Deep Goblins — Siphon Dart",
+      "Sunscour — Mirage Guard",
+      "Rimeborn — Winter Halo"
+    ]
+  },
+  "weapons": [
+    {
+      "family": "Sword",
+      "image": "sword-mastery.png",
+      "palette": "ivory, tempered gold, blue shadow",
+      "skills": [
+        {
+          "proficiency": 1,
+          "name": "Basic Slash"
+        },
+        {
+          "proficiency": 5,
+          "name": "Quick Cut"
+        },
+        {
+          "proficiency": 15,
+          "name": "Heavy Cut"
+        },
+        {
+          "proficiency": 30,
+          "name": "Pommel Strike"
+        },
+        {
+          "proficiency": 50,
+          "name": "Sweeping Edge"
+        },
+        {
+          "proficiency": 75,
+          "name": "Guarded Riposte"
+        },
+        {
+          "proficiency": 99,
+          "name": "Blade Rhythm"
+        }
+      ]
+    },
+    {
+      "family": "Axe",
+      "image": "axe-mastery.png",
+      "palette": "copper, ember amber, dark iron",
+      "skills": [
+        {
+          "proficiency": 1,
+          "name": "Hew"
+        },
+        {
+          "proficiency": 5,
+          "name": "Committed Chop"
+        },
+        {
+          "proficiency": 15,
+          "name": "Raking Edge"
+        },
+        {
+          "proficiency": 30,
+          "name": "Pursuing Hew"
+        },
+        {
+          "proficiency": 50,
+          "name": "Broad Reap"
+        },
+        {
+          "proficiency": 75,
+          "name": "Split Decision"
+        },
+        {
+          "proficiency": 99,
+          "name": "Headsman's Measure"
+        }
+      ]
+    },
+    {
+      "family": "Spear",
+      "image": "spear-mastery.png",
+      "palette": "reed gold, pale jade",
+      "skills": [
+        {
+          "proficiency": 1,
+          "name": "Straight Thrust"
+        },
+        {
+          "proficiency": 5,
+          "name": "Tip Strike"
+        },
+        {
+          "proficiency": 15,
+          "name": "Withdrawn Point"
+        },
+        {
+          "proficiency": 30,
+          "name": "Set the Point"
+        },
+        {
+          "proficiency": 50,
+          "name": "Driving Lunge"
+        },
+        {
+          "proficiency": 75,
+          "name": "Turning Shaft"
+        },
+        {
+          "proficiency": 99,
+          "name": "Three-Point Measure"
+        }
+      ]
+    },
+    {
+      "family": "Polearm",
+      "image": "polearm-mastery.png",
+      "palette": "bronze, olive, chalk",
+      "skills": [
+        {
+          "proficiency": 1,
+          "name": "Long Sweep"
+        },
+        {
+          "proficiency": 5,
+          "name": "Narrow End"
+        },
+        {
+          "proficiency": 15,
+          "name": "Hook and Draw"
+        },
+        {
+          "proficiency": 30,
+          "name": "Clearing Wheel"
+        },
+        {
+          "proficiency": 50,
+          "name": "Low Harvest"
+        },
+        {
+          "proficiency": 75,
+          "name": "Overhead Reach"
+        },
+        {
+          "proficiency": 99,
+          "name": "Reaper's Circuit"
+        }
+      ]
+    },
+    {
+      "family": "Bow",
+      "image": "bow-mastery.png",
+      "palette": "honey gold, leaf green",
+      "skills": [
+        {
+          "proficiency": 1,
+          "name": "Draw and Loose"
+        },
+        {
+          "proficiency": 5,
+          "name": "Snap Arrow"
+        },
+        {
+          "proficiency": 15,
+          "name": "Retreating Loose"
+        },
+        {
+          "proficiency": 30,
+          "name": "Hampering Arrow"
+        },
+        {
+          "proficiency": 50,
+          "name": "Forked Volley"
+        },
+        {
+          "proficiency": 75,
+          "name": "Lofted Shot"
+        },
+        {
+          "proficiency": 99,
+          "name": "Running Cadence"
+        }
+      ]
+    },
+    {
+      "family": "Crossbow",
+      "image": "crossbow-mastery.png",
+      "palette": "brass, ochre, charcoal",
+      "skills": [
+        {
+          "proficiency": 1,
+          "name": "Shouldered Bolt"
+        },
+        {
+          "proficiency": 5,
+          "name": "Braced Bolt"
+        },
+        {
+          "proficiency": 15,
+          "name": "Combat Reload"
+        },
+        {
+          "proficiency": 30,
+          "name": "Disrupting Bolt"
+        },
+        {
+          "proficiency": 50,
+          "name": "Bodkin Bolt"
+        },
+        {
+          "proficiency": 75,
+          "name": "Measured Pair"
+        },
+        {
+          "proficiency": 99,
+          "name": "Siege Measure"
+        }
+      ]
+    },
+    {
+      "family": "Wand",
+      "image": "wand-mastery.png",
+      "palette": "pearl, soft turquoise, restrained violet",
+      "skills": [
+        {
+          "proficiency": 1,
+          "name": "Lumen Pin"
+        },
+        {
+          "proficiency": 5,
+          "name": "Stitchlight"
+        },
+        {
+          "proficiency": 15,
+          "name": "Needle Hex"
+        },
+        {
+          "proficiency": 30,
+          "name": "Threadward"
+        },
+        {
+          "proficiency": 50,
+          "name": "Unravel"
+        },
+        {
+          "proficiency": 75,
+          "name": "Steady Thread"
+        },
+        {
+          "proficiency": 99,
+          "name": "Returning Light"
+        }
+      ]
+    },
+    {
+      "family": "Staff",
+      "image": "staff-mastery.png",
+      "palette": "sapphire, amber, lavender",
+      "skills": [
+        {
+          "proficiency": 1,
+          "name": "Spark"
+        },
+        {
+          "proficiency": 5,
+          "name": "Firebolt"
+        },
+        {
+          "proficiency": 15,
+          "name": "Frost Bind"
+        },
+        {
+          "proficiency": 30,
+          "name": "Arcane Ward"
+        },
+        {
+          "proficiency": 50,
+          "name": "Chain Spark"
+        },
+        {
+          "proficiency": 75,
+          "name": "Steady Channel"
+        },
+        {
+          "proficiency": 99,
+          "name": "Spell Weave"
+        }
+      ]
+    },
+    {
+      "family": "Dagger",
+      "image": "dagger-mastery.png",
+      "palette": "silver, ink blue, restrained crimson",
+      "skills": [
+        {
+          "proficiency": 1,
+          "name": "Close Prick"
+        },
+        {
+          "proficiency": 5,
+          "name": "Double Prick"
+        },
+        {
+          "proficiency": 15,
+          "name": "Retreating Nick"
+        },
+        {
+          "proficiency": 30,
+          "name": "Held Point"
+        },
+        {
+          "proficiency": 50,
+          "name": "Tendon Touch"
+        },
+        {
+          "proficiency": 75,
+          "name": "Patient Answer"
+        },
+        {
+          "proficiency": 99,
+          "name": "Needle Sequence"
+        }
+      ]
+    },
+    {
+      "family": "Blunt",
+      "image": "blunt-mastery.png",
+      "palette": "slate, pale stone, amber fissures",
+      "skills": [
+        {
+          "proficiency": 1,
+          "name": "Weighted Blow"
+        },
+        {
+          "proficiency": 5,
+          "name": "Knocking Blow"
+        },
+        {
+          "proficiency": 15,
+          "name": "Checking Tap"
+        },
+        {
+          "proficiency": 30,
+          "name": "Grounded Swing"
+        },
+        {
+          "proficiency": 50,
+          "name": "Roommaker"
+        },
+        {
+          "proficiency": 75,
+          "name": "Bracebreaker"
+        },
+        {
+          "proficiency": 99,
+          "name": "Bellfall"
+        }
+      ]
+    }
+  ]
+}
