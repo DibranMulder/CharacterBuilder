@@ -2,7 +2,7 @@
 id: DESIGN-0021
 title: Skill Spectacle and Reactive Environments
 status: proposed-art-direction
-updated: 2026-09-10
+updated: 2026-09-11
 ---
 
 # Powerful skills in a living, painted world
@@ -20,8 +20,16 @@ Visual references: `light-lineages.png`, `dark-lineages.png`, and
 painted edges, warm materials, appealing proportions and legible equipment.
 Do not replace them with realistic explosions or uniformly neon particle clouds.
 
-Generated art-direction board:
-[Lineage skill effect studies](../../designs/lineage-skill-effects-concept.png).
+Current art-direction gallery:
+[All eight lineages and all seventy weapon skills](../../designs/skills/README.md).
+The [complete eight-lineage board](../../designs/skills/lineages-all-eight.png)
+replaces the six-panel study as the roster reference. Ten additional boards
+show seven skills per weapon family. Use the original Troll panel's painted
+weight and material shapes as the shared rendering benchmark, without making
+every family an earth-effect reskin.
+
+The original [six-panel study](../../designs/lineage-skill-effects-concept.png)
+is retained as an archive.
 It establishes materials, silhouettes and atmosphere, not exact gameplay
 geometry: Winter Halo must be centered on its caster in production, and
 Cyclone's footprint must match its authored radius. Mirage silhouettes are
@@ -225,10 +233,11 @@ warnings and authority. Cosmetic skills do not silently introduce any of those.
 
 ## First deliverables and acceptance
 
-1. A concept sheet establishing six signature effects against the existing
-   painted lineage references: Troll Mountain Charge, Rimeborn Winter Halo,
-   Aeralith Cyclone, Centaur Grove Renewal, Sunscour Mirage Guard and Goblin
-   Siphon Dart. It is visual exploration, not a screenshot of implemented play.
+1. The concept gallery now includes all eight lineages, including Tidekin
+   Springwater and Human Second Wind, plus ten seven-panel weapon sheets.
+   It is visual exploration, not a screenshot of implemented play. The lineage
+   board has one signature per lineage, not individual illustrations of all
+   thirty-two innate abilities.
 2. Animated in-game proofs: one physical impact (Boulder Fist → Mountain
    Charge), one projectile (Ice Shard) and one signature (Winter Halo). Reuse
    these tested presentation patterns when expanding the remaining catalogs.
@@ -240,5 +249,6 @@ warnings and authority. Cosmetic skills do not silently introduce any of those.
    no drift between moving platform art and collision.
 
 The written visual catalog covers all ten weapon ladders and all eight lineage
-kits. The concept sheet illustrates a selected direction; it is not a complete
+kits. The concept gallery illustrates every weapon entry and one signature per
+lineage; it is not a complete
 sprite atlas, animation pack, effects implementation or measured performance test.
