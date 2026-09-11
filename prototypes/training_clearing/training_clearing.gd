@@ -18,6 +18,7 @@ var touch_right := false
 var touch_guard := false
 var paused := false
 var feedback := preload("res://prototypes/training_clearing/combat_overlay.gd").new()
+var monster_impacts := preload("res://src/monster_impact.gd").new()
 var reaction := preload("res://src/ui/combat_reaction.gd").new()
 var resources := preload("res://prototypes/training_clearing/resource_hud.gd").new()
 var hud: Label
@@ -58,6 +59,8 @@ func _ready() -> void:
 	model.facing = -1.0 if selection.get("facing", &"right") == &"left" else 1.0
 	avatar.scale = Vector2.ONE * .69
 	add_child(feedback)
+	monster_impacts.z_index = 120
+	add_child(monster_impacts)
 	add_child(resources)
 	resources.player_name = CharacterCatalog.race(avatar.race_id).name.to_upper()
 	resources.set_character(avatar.race_id,avatar.loadout)
@@ -225,6 +228,7 @@ func _restart() -> void:
 	model.facing = selected_facing
 	model.progression = Profiles.get_profile(get_tree(),avatar.race_id)
 	feedback.reset()
+	monster_impacts.reset()
 	paused = false
 	avatar.process_mode = Node.PROCESS_MODE_INHERIT
 	avatar.stop_motion()
@@ -334,6 +338,7 @@ func _potion(kind: String) -> void:
 func _physics_process(delta: float) -> void:
 	if not paused:
 		reaction.advance(delta)
+		monster_impacts.advance(delta)
 		var direction := float(touch_right or Input.is_physical_key_pressed(KEY_D) or Input.is_physical_key_pressed(KEY_RIGHT)) - float(touch_left or Input.is_physical_key_pressed(KEY_A) or Input.is_physical_key_pressed(KEY_LEFT))
 		var socket: Vector2 = avatar.skill_projectile_socket(model.active_skill) if model.attack_kind == "lineage" else avatar.projectile_socket()
 		var muzzle: Vector2 = to_local(socket) + Vector2(camera_x, camera_y)
@@ -345,6 +350,7 @@ func _physics_process(delta: float) -> void:
 				feedback.push({"kind":"level","text":"Unlocked: "+model.lineage_kit()[i].name,"position":model.position+Vector2(0,-220)})
 		for event in model.events:
 			feedback.push(event)
+			monster_impacts.push(event)
 			if event.get("kind","") in ["taken","blocked","ward","heal"]: reaction.receive(event)
 		feedback.advance(delta)
 		for notice_text in model.progression.notices:
@@ -402,6 +408,8 @@ func _update_view(delta: float) -> void:
 	resources.model = model
 	resources.queue_redraw()
 	feedback.camera = Vector2(camera_x, camera_y)
+	monster_impacts.camera = Vector2(camera_x,camera_y)
+	monster_impacts.queue_redraw()
 	feedback.queue_redraw()
 	hud.text = "%d coins" % model.inventory.coins
 	guard_button.disabled = not model.can_guard
@@ -488,6 +496,9 @@ func _draw_enemy(enemy: Dictionary) -> void:
 	if enemy.hp <= 0:
 		return
 	var center := Vector2(enemy.x, 445)
+	# Recoil belongs only to the painted monster; hitboxes and telegraphs stay put.
+	if enemy.flash > 0:
+		center.x += float(enemy.get("hit_direction",1))*sin(enemy.flash/.18*PI)*(5+int(enemy.get("hit_tier",0))*3)
 	var radius := 46.0 if enemy.elite else 30.0
 	var body := Color("9c6244") if enemy.elite else Color("8a8551")
 	if enemy.flash > 0:

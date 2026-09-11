@@ -344,8 +344,8 @@ func _run() -> void:
 		weapon.force_update_transform()
 		var weapon_axis := weapon.to_global(Vector2(0,80))-weapon.global_position
 		var alignment := absf(forearm_vector.normalized().dot(weapon_axis.normalized()))
-		if weapon_id == "axe" and (absf(weapon_axis.y) > 1.0 or alignment > .02):
-			_fail("resting axe must be horizontal and perpendicular to the forearm")
+		if weapon_id == "axe" and (weapon_axis.normalized().y > -.49 or weapon_axis.x <= 0):
+			_fail("resting axe must carry its head above the hand and toward the target")
 		if weapon_id in ["spear","staff","branch_staff"] and (absf(weapon_axis.x) > 1.0 or alignment < .98):
 			_fail("resting %s must be vertical" % weapon_id)
 		if weapon_id in ["spear","staff","branch_staff"]:
@@ -485,6 +485,19 @@ func _run() -> void:
 	if second_hand_socket.distance_to(second_grip) > 1.0:
 		_fail("Frost Troll's second hand detached during backhand contact")
 
+	for bearer in [avatar,troll]:
+		bearer.stop_motion()
+		bearer.equip(&"weapon","axe")
+		for direction in [&"left",&"right"]:
+			bearer.set_facing(direction)
+			for attack in [&"forehand",&"backhand"]:
+				bearer.play_weapon_attack(attack)
+				bearer._active_tween.custom_step(2.0)
+				bearer._process(0.0)
+				var axe: GearVisual = bearer._gear.weapon
+				var axis := axe.to_global(Vector2(0,80))-axe.global_position
+				if axis.y >= 0 or axis.x*(1 if direction==&"right" else -1) <= 0:
+					_fail("axe must recover head-up and forward in both facing directions")
 	var centaur := Avatar.new()
 	root.add_child(centaur)
 	centaur.configure("centaur",{"boots":"leather"})

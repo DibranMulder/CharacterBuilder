@@ -3,6 +3,8 @@ extends RefCounted
 ## Local inventory/trading and optional hero Discipline progression; no networking.
 
 const FLOOR_Y := 480.0
+const MonsterImpact = preload("res://src/monster_impact.gd")
+var attack_presentation: Dictionary = {}
 const WORLD_WIDTH := 2200.0
 const ROWAN_POSITION := Vector2(330,480)
 var rowan = preload("res://prototypes/training_clearing/rowan_behavior.gd").new()
@@ -61,6 +63,8 @@ func begin_lineage_skill(slot: int) -> bool:
 		last_rejection = "NOT ENOUGH MANA"
 		return false
 	active_skill = skill.duplicate()
+	attack_presentation = _impact_profile(true,skill)
+	active_skill["impact_profile"] = attack_presentation.duplicate()
 	attack_kind = "lineage"
 	attack_time = skill.windup + skill.recovery
 	attack_hit = false
@@ -103,7 +107,7 @@ func _release_lineage_skill(muzzle := Vector2.INF) -> void:
 
 func _hit_lineage_skill(enemy: Dictionary, skill: Dictionary) -> void:
 	var previous: float = enemy.hp
-	_damage_enemy(enemy,true,skill.power)
+	_damage_enemy(enemy,true,skill.power,skill.get("impact_profile",_impact_profile(true,skill)))
 	if progression != null:
 		progression.train_hit(previous-enemy.hp,skill.kind in ["bolt","slowbolt","rootbolt","drain"],true)
 	if skill.kind == "drain":
@@ -219,6 +223,7 @@ func begin_attack(power := false) -> bool:
 		last_rejection = "NOT ENOUGH MANA"
 		return false
 	attack_kind = "power" if power else "sword"
+	attack_presentation = _impact_profile(power)
 	attack_time = weapon_feel().duration
 	attack_hit = false
 	attack_facing = facing
@@ -312,12 +317,12 @@ func step(delta: float, direction: float, guard_held: bool, muzzle := Vector2.IN
 					if enemy.hp > 0 and distance > 0 and distance < closest:
 						closest = distance
 						travel = (Vector2(enemy.x, FLOOR_Y - 40) - origin).normalized()
-				projectiles.append({"position": origin, "velocity": travel * 620, "direction": attack_facing, "life": 1.05, "power": attack_kind == "power"})
+				projectiles.append({"position": origin, "velocity": travel * 620, "direction": attack_facing, "life": 1.05, "power": attack_kind == "power", "impact_profile":attack_presentation.duplicate()})
 			for enemy in enemies if not is_ranged() else []:
 				var dx: float = (enemy.x - position.x) * attack_facing
 				var reach: int = weapon_feel().reach
 				if enemy.hp > 0 and dx >= -10 and dx <= reach and absf(position.y - FLOOR_Y) < 90:
-					_damage_enemy(enemy, attack_kind == "power")
+					_damage_enemy(enemy, attack_kind == "power",-1,attack_presentation)
 	for projectile in projectiles:
 		var previous: Vector2 = projectile.position
 		projectile.position += projectile.velocity * delta
@@ -329,7 +334,7 @@ func step(delta: float, direction: float, guard_held: bool, muzzle := Vector2.IN
 			var center := Vector2(enemy.x, FLOOR_Y - 40)
 			if enemy.hp > 0 and Geometry2D.get_closest_point_to_segment(center, previous, projectile.position).distance_to(center) < 32:
 				if projectile.has("skill"): _hit_lineage_skill(enemy,projectile.skill)
-				else: _damage_enemy(enemy, projectile.power)
+				else: _damage_enemy(enemy, projectile.power,-1,projectile.get("impact_profile",{}))
 				projectile.life = 0
 				break
 	projectiles = projectiles.filter(func(shot): return shot.life > 0)
@@ -343,7 +348,16 @@ func step(delta: float, direction: float, guard_held: bool, muzzle := Vector2.IN
 				events.append({"kind":"level", "text":drop.label, "position":position + Vector2(0,-150)})
 		loot = loot.filter(func(drop): return not drop.collected)
 
-func _damage_enemy(enemy: Dictionary, power: bool, explicit_damage := -1.0) -> void:
+func _impact_profile(power: bool, skill: Dictionary = {}) -> Dictionary:
+	# Weapon proficiency is not implemented here yet. Use the relevant trained
+	# discipline for presentation growth; never derive damage from the VFX tier.
+	var discipline := "arcana" if skill.get("kind","") in ["bolt","slowbolt","rootbolt","drain"] or weapon in ["staff","branch_staff"] else "attack"
+	var level: int = progression.level(discipline) if progression != null else adventure_level
+	var result := MonsterImpact.profile(weapon,power,level,skill)
+	result.direction = facing
+	return result
+
+func _damage_enemy(enemy: Dictionary, power: bool, explicit_damage := -1.0, presentation: Dictionary = {}) -> void:
 	if enemy.hp <= 0:
 		return
 	var damage: int = mini(int(enemy.hp), roundi(explicit_damage if explicit_damage >= 0 else weapon_feel().damage * (2.1 if power else 1.0)))
@@ -351,7 +365,11 @@ func _damage_enemy(enemy: Dictionary, power: bool, explicit_damage := -1.0) -> v
 	if progression != null and explicit_damage < 0:
 		progression.train_hit(damage,weapon in ["staff","branch_staff"],power)
 	enemy.flash = .18
-	events.append({"kind":"power" if power else "dealt", "text":str(damage), "position":Vector2(enemy.x, FLOOR_Y-105), "impact":Vector2(enemy.x,FLOOR_Y-40)})
+	var visual := presentation.duplicate() if not presentation.is_empty() else _impact_profile(power)
+	visual.merge({"kind":"power" if power else "dealt", "text":str(damage), "position":Vector2(enemy.x, FLOOR_Y-105), "impact":Vector2(enemy.x,FLOOR_Y-40),"foot":Vector2(enemy.x,FLOOR_Y)},true)
+	enemy.hit_direction = visual.direction
+	enemy.hit_tier = visual.tier
+	events.append(visual)
 	if power:
 		enemy.state = "recover"
 		enemy.timer = .85

@@ -14,6 +14,7 @@ var title_label: Label
 var tagline_label: Label
 var ladder: Node2D
 var staircase: Node2D
+var skills_panel: PanelContainer
 
 
 func _ready() -> void:
@@ -26,6 +27,7 @@ func _ready() -> void:
 	avatar.equipment_changed.connect(_equipment_changed)
 	_build_ui()
 	_build_motion_controls()
+	_build_skill_controls()
 	_select_race(race_ids.find("human"))
 	if get_tree().has_meta("training_character"):
 		var selection: Dictionary = get_tree().get_meta("training_character")
@@ -59,6 +61,39 @@ func _play_training_clearing() -> void:
 		"facing": avatar.facing,
 	})
 	get_tree().change_scene_to_file("res://prototypes/training_clearing/training_clearing.tscn")
+
+
+func _build_skill_controls() -> void:
+	var impact_button := Button.new()
+	impact_button.text = "Monster effects"
+	impact_button.position = Vector2(599,18)
+	impact_button.size = Vector2(145,40)
+	impact_button.pressed.connect(func():
+		get_tree().set_meta("training_character",{"lineage":avatar.race_id,"loadout":avatar.loadout.duplicate(),"facing":avatar.facing})
+		get_tree().change_scene_to_file("res://prototypes/monster_effects.tscn"))
+	add_child(impact_button)
+	skills_panel = preload("res://src/ui/builder_skills.gd").new()
+	skills_panel.avatar = avatar
+	add_child(skills_panel)
+	skills_panel.hide()
+	var button := Button.new()
+	button.text = "Skills"
+	button.position = Vector2(454,18)
+	button.size = Vector2(135,40)
+	button.pressed.connect(func():
+		$BuilderPanel.hide()
+		skills_panel.refresh()
+		skills_panel.show())
+	add_child(button)
+	skills_panel.closed.connect(func():
+		skills_panel.hide()
+		$BuilderPanel.show())
+	var note := _label("Select Skills to preview Human abilities and Sword techniques.")
+	note.position = Vector2(470,556)
+	note.add_theme_font_size_override("font_size",17)
+	note.add_theme_color_override("font_color",Color("f3c969"))
+	add_child(note)
+	avatar.gesture_started.connect(func(action): note.text = action)
 
 
 func _build_background() -> void:
@@ -111,7 +146,7 @@ func _build_ui() -> void:
 
 
 func _build_motion_controls() -> void:
-	var panel := PanelContainer.new(); panel.position=Vector2(610,18); panel.size=Vector2(480,108)
+	var panel := PanelContainer.new(); panel.position=Vector2(530,76); panel.size=Vector2(600,90)
 	panel.name = "MotionPanel"
 	panel.add_theme_stylebox_override("panel",_panel_style(Color("202b3d"),10)); add_child(panel)
 	var rows:=VBoxContainer.new(); rows.add_theme_constant_override("separation",5); panel.add_child(rows)
