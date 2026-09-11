@@ -3,6 +3,7 @@
 
 # Platform/editor noise.
 .DS_Store
+artifacts/*.log
 
 # Local exports.
 build/

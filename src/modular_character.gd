@@ -114,7 +114,7 @@ const CENTAUR_RANGED_FOOTWORK := {
 }
 const WEAPON_GRIP_ROTATIONS := {
 	"sword": -90.0,
-	"axe": -90.0,
+	"axe": -120.0,
 	"spear": 180.0,
 	"staff": 180.0,
 	"branch_staff": 180.0,
@@ -345,6 +345,7 @@ var _pants_parts: Array[GearVisual] = []
 var _boot_parts: Array[GearVisual] = []
 var _slash_trail: Node2D
 var _gesture_effects: Array[Node2D] = []
+var _active_skill_preview := ""
 
 
 func _ready() -> void:
@@ -370,6 +371,7 @@ func equip(slot: StringName, item_id: String) -> bool:
 		return false
 	if not CharacterCatalog.supports_item(race_id,slot,item_id):
 		return false
+	if not _active_skill_preview.is_empty(): stop_motion()
 	var had_two_handed_axe := _has_two_handed_axe_loadout()
 	var had_crossbow: bool = loadout.weapon == "crossbow"
 	loadout[String(slot)] = item_id
@@ -466,6 +468,7 @@ func available_motions() -> Array[StringName]:
 func set_facing(direction: StringName) -> void:
 	if direction not in [&"left", &"right"]:
 		return
+	if not _active_skill_preview.is_empty(): stop_motion()
 	facing = direction
 	_apply_facing()
 	if not _gear.is_empty():
@@ -535,6 +538,19 @@ func play_weapon_attack(attack: StringName = &"forehand") -> void:
 	if not attack in available_weapon_attacks():
 		return
 	_play_action("%s %s" % [String(loadout.weapon).capitalize(), String(attack).capitalize()], String(attack))
+
+
+func play_skill_preview(id: String) -> bool:
+	var catalog = preload("res://src/builder_skill_catalog.gd")
+	var skill: Dictionary = catalog.find(id)
+	if not catalog.unavailable_reason(skill,self).is_empty(): return false
+	stop_motion()
+	_active_skill_preview = id
+	_gesturing = true
+	gesture_started.emit(skill.name)
+	_active_tween = create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	preload("res://src/builder_skill_animation.gd").queue(self,id)
+	return true
 
 
 func _play_action(action_name: String, style: String, race_motion := "") -> void:
@@ -805,13 +821,10 @@ func _rebuild() -> void:
 		_bones.left_arm.rotation_degrees = -24
 		_bones.left_forearm.rotation_degrees = -66
 	if _has_two_handed_axe_loadout():
-		# Keep the anatomical-right elbow outside its shoulder while the forearm
-		# returns the primary grip inward. Mirroring the whole rig preserves this
-		# outward bend for the opposite facing direction.
-		# The broader troll chest needs a slightly inward forearm so the second
-		# shaft socket remains reachable without locking the support elbow.
-		_bones.right_arm.rotation_degrees = 30
-		_bones.right_forearm.rotation_degrees = -50
+		# Lower the primary hand beside the hip so the raised axe head clears
+		# the face. Retain an outward elbow and a reachable support-hand socket.
+		_bones.right_arm.rotation_degrees = 5
+		_bones.right_forearm.rotation_degrees = -5
 
 	_attach_gear("back", torso, Vector2(0,torso_top_y+5), -6)
 	if race_id == "human":
@@ -1206,6 +1219,7 @@ func _restore_pose() -> void:
 
 
 func _finish_gesture() -> void:
+	_active_skill_preview = ""
 	_restore_pose(); _gesturing = false; current_motion = &"idle"; _idle_phase = 0.0; motion_changed.emit(current_motion)
 
 
@@ -1293,6 +1307,7 @@ func _center_centaur_climb() -> void:
 
 
 func _stop_active_animation() -> void:
+	_active_skill_preview = ""
 	if _active_tween and _active_tween.is_valid():
 		_active_tween.kill()
 	_active_tween = null
@@ -1656,7 +1671,7 @@ func _tween_race_pose(pose: Array, duration: float, transition := Tween.TRANS_QU
 	_active_tween.parallel().tween_property(_bones.rig,"position",Vector2(float(pose[5]),float(pose[6])),duration)
 
 
-func _animate_weapon_curve(curve_id: String) -> void:
+func _animate_weapon_curve(curve_id: String, speed := 1.0, trail_color := Color("8edfff"), trail_width := 0.0, contact := Callable()) -> void:
 	var weapon_arm := _weapon_arm()
 	var weapon_forearm := _weapon_forearm()
 	var weapon_visual: GearVisual = _gear.get("weapon")
@@ -1676,12 +1691,16 @@ func _animate_weapon_curve(curve_id: String) -> void:
 				slash_stop_index = pose_index
 				break
 	for pose_index in curve.size():
-		var pose: Dictionary = curve[pose_index]
+		var pose: Dictionary = curve[pose_index].duplicate()
+		# Axe swings were authored around a horizontal grip. Rotate into that
+		# grip during the chamber, then recover to the raised resting carry.
+		if loadout.weapon == "axe": pose["weapon_rotation"] = -90.0
+		pose.duration = float(pose.duration) / speed
 		var easing: Dictionary = ATTACK_PHASE_EASING.get(pose.get("phase","guard"),ATTACK_PHASE_EASING.guard)
 		if uses_slash_trail and pose_index == slash_stop_index:
 			_active_tween.tween_callback(_slash_trail.stop)
 		if uses_slash_trail and pose_index == slash_start_index:
-			_active_tween.tween_callback(_start_slash_trail.bind(curve_id == "jab"))
+			_active_tween.tween_callback(_start_slash_trail.bind(curve_id == "jab",trail_color,trail_width))
 		_active_tween.set_trans(easing.trans).set_ease(easing.ease)
 		_active_tween.tween_property(weapon_arm, "rotation_degrees", pose.upper, pose.duration)
 		_active_tween.parallel().tween_property(weapon_forearm, "rotation_degrees", pose.forearm, pose.duration)
@@ -1690,6 +1709,8 @@ func _animate_weapon_curve(curve_id: String) -> void:
 		_queue_attack_footwork(curve_id,String(pose.get("phase","guard")),float(pose.duration))
 		if weapon_visual and pose.has("weapon_rotation"):
 			_active_tween.parallel().tween_property(weapon_visual, "rotation_degrees", pose.weapon_rotation, pose.duration)
+		if pose.get("phase","") == "strike" and contact.is_valid():
+			_active_tween.tween_callback(contact)
 	if uses_slash_trail and slash_stop_index == curve.size():
 		_active_tween.tween_callback(_slash_trail.stop)
 	var recovery_easing: Dictionary = ATTACK_PHASE_EASING.recover
@@ -1744,10 +1765,11 @@ func _queue_lower_body_recovery(duration: float) -> void:
 	_queue_secondary_gear_pose(0.0,0.0,duration)
 
 
-func _start_slash_trail(thrust_mode := false) -> void:
+func _start_slash_trail(thrust_mode := false, color := Color("8edfff"), width := 0.0) -> void:
 	var weapon_visual: GearVisual = _gear.get("weapon")
 	if weapon_visual:
-		_slash_trail.start(weapon_visual,Color("8edfff"),16.0 if loadout.weapon == "spear" or _is_staff_weapon() else 14.0,thrust_mode)
+		var default_width := 16.0 if loadout.weapon == "spear" or _is_staff_weapon() else 14.0
+		_slash_trail.start(weapon_visual,color,width if width > 0.0 else default_width,thrust_mode)
 
 
 func _animate_slash() -> void: _animate_weapon_curve("forehand")

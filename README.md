@@ -14,6 +14,35 @@ godot --editor project.godot
 
 Press **F6/F5**, select any of eight lineages, swap equipment independently, compare a static Stand pose with lineage-specific animated Idle, preview left/right running, ascend a side-facing stone staircase, climb rear-facing on a ladder, and trigger jab, forehand, backhand, or one of three lineage-specific gestures.
 
+Select **Skills** in the character builder to preview the four Human lineage
+abilities (Crosscut, Resolute Rush, Rally, Second Wind) and seven Sword techniques
+(Basic Slash through Blade Rhythm). Choose a category and skill, then **Preview
+skill**; **Stop** restores idle and **Gear** returns to equipment. Sword techniques
+require an equipped sword, and Guarded Riposte also requires a shield. Human
+abilities work without either. Equipment and facing changes cancel a preview.
+The displayed unlocks follow DESIGN-0018/0020; this animation sandbox bypasses
+progression and does not apply combat effects, spend mana, or award XP. Arena and
+clearing combat kits remain separate. Run `godot --headless --path . --script
+res://tests/builder_skills_regression.gd` for behavioral checks, and `godot --path .
+--script res://tools/capture_builder_skills.gd` for actual rendered preview captures.
+
+## Monster impact effects
+
+Select **Monster effects** in the builder for a target-focused VFX sandbox.
+Compare levels 1, 30 and 75+ with the same attack pose: Crosscut, Blade Rhythm,
+Pursuing Hew earth slabs, Siege Volley raining bolts, Winter Halo ice shards,
+and Cyclone wind ribbons. **Space** plays, **Stop** clears, **Mirror** reverses
+the encounter, and **Reduced effects** keeps a compact contact treatment.
+Run directly with `godot --path . prototypes/monster_effects.tscn`.
+
+Training-clearing monster hits now use the same effect layer, with visual recoil.
+Effects grow with Attack/Arcana at 30 and 75; ordinary attacks cap at the middle
+tier. These are presentation milestones, not implemented weapon-proficiency
+unlocks. The named Axe/Crossbow techniques remain preview proposals. Decorative
+bolts, earth and crystals do not add damage, XP, roots, or collision.
+See [target effect notes](docs/game/monster-impact-effects.md) and the
+[rendered comparison](artifacts/monster_effects_showcase.png).
+
 ## Production strategy
 
 ### Human surface rig
