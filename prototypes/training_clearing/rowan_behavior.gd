@@ -3,6 +3,7 @@ extends RefCounted
 const HOME := Vector2(330,480)
 const STOPS := [-24.0,16.0,0.0]
 const LINES := ["The grove is waking up.","Fresh supplies, whenever you need them.","Even old roots enjoy a little sunshine."]
+var home := HOME
 var position := HOME
 var facing := -1.0
 var walking := false
@@ -40,7 +41,7 @@ func step(delta: float, player: Vector2, peaceful: bool) -> void:
 	elif wait_time > 0:
 		wait_time = maxf(0,wait_time-delta)
 	else:
-		var target: float = HOME.x+STOPS[stop_index]
+		var target: float = home.x+STOPS[stop_index]
 		facing = signf(target-position.x) if target != position.x else facing
 		position.x = move_toward(position.x,target,delta*10)
 		walking = position.x != target

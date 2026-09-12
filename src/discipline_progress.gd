@@ -63,13 +63,13 @@ func train_hit(damage: float, magical: bool, skill_hit: bool) -> void:
 	if not magical: award("strength",ceili(damage))
 	if skill_hit: award("focus",ceili(damage))
 
-func explore(at: Vector2, in_combat: bool, moved: float) -> void:
+func explore(at: Vector2, in_combat: bool, moved: float, map_id := "") -> void:
 	if in_combat:
 		travel += minf(moved,15) # Exclude dash/teleport distance from movement XP.
 		if travel >= 100:
 			award("agility",int(travel/100)*10)
 			travel = fmod(travel,100)
-	var section := str(int(at.x/350))
+	var section := (map_id+":" if not map_id.is_empty() else "")+str(int(at.x/350))
 	if not discoveries.has(section):
 		discoveries[section] = true
 		award("exploration",25)

@@ -18,10 +18,10 @@ func _ready() -> void:
 	var background := StyleBoxFlat.new()
 	background.bg_color = Chronicle.NAVY
 	add_theme_stylebox_override("panel",background)
-	_label("ROWAN’S TRADING POST",Vector2(353,18),26,true,Chronicle.GOLD)
-	_label("FOREST WARDENS",Vector2(30,25),15,true,Chronicle.BRASS)
+	_label(model.merchant_name.to_upper()+"’S SHOP",Vector2(353,18),26,true,Chronicle.GOLD)
+	_label(model.merchant_group.to_upper(),Vector2(30,25),15,true,Chronicle.BRASS)
 	_button("Back · Esc",Vector2(990,18),Vector2(136,36),func(): closed.emit())
-	_label("ROWAN’S STOCK",Vector2(100,101),23,true,INK)
+	_label(model.merchant_name.to_upper()+"’S STOCK",Vector2(100,101),23,true,INK)
 	_label("YOUR POUCH",Vector2(535,101),23,true,INK)
 	heading = _label("",Vector2(441,137),13,false,INK)
 	purse = _label("",Vector2(863,137),17,true,Chronicle.GOLD)
@@ -49,8 +49,8 @@ func refresh() -> void:
 		tile.position = Vector2(32+(cell%6)*59,173+(cell/6)*84)
 		tile.size = Vector2(56,77)
 		tile.drag_enabled = false
-		if cell < Trader.STOCK.size():
-			var offer: Dictionary = Trader.STOCK[cell]
+		if cell < model.merchant_stock.size():
+			var offer: Dictionary = model.merchant_stock[cell]
 			tile.item = {"slot":offer.slot,"id":offer.id}
 			tile.price = offer.price
 			tile.set_meta("offer",cell)

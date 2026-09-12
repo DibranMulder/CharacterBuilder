@@ -26,6 +26,28 @@ clearing combat kits remain separate. Run `godot --headless --path . --script
 res://tests/builder_skills_regression.gd` for behavioral checks, and `godot --path .
 --script res://tools/capture_builder_skills.gd` for actual rendered preview captures.
 
+## Human hometown
+
+Browse the [eight-lineage moodboard atlas](designs/moodboards/index.html) for hometown, NPC, guard, equipment and boss art direction. These are visual concepts; playable map scope is described below.
+
+Choose **Human hometown** in the builder to visit **Wendmere Crossroads — Village
+Square**. Walk the painted stone road past the inn, well, market and workshops;
+trade with Rowan beneath the blue canopy. The west arch leads to **Market Row**,
+with weapons, armor and staff shops. Dedicated armored sentries guard both maps.
+The east arch connects to the training
+maps; walk back through Willow Trail's west arch to return with your gear and loot.
+Village Square and Market Row are playable; other districts and interiors remain future work.
+See [map notes and controls](prototypes/human_hometown/README.md).
+
+## In-game tutorial
+
+Choose **Start tutorial** in the builder for four connected training maps:
+Willow Trail, Warden’s Yard, Rowan’s Camp and Briar Hollow. Short in-world hints
+teach movement, combat, loot, trading, equipment and progression through play.
+Walk through the stone exits to change maps; gear and loot carry with you.
+**Hints · T** hides or restores prompts without interrupting the route.
+See [tutorial controls and scope](prototypes/training_clearing/README.md#guided-in-game-tutorial).
+
 ## Monster impact effects
 
 Select **Monster effects** in the builder for a target-focused VFX sandbox.

@@ -43,6 +43,29 @@ func _ready() -> void:
 	play.tooltip_text = "Play with this exact lineage, weapon, and equipment configuration."
 	play.pressed.connect(_play_training_clearing)
 	add_child(play)
+	var tutorial := Button.new()
+	tutorial.text = "Start tutorial"
+	tutorial.position = Vector2(945,592)
+	tutorial.size = Vector2(185,40)
+	tutorial.theme = preload("res://src/ui/chronicle_theme.gd").create()
+	tutorial.theme_type_variation = "PrimaryButton"
+	tutorial.pressed.connect(func(): _play_training_clearing(true))
+	add_child(tutorial)
+	var hometown := Button.new()
+	hometown.text = "Human hometown"
+	hometown.position = Vector2(741,592)
+	hometown.size = Vector2(190,40)
+	hometown.theme = preload("res://src/ui/chronicle_theme.gd").create()
+	hometown.tooltip_text = "Explore Wendmere Crossroads with this character."
+	hometown.pressed.connect(func():
+		get_tree().set_meta("start_clearing_tutorial",false)
+		get_tree().set_meta("training_character",{"lineage":avatar.race_id,"loadout":avatar.loadout.duplicate(),"facing":avatar.facing})
+		# A new builder visit uses this newly selected hero; training returns use the saved model.
+		if get_tree().has_meta("wendmere_model"): get_tree().remove_meta("wendmere_model")
+		if get_tree().has_meta("wendmere_districts"): get_tree().remove_meta("wendmere_districts")
+		if get_tree().has_meta("wendmere_training_route"): get_tree().remove_meta("wendmere_training_route")
+		get_tree().change_scene_to_file("res://prototypes/human_hometown/human_hometown.tscn"))
+	add_child(hometown)
 	var arena := Button.new()
 	arena.text = "Sparring arena"
 	arena.position = Vector2(753,18)
@@ -54,7 +77,11 @@ func _ready() -> void:
 	add_child(arena)
 
 
-func _play_training_clearing() -> void:
+func _play_training_clearing(with_tutorial := false) -> void:
+	# Builder launches start a new local session rather than reusing another town visitor.
+	for key in ["wendmere_model","wendmere_training_route","wendmere_districts","clearing_departure"]:
+		if get_tree().has_meta(key): get_tree().remove_meta(key)
+	get_tree().set_meta("start_clearing_tutorial",with_tutorial)
 	get_tree().set_meta("training_character", {
 		"lineage": avatar.race_id,
 		"loadout": avatar.loadout.duplicate(),

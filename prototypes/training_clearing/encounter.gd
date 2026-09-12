@@ -1,4 +1,5 @@
 extends RefCounted
+signal activity(action: String)
 ## Local, throwaway gameplay model. Does sword/guard combat feel readable?
 ## Local inventory/trading and optional hero Discipline progression; no networking.
 
@@ -9,7 +10,27 @@ const WORLD_WIDTH := 2200.0
 const ROWAN_POSITION := Vector2(330,480)
 var rowan = preload("res://prototypes/training_clearing/rowan_behavior.gd").new()
 const Trader = preload("res://prototypes/training_clearing/trader.gd")
+var merchant_id := "rowan"
+var merchant_name := "Rowan"
+var merchant_group := "Forest Wardens"
+var merchant_stock: Array = Trader.STOCK
 const PLATFORMS := [Rect2(710, 390, 170, 18), Rect2(950, 325, 150, 18)]
+var world_width := WORLD_WIDTH
+var platforms: Array = PLATFORMS.duplicate()
+var map_id := ""
+var rowan_enabled := true
+var recovery_anchor := Vector2(160,FLOOR_Y)
+
+func configure_map(spec: Dictionary) -> void:
+	map_id = spec.id
+	world_width = spec.width
+	platforms = spec.platforms.duplicate()
+	rowan_enabled = spec.rowan
+	rowan.home = Vector2(spec.get("merchant_x",ROWAN_POSITION.x),FLOOR_Y)
+	rowan.position = rowan.home
+	enemies.clear()
+	for enemy in spec.enemies: _spawn_enemy(enemy[0],enemy[1])
+
 var position := Vector2(160, FLOOR_Y)
 var velocity := Vector2.ZERO
 var facing := 1.0
@@ -48,6 +69,31 @@ var active_skill: Dictionary = {}
 var ward := 0.0
 var ward_time := 0.0
 
+func select_merchant(spec: Dictionary) -> void:
+	if merchant_id == spec.id: return
+	merchant_id = spec.id
+	merchant_name = spec.name
+	merchant_group = "Wendmere Artisans"
+	merchant_stock = spec.stock
+	rowan.home = Vector2(spec.x,FLOOR_Y)
+	rowan.position = rowan.home
+	# Invalidate an old shop quote when the active merchant changes.
+	inventory.revision += 1
+
+func carry_player_from(other) -> void:
+	inventory = other.inventory
+	progression = other.progression
+	configure_equipment(inventory.equipped)
+	health = other.health
+	mana = other.mana
+	stamina = other.stamina
+	xp = other.xp
+	adventure_level = other.adventure_level
+	potion_cooldown = other.potion_cooldown
+	lineage_cooldowns = other.lineage_cooldowns.duplicate()
+	skill_cooldown = other.skill_cooldown
+	mana_delay = other.mana_delay
+
 func lineage_kit() -> Array[Dictionary]:
 	return preload("res://prototypes/sparring_arena/lineage_skills.gd").combat_kit(inventory.lineage)
 
@@ -72,6 +118,7 @@ func begin_lineage_skill(slot: int) -> bool:
 	mana -= skill.mana
 	mana_delay = 1.2
 	lineage_cooldowns[slot] = skill.cooldown
+	activity.emit("skill")
 	return true
 
 func _release_lineage_skill(muzzle := Vector2.INF) -> void:
@@ -86,7 +133,7 @@ func _release_lineage_skill(muzzle := Vector2.INF) -> void:
 			ward = skill.power
 			ward_time = 5
 			events.append({"kind":"ward","text":"WARD %d"%ward,"position":position+Vector2(0,-150),"impact":position+Vector2(0,-85)})
-		"retreat": position.x = clampf(position.x-attack_facing*skill.reach,40,WORLD_WIDTH-40)
+		"retreat": position.x = clampf(position.x-attack_facing*skill.reach,40,world_width-40)
 		"bolt", "slowbolt", "rootbolt", "drain":
 			var origin: Vector2 = muzzle if muzzle.is_finite() else position+Vector2(attack_facing*35,-60)
 			var travel := Vector2(attack_facing,0)
@@ -99,7 +146,7 @@ func _release_lineage_skill(muzzle := Vector2.INF) -> void:
 			projectiles.append({"position":origin,"velocity":travel*470,"direction":attack_facing,"life":skill.reach/470.0,"power":true,"skill":skill.duplicate()})
 		_:
 			var start := position
-			if skill.kind == "dash": position.x = clampf(position.x+attack_facing*minf(180,skill.reach),40,WORLD_WIDTH-40)
+			if skill.kind == "dash": position.x = clampf(position.x+attack_facing*minf(180,skill.reach),40,world_width-40)
 			for enemy in enemies:
 				var dx: float = (enemy.x-start.x)*attack_facing
 				if enemy.hp > 0 and absf(start.y-FLOOR_Y) < 90 and ((absf(dx) <= skill.reach) if skill.kind == "pulse" else (dx >= -10 and dx <= skill.reach)):
@@ -116,10 +163,10 @@ func _hit_lineage_skill(enemy: Dictionary, skill: Dictionary) -> void:
 		if amount > 0: events.append({"kind":"heal","text":"+%d HP"%amount,"position":position+Vector2(0,-150),"impact":position+Vector2(0,-85)})
 	if skill.kind == "rootbolt": enemy.rooted = .8
 	if skill.kind == "slowbolt": enemy.slowed = 2.0
-	if skill.kind == "pulse": enemy.x = clampf(enemy.x+signf(enemy.x-position.x)*50,40,WORLD_WIDTH-40)
+	if skill.kind == "pulse": enemy.x = clampf(enemy.x+signf(enemy.x-position.x)*50,40,world_width-40)
 
 func can_talk_to_rowan() -> bool:
-	if health <= 0 or not grounded or position.distance_to(rowan.position) > 115 or attack_time > 0 or not projectiles.is_empty():
+	if not rowan_enabled or health <= 0 or not grounded or position.distance_to(rowan.position) > 115 or attack_time > 0 or not projectiles.is_empty():
 		return false
 	for enemy in enemies:
 		if enemy.hp > 0 and absf(enemy.x-position.x) < 220:
@@ -128,13 +175,17 @@ func can_talk_to_rowan() -> bool:
 
 func buy_from_rowan(offer_index: int, revision: int) -> Dictionary:
 	if not can_talk_to_rowan():
-		return {"ok":false,"message":"Return to Rowan when it is safe to trade."}
-	return Trader.buy(inventory,offer_index,revision)
+		return {"ok":false,"message":"Return to %s when it is safe to trade." % merchant_name}
+	var result := Trader.buy(inventory,offer_index,revision,merchant_stock)
+	if result.ok: activity.emit("buy")
+	return result
 
 func sell_to_rowan(index: int, potion: String, revision: int) -> Dictionary:
 	if not can_talk_to_rowan():
-		return {"ok":false,"message":"Return to Rowan when it is safe to trade."}
-	return Trader.sell(inventory,index,potion,revision)
+		return {"ok":false,"message":"Return to %s when it is safe to trade." % merchant_name}
+	var result := Trader.sell(inventory,index,potion,revision)
+	if result.ok: activity.emit("sell")
+	return result
 
 func use_potion(kind: String) -> Dictionary:
 	if health <= 0 or potion_cooldown > 0 or not kind in ["hp", "mana"]:
@@ -147,6 +198,7 @@ func use_potion(kind: String) -> Dictionary:
 	else:
 		mana += restored
 	potion_cooldown = 1.0
+	activity.emit("health" if kind == "hp" else "mana")
 	if progression != null: progression.award("survival",ceili(restored))
 	return {"kind":"heal" if kind == "hp" else "notice", "text":"+%d %s" % [restored, kind.to_upper()], "position":position + Vector2(0,-150), "impact":position+Vector2(0,-85)}
 
@@ -157,6 +209,7 @@ func change_equipment(index: int, slot := "") -> bool:
 	if changed:
 		configure_equipment(inventory.equipped)
 		guarding = false
+		if slot.is_empty(): activity.emit("equip")
 	return changed
 const WEAPON_FEEL := {
 	"sword": {"damage":20, "duration":.88, "release":.39, "reach":140},
@@ -206,10 +259,12 @@ func is_ranged() -> bool:
 
 func _init() -> void:
 	for spec in [[650.0, false], [1250.0, false], [1900.0, true]]:
-		var elite: bool = spec[1]
-		enemies.append({"x": spec[0], "home": spec[0], "hp": 120.0 if elite else 50.0,
-			"max_hp": 120.0 if elite else 50.0, "elite": elite, "state": "idle",
-			"timer": 0.0, "facing": -1.0, "flash": 0.0})
+		_spawn_enemy(spec[0],spec[1])
+
+func _spawn_enemy(x: float, elite: bool) -> void:
+	enemies.append({"x":x,"home":x,"hp":120.0 if elite else 50.0,
+		"max_hp":120.0 if elite else 50.0,"elite":elite,"state":"idle",
+		"timer":0.0,"facing":-1.0,"flash":0.0})
 
 func begin_attack(power := false) -> bool:
 	last_rejection = ""
@@ -222,6 +277,7 @@ func begin_attack(power := false) -> bool:
 	if mana < mana_cost(power):
 		last_rejection = "NOT ENOUGH MANA"
 		return false
+	activity.emit("attack")
 	attack_kind = "power" if power else "sword"
 	attack_presentation = _impact_profile(power)
 	attack_time = weapon_feel().duration
@@ -258,7 +314,7 @@ func step(delta: float, direction: float, guard_held: bool, muzzle := Vector2.IN
 	if health <= 0:
 		death_time -= delta
 		if death_time <= 0:
-			position = Vector2(160, FLOOR_Y)
+			position = recovery_anchor
 			velocity = Vector2.ZERO
 			health = 100
 			mana = 100
@@ -284,14 +340,14 @@ func step(delta: float, direction: float, guard_held: bool, muzzle := Vector2.IN
 	velocity.x = move_toward(velocity.x, direction * speed, 1600 * delta)
 	var previous_y := position.y
 	var old_x := position.x
-	position.x = clampf(position.x + velocity.x * delta, 40, WORLD_WIDTH - 40)
-	if progression != null: progression.explore(position,not peaceful,absf(position.x-old_x))
+	position.x = clampf(position.x + velocity.x * delta, 40, world_width - 40)
+	if progression != null: progression.explore(position,not peaceful,absf(position.x-old_x),map_id)
 	velocity.y += 1500 * delta
 	position.y += velocity.y * delta
 	grounded = false
 	if velocity.y >= 0:
 		var landing_y := FLOOR_Y
-		for platform in PLATFORMS:
+		for platform in platforms:
 			if position.x >= platform.position.x and position.x <= platform.end.x and previous_y <= platform.position.y + .1:
 				landing_y = minf(landing_y, platform.position.y)
 		if position.y >= landing_y:
@@ -345,6 +401,7 @@ func step(delta: float, direction: float, guard_held: bool, muzzle := Vector2.IN
 			if not drop.collected and position.distance_to(drop.position) < 75:
 				drop.collected = true
 				inventory.grant(drop.reward)
+				activity.emit("loot")
 				events.append({"kind":"level", "text":drop.label, "position":position + Vector2(0,-150)})
 		loot = loot.filter(func(drop): return not drop.collected)
 

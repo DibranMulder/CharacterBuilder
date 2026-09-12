@@ -16,8 +16,66 @@ accessories, and facing. No equipment is substituted. Returning to the builder
 restores the original configuration; restarting combat keeps the equipment. Selection
 lasts only for this running session. Direct launch defaults to Humans. Terrain and
 creatures are placeholders, not production map art. Nothing persists or grants
-real progression. No account, server, Exchange, village or complete tutorial is
-implemented yet.
+real progression. No account, server, Exchange or village is implemented yet.
+
+## Guided in-game tutorial
+
+Choose **Start tutorial** in the builder or **Tutorial · T** in free practice.
+The tutorial uses four separate map states, connected by stone arch exits:
+
+| Map | Learn by doing | East exit opens after |
+| --- | --- | --- |
+| Willow Trail | Movement, jumping, landing on ledges | Move, jump, land on a ledge, equip a weapon |
+| Warden's Yard | Weapon attacks, skills, enemy warnings, Guard, potions, loot | Defeat both crawlers, collect their bags, perform a basic attack and a skill |
+| Rowan's Camp | Talking, buying, selling, equipment, disciplines | Buy, sell, equip an item, view Disciplines & Levels, carry a weapon |
+| Briar Hollow | Put combat and resource management into practice | Defeating the Elder Briar completes the tutorial |
+
+Each map has its own dimensions, platforms, enemies, landmarks and palette.
+The trail and camp are safe. Only camp contains Rowan. Walk through an open
+arch to change maps; western arches return to previous maps. Arrival positions
+are outside the return trigger. Menus, death, airborne movement, unfinished
+attacks and active projectiles prevent transfers. Death recovers at the current
+map's Recovery Anchor. Returning preserves defeated enemies and collected bags.
+
+Only one short, two-line hint appears near the relevant place or target.
+It changes automatically as actions succeed. Enemy windups prompt defense;
+missing health or mana can prompt a potion. Shieldless heroes get an evasion
+hint. Menus replace the world hint with one short instruction beneath their
+navigation. There are no chapter screens, reading steps or Next buttons.
+**Hints · T** toggles hints while keeping the route, touch controls and progress.
+
+Inventory and discipline progression are shared across maps. Health, mana,
+stamina, potion cooldowns and skill cooldowns carry between them; crossing an
+exit never refills resources. Exploration discoveries include the map ID, so
+visiting a new map trains Exploration without farming repeat visits. The normal
+clearing keeps its original discovery IDs. Restart resets the route and local
+loot but keeps the current outfit and saved disciplines. Leaving for the Builder
+ends this tutorial session; map states are not disk saves or online instances.
+
+Starting unarmed with no weapon in the pouch grants one tutorial sword in the
+pouch, never auto-equipped. Reopening hints cannot grant it again. No tutorial
+completion grants bonus XP or bypasses skill requirements. Potion and block
+practice are contextual opportunities, so finishing combat without getting hurt
+or wearing a shield does not block the route.
+
+`tutorial.gd` owns maps, transitions and objective-derived hints. `encounter.gd`
+owns map bounds, physics, rewards and successful-action reporting.
+`tutorial_panel.gd` renders a fixed-size hint and changes text only when needed.
+The scene assigns each control's final visibility once per frame. This replaces
+the old hide/show loop (1,440 visibility changes in 60 unchanged frames) and
+repeated status-label rewriting. The regression now reports zero unnecessary
+visibility changes, hint redraws and layout changes in the same interval.
+
+Checks:
+
+```sh
+godot --headless --path . --script res://tests/tutorial_regression.gd
+godot --headless --path . --script res://tests/tutorial_performance_regression.gd
+godot --path . --script res://prototypes/training_clearing/capture_tutorial.gd
+```
+
+Captures: `artifacts/tutorial_map_0.png` through `tutorial_map_3.png`, and
+`artifacts/tutorial_shop_hint.png`. These are still prototype environments.
 
 ## Local loot and pouch
 
@@ -139,12 +197,11 @@ attack commitment feel fair? Can touch users move and act simultaneously? Does
 Power Strike create a worthwhile mana choice? Is recovery understandable?
 The verdict is pending hands-on play, especially on physical mobile devices.
 
-The play screen intentionally omits the practice checklist, debug counters,
+Outside the opt-in tutorial, the play screen omits the practice checklist, debug counters,
 instructional signs and persistent tutorial prose, following the uncluttered
 world presentation in `designs/npc-interaction-mockup.png`. Action hotkeys and
 resource/cost information remain; Builder and Restart are exposed while paused.
-The practice conditions still run in the local model. Controls are documented
-here rather than overlaid on the world. The pouch shows item details and errors,
+The practice conditions still run in the local model. The Tutorial button remains available to enter the guided map route. The pouch shows item details and errors,
 not a permanent drag-and-drop instruction banner.
 
 The top-left resource HUD follows the NPC mockup's compact portrait medallion,

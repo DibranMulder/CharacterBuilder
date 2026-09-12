@@ -1,5 +1,7 @@
 # Stronghold boss designs
 
+The [v2 boss style review](style-review/index.html) revises all nine bosses to match the playable characters. These proposals are pending user approval; all moodboards use the original artwork. The Babylon v2 environment trial was reverted.
+
 Reviewed in-game-style visual concepts, generated with the built-in image tool.
 These images are design references, not screenshots of implemented encounters.
 

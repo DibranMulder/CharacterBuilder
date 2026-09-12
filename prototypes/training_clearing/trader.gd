@@ -26,12 +26,12 @@ static func sell_price(item: Dictionary) -> int:
 		return 5
 	return 0
 
-static func buy(inventory, offer_index: int, revision: int) -> Dictionary:
+static func buy(inventory, offer_index: int, revision: int, stock: Array = STOCK) -> Dictionary:
 	if revision != inventory.revision:
 		return {"ok":false,"message":"Your pouch changed. Select the item again."}
-	if offer_index < 0 or offer_index >= STOCK.size():
+	if offer_index < 0 or offer_index >= stock.size():
 		return {"ok":false,"message":"That item is not in stock."}
-	var offer: Dictionary = STOCK[offer_index]
+	var offer: Dictionary = stock[offer_index]
 	if inventory.coins < offer.price:
 		return {"ok":false,"message":"Not enough coins."}
 	inventory.coins -= offer.price
@@ -56,7 +56,7 @@ static func sell(inventory, index: int, potion: String, revision: int) -> Dictio
 		item = inventory.items[index]
 	var price := sell_price(item)
 	if price <= 0:
-		return {"ok":false,"message":"Rowan cannot buy this item."}
+		return {"ok":false,"message":"This merchant cannot buy this item."}
 	if potion.is_empty():
 		inventory.items.remove_at(index)
 	else:
