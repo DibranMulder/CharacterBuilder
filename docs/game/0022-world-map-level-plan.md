@@ -286,6 +286,8 @@ Every `path_` map has both ordinary combat and comparable aid/repair progression
 
 ### Tidekin Sea
 
+Detailed map layouts, creatures, tide rules and quests: [Tidekin Sea region design](0023-tidekin-sea-region.md).
+
 Village: **Tidewharf**. Stronghold: **Pearl Citadel** (Light). Story site: **The Sunken Shrine**.
 
 Town and story maps are social, service or traversal spaces in this pass. No hostile population is added merely to fill a level column. Threats near a keep belong in its separate outdoor encounter map, not inside the peaceful hall. Human tower access still requires the Warden key.
@@ -424,12 +426,12 @@ flowchart LR
 | `tidekin_sea_site_031` | Whalelet Sanctuary | 33 | None hostile; aid creature 31–35 | Reefsong Whalelet · Benevolent / Common; aid / escort / protection, never a kill-farm target. | Shared | Proposed |
 | `tidekin_sea_path_036` | Outer Sluiceway | 38 | 36–40 | Silt Skitter · Common; repeatable solo combat AND equivalent aid/repair objective. | Shared | Proposed |
 | `tidekin_sea_site_036` | Gate Eel Narrows | 38 | 36–40 | Tidal Gate Eel · Hostile / Common; optional local encounter. | Shared | Proposed |
-| `tidekin_sea_return_061` | Stormtide Terraces | 63 | 61–65 | Veteran local Common threats; species TBD, proposed fixed-level population. | Shared | Proposed |
-| `tidekin_sea_return_066` | Blackwater Reef | 68 | 66–70 | Veteran local Common threats; species TBD, proposed fixed-level population. | Shared | Proposed |
-| `tidekin_sea_return_071` | Pressurehall Passage | 73 | 71–75 | Veteran local Common threats; species TBD, proposed fixed-level population. | Shared | Proposed |
-| `tidekin_sea_return_076` | Maelstrom Causeway | 78 | 76–80 | Veteran local Common threats; species TBD, proposed fixed-level population. | Shared | Proposed |
-| `tidekin_sea_return_101` | First Pearl Shoals | 103 | 101–105 | Mythic local threats; species TBD, proposed fixed-level population. | Shared | Proposed |
-| `tidekin_sea_return_116` | Worldtide Confluence | 118 | 116–120; optional boss 120 | Mythic local threats; species TBD, proposed fixed-level population. | Shared | Proposed |
+| `tidekin_sea_return_061` | Stormtide Terraces | 63 | 61–65 | Stormshell Skitter · proposed in [Tidekin region design](0023-tidekin-sea-region.md). | Shared | Proposed |
+| `tidekin_sea_return_066` | Blackwater Reef | 68 | 66–70 | Blackwater Pincer · proposed in [Tidekin region design](0023-tidekin-sea-region.md). | Shared | Proposed |
+| `tidekin_sea_return_071` | Pressurehall Passage | 73 | 71–75 | Bellowshell Crawler · proposed in [Tidekin region design](0023-tidekin-sea-region.md). | Shared | Proposed |
+| `tidekin_sea_return_076` | Maelstrom Causeway | 78 | 76–80 | Riptide Coil · proposed in [Tidekin region design](0023-tidekin-sea-region.md). | Shared | Proposed |
+| `tidekin_sea_return_101` | First Pearl Shoals | 103 | 101–105 | Pearlglass Sentinel · proposed in [Tidekin region design](0023-tidekin-sea-region.md). | Shared | Proposed |
+| `tidekin_sea_return_116` | Worldtide Confluence | 118 | 116–120; optional boss 120 | Confluence Eel; optional Group boss The Undertow Regent (120) · proposed in [Tidekin region design](0023-tidekin-sea-region.md). | Shared | Proposed |
 
 Every `path_` map has both ordinary combat and comparable aid/repair progression. Its `site_` branch is optional. Regional access at 40/60/80/100/115 follows the world roads above; the veteran and mythic village branches are dangerous outward routes, never a requirement to cross a restricted stronghold.
 
@@ -1747,7 +1749,7 @@ The road-mouth maps connect this regional graph to the two neighboring world reg
 2. **Keep the solo floor equal.** Every 1–5 through 36–40 homeland cohort has a Common route map using its approved local starter archetype. Optional marquee sites never gate the next cohort. Rimeborn's many elites remain optional side pockets; benevolent creatures use aid rewards rather than kill rewards.
 3. **Keep physical progression reversible.** New maps need outbound/return portals and a safe local Recovery Anchor. Death/relogin stays in the current map. All six combat classes and all body topologies must be able to traverse the ordinary route without mandatory flight, an elite kill or an opposing-allegiance stronghold.
 4. **Level budget is not spawn implementation.** Numeric ranges do not specify density, spawn coordinates, XP, money, drops, respawn timers, encounter stats or final boss mechanics. The current training enemy model also needs explicit level/stat integration before these proposed numbers can appear as real monster levels.
-5. **Higher-level species remain pending.** DESIGN-0011 intentionally stops its named roster at level 40. Veteran, frontier and mythic rows therefore use `species TBD`. The proposal schedules map and difficulty space without pretending that those creatures have been curated. No new 41–120 creature names or item drops are approved here.
+5. **Higher-level species remain pending.** DESIGN-0011 intentionally stops its named roster at level 40. Most veteran, frontier and mythic rows therefore use `species TBD`. Tidekin's six later maps now link to proposed creature designs in [DESIGN-0023](0023-tidekin-sea-region.md); those names remain proposals for review, not an approved expansion of the global roster. No new item drops are approved here.
 6. **Dungeon difficulty and level are separate.** Mireglass is Veteran, Cinder Vault Elite, and Coilroot / Fallen Observatory Group. Those dungeon branches are optional; their monster ranges are not a promise that every class can solo them. Existing ten-depth chains stay 41–60 content; veteran/mythic surface maps are separate. Future deeper dungeon extensions would need their own reviewed map additions.
 7. **Shared does not mean safe.** Frontiers allow both allegiances and retain the open-conflict policy. The no-ambient-hostiles treatment of entrance maps and Babylon's proposed trade pocket does not silently settle PvP immunity or guardian rules. The Broken Concourse's guarded-market status remains a specific review decision.
 8. **No migration yet.** Review this Markdown first. After approval, a separate implementation pass can add accepted IDs, names and level metadata to `atlas.json`, then expose levels in the map UI. Playable scene creation and enemy placement remain later work.
