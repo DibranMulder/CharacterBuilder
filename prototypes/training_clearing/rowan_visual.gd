@@ -20,7 +20,7 @@ func advance(delta: float, walking: bool, direction: float) -> void:
 	clock += delta
 	stride = move_toward(stride,1.0,delta*5) if walking else 0.0
 	facing = direction
-	_rebuild_surface()
+	if is_visible_in_tree(): _rebuild_surface()
 
 func _draw() -> void:
 	# Contact shadow stays on the floor, independent of the breathing mesh.

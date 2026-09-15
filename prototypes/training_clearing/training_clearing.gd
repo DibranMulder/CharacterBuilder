@@ -577,7 +577,7 @@ func _update_view(delta: float) -> void:
 		tile.disabled = tile.locked or paused or model.health <= 0 or model.attack_time > 0 or model.guarding or tile.cooldown > 0 or not tile.mana_available
 		tile.queue_redraw()
 	avatar.position = model.position - Vector2(camera_x, camera_y + 8)+reaction.offset()
-	rowan.visible = model.rowan_enabled and merchant_visual_enabled
+	rowan.visible = model.rowan_enabled and merchant_visual_enabled and _rowan_in_view()
 	rowan.position = model.rowan.position-Vector2(camera_x,camera_y)
 	var npc_delta := delta if not paused or is_instance_valid(dialogue) else 0.0
 	if model.rowan_enabled and merchant_visual_enabled: rowan.advance(npc_delta,model.rowan.walking,model.rowan.facing)
@@ -724,6 +724,7 @@ func _draw_map_landmarks() -> void:
 				draw_line(Vector2(x-10,390),Vector2(x+40,350),Color("344e4f"),9)
 
 func _draw_portal(x: float, open: bool, _destination: String, _west := false) -> void:
+	if x < camera_x-110 or x > camera_x+1262: return
 	preload("res://prototypes/human_hometown/portal_visual.gd").paint(self,Vector2(x,480),not open,Time.get_ticks_msec()/1000.0)
 
 func _ledge_style() -> StyleBoxFlat:
@@ -868,3 +869,6 @@ func _apply_test_destination(target: Dictionary, player) -> void:
 	tutorial.model = model
 	tutorial_panel.guide = tutorial
 	_adopt_map(tutorial._enter(target.index))
+
+func _rowan_in_view() -> bool:
+	return Rect2(-120,-40,1392,908).has_point(model.rowan.position-Vector2(camera_x,camera_y))

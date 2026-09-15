@@ -199,7 +199,8 @@ func _draw() -> void:
 		draw_texture_rect_region(texture,Rect2(platform.position,Vector2(platform.size.x,42)),source)
 	for i in MAPS[map_index].neighbors.size():
 		var at := portal_point(i)
-		preload("res://prototypes/human_hometown/portal_visual.gd").paint(self,at,false,tide_time)
+		if at.x >= camera_x-110 and at.x <= camera_x+1262:
+			preload("res://prototypes/human_hometown/portal_visual.gd").paint(self,at,false,tide_time)
 	for enemy in model.enemies:
 		if enemy.hp > 0: _draw_enemy(enemy)
 		elif enemy.spawn_warning > 0:
@@ -220,6 +221,7 @@ func _caption(at: Vector2, text: String, font_size: int) -> void:
 	draw_string(ThemeDB.fallback_font,at,text,HORIZONTAL_ALIGNMENT_LEFT,-1,font_size,CREAM)
 
 func _draw_creature(species: String, at: Vector2, size: float, facing: float, tint: Color) -> void:
+	if at.x < camera_x-size*2 or at.x > camera_x+1152+size*2: return
 	if not sprite_cache.has(species): sprite_cache[species] = load("res://assets/monsters/tidekin/"+species+".png")
 	var texture: Texture2D = sprite_cache[species]
 	var dimensions := texture.get_size()*size/texture.get_height()
@@ -228,6 +230,7 @@ func _draw_creature(species: String, at: Vector2, size: float, facing: float, ti
 	draw_set_transform(Vector2(-camera_x,-camera_y))
 
 func _draw_enemy(enemy: Dictionary) -> void:
+	if enemy.x < camera_x-340 or enemy.x > camera_x+1492: return
 	var at := Vector2(enemy.x,480)
 	var info := Region.creature(enemy.species)
 	_draw_creature(enemy.species,at,170 if enemy.boss else 94,enemy.facing,Color(1.6,1.4,1.2) if enemy.flash>0 else Color.WHITE)

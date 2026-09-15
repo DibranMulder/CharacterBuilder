@@ -171,7 +171,7 @@ func _update_view(delta: float) -> void:
 		var entry: Dictionary = residents[i]
 		merchants[i].position = Vector2(entry.x-camera_x,Encounter.FLOOR_Y-8-camera_y)
 		merchant_markers[i].refresh(Vector2(entry.x-camera_x,210-camera_y),entry.name+"\n"+_resident_marker_caption(entry),i == active_merchant and model.can_talk_to_rowan(),not in_menu and not paused,_resident_marker_kind(entry))
-	rowan.visible = district_id == "square" and active_merchant < 0
+	rowan.visible = district_id == "square" and active_merchant < 0 and _rowan_in_view()
 	service_marker.visible = rowan.visible and not in_menu and not paused
 	talk_button.text = "E · Talk" if active_merchant >= 0 and residents[active_merchant].stock.is_empty() else "E · Trade"
 	for i in exit_markers.size():
