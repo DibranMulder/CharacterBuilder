@@ -1,0 +1,32 @@
+[
+  {
+    "id": "landing",
+    "file": "assets/maps/tidekin/landing.png",
+    "prompt": "Use case: stylized-concept. Create one production 2D side-scrolling game background panorama, landscape 3:1, ideally 2048x683 or larger. Reference image 1 is the Tidekin moodboard: use its settlement painting style, sea palette and materials, not its collage layout. Reference image 2 is the human hometown background: match its painterly detail, clean contour work, luminous anime storybook rendering and side-on game composition. Tidewharf Landing: welcoming bustling-looking but unoccupied coastal village wharf, weathered dock houses with shell roof tiles, orange sailcloth market awnings, hanging kelp gardens, ropes and brass lanterns, turquoise lagoon behind a permanent dry pale-stone quay, majestic Pearl Citadel on distant waterfall cliffs. Bright maritime daylight. Side-on orthographic gameplay camera. Uninterrupted flat dry foreground stone walking lane edge-to-edge, its upper surface at exactly 73 percent image height. Enough foreground below the lane to fill the lower 27 percent. Background architecture only; no obstacles on the lane. Rich painted brush texture, clean dark contours, detailed soft cel shading. Deep teal, sea green, foam ivory, coral orange accents, weathered stone, shell, kelp, verdigris bronze. No characters, no monsters, no lettering, no signs with words, no UI, no frame, no collage, no portal arches. Generate the complete new environment, not a moodboard.",
+    "references": [
+      "designs/moodboards/tidekin.png",
+      "assets/maps/wendmere/approach.png"
+    ],
+    "tool": "built-in image_gen"
+  },
+  {
+    "id": "shallows",
+    "file": "assets/maps/tidekin/shallows.png",
+    "prompt": "Use case: stylized-concept. Create one production 2D side-scrolling game background panorama, landscape 3:1, ideally 2048x683 or larger. Reference image 1 is the Tidekin moodboard: use its settlement painting style, sea palette and materials, not its collage layout. Reference image 2 is the human hometown background: match its painterly detail, clean contour work, luminous anime storybook rendering and side-on game composition. Siltbank Shallows: sunlit wild tidal shoreline beyond Tidewharf, pale silt terraces and smooth shell-encrusted rock, tranquil teal channels behind the continuous dry foreground causeway, orange coral clusters, mangrove roots and reeds framing the scene, distant Pearl Citadel faint across luminous water. Distinct open wilderness combat setting. Side-on orthographic gameplay camera. Uninterrupted flat dry foreground stone walking lane edge-to-edge, its upper surface at exactly 73 percent image height. Enough foreground below the lane to fill the lower 27 percent. Background architecture only; no obstacles on the lane. Rich painted brush texture, clean dark contours, detailed soft cel shading. Deep teal, sea green, foam ivory, coral orange accents, weathered stone, shell, kelp, verdigris bronze. No characters, no monsters, no lettering, no signs with words, no UI, no frame, no collage, no portal arches. Generate the complete new environment, not a moodboard.",
+    "references": [
+      "designs/moodboards/tidekin.png",
+      "assets/maps/wendmere/approach.png"
+    ],
+    "tool": "built-in image_gen"
+  },
+  {
+    "id": "pools",
+    "file": "assets/maps/tidekin/pools.png",
+    "prompt": "Use case: stylized-concept. Create one production 2D side-scrolling game background panorama, landscape 3:1, ideally 2048x683 or larger. Reference image 1 is the Tidekin moodboard: use its settlement painting style, sea palette and materials, not its collage layout. Reference image 2 is the human hometown background: match its painterly detail, clean contour work, luminous anime storybook rendering and side-on game composition. Ripplefin Pools: sheltered benevolent-wildlife nursery lagoon, luminous shallow turquoise pools, water lilies, rich kelp gardens, rounded shell and coral terraces, small ancient spiral-carved water sluice behind the path on the right, sun filtering through coastal trees, tranquil welcoming atmosphere. Continuous dry foreground path, water stays behind it. Side-on orthographic gameplay camera. Uninterrupted flat dry foreground stone walking lane edge-to-edge, its upper surface at exactly 73 percent image height. Enough foreground below the lane to fill the lower 27 percent. Background architecture only; no obstacles on the lane. Rich painted brush texture, clean dark contours, detailed soft cel shading. Deep teal, sea green, foam ivory, coral orange accents, weathered stone, shell, kelp, verdigris bronze. No characters, no monsters, no lettering, no signs with words, no UI, no frame, no collage, no portal arches. Generate the complete new environment, not a moodboard.",
+    "references": [
+      "designs/moodboards/tidekin.png",
+      "assets/maps/wendmere/approach.png"
+    ],
+    "tool": "built-in image_gen"
+  }
+]

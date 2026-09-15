@@ -26,6 +26,8 @@ Each board contains seven labelled panels: top row proficiency 1, 5, 15;
 middle row 30, 50, 75; full-width bottom panel 99. Levels are **weapon
 proficiency**, not Overall Level. Every entry includes the character, weapon
 pose and effect treatment rather than only an icon or text description.
+Pommel Strike uses a close-up grip study so the rounded hilt contact is
+unambiguous; the other Sword panels show the full character.
 
 | Open visual sheet | Skills, in proficiency order |
 | --- | --- |

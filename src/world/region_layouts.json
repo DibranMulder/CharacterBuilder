@@ -1,0 +1,866 @@
+{
+  "open_lands": {
+    "square": [
+      0.25,
+      0.52
+    ],
+    "market": [
+      0.3,
+      0.56
+    ],
+    "apothecary": [
+      0.19,
+      0.55
+    ],
+    "trainers": [
+      0.23,
+      0.63
+    ],
+    "inn": [
+      0.32,
+      0.64
+    ],
+    "approach": [
+      0.36,
+      0.51
+    ],
+    "gatehouse": [
+      0.64,
+      0.27
+    ],
+    "barracks": [
+      0.67,
+      0.2
+    ],
+    "service": [
+      0.73,
+      0.29
+    ],
+    "hall": [
+      0.73,
+      0.18
+    ],
+    "king": [
+      0.79,
+      0.16
+    ],
+    "archive": [
+      0.8,
+      0.26
+    ],
+    "tower": [
+      0.87,
+      0.39
+    ],
+    "stair": [
+      0.91,
+      0.32
+    ],
+    "solar": [
+      0.95,
+      0.24
+    ],
+    "trail": [
+      0.42,
+      0.67
+    ],
+    "yard": [
+      0.49,
+      0.72
+    ],
+    "camp": [
+      0.43,
+      0.81
+    ],
+    "grove": [
+      0.29,
+      0.86
+    ]
+  },
+  "tidekin_sea": {
+    "tidekin_sea_land": [
+      0.14,
+      0.43
+    ],
+    "tidekin_sea_cm": [
+      0.2,
+      0.3
+    ],
+    "tidekin_sea_lag": [
+      0.17,
+      0.36
+    ],
+    "tidekin_sea_ka": [
+      0.08,
+      0.32
+    ],
+    "tidekin_sea_dy": [
+      0.27,
+      0.32
+    ],
+    "tidekin_sea_inn": [
+      0.1,
+      0.24
+    ],
+    "tidekin_sea_caus": [
+      0.3,
+      0.24
+    ],
+    "tidekin_sea_gs": [
+      0.6,
+      0.26
+    ],
+    "tidekin_sea_rb": [
+      0.65,
+      0.2
+    ],
+    "tidekin_sea_cw": [
+      0.77,
+      0.24
+    ],
+    "tidekin_sea_ph": [
+      0.7,
+      0.12
+    ],
+    "tidekin_sea_tc": [
+      0.76,
+      0.12
+    ],
+    "tidekin_sea_dv": [
+      0.8,
+      0.19
+    ],
+    "tidekin_sea_sc": [
+      0.87,
+      0.45
+    ],
+    "tidekin_sea_fn": [
+      0.87,
+      0.53
+    ],
+    "tidekin_sea_cr": [
+      0.78,
+      0.54
+    ],
+    "tidekin_sea_ps": [
+      0.79,
+      0.66
+    ],
+    "tidekin_sea_path_001": [
+      0.24,
+      0.49
+    ],
+    "tidekin_sea_site_001": [
+      0.31,
+      0.44
+    ],
+    "tidekin_sea_path_006": [
+      0.22,
+      0.6
+    ],
+    "tidekin_sea_site_006": [
+      0.13,
+      0.57
+    ],
+    "tidekin_sea_path_011": [
+      0.26,
+      0.7
+    ],
+    "tidekin_sea_site_011": [
+      0.18,
+      0.74
+    ],
+    "tidekin_sea_path_016": [
+      0.35,
+      0.69
+    ],
+    "tidekin_sea_site_016": [
+      0.4,
+      0.75
+    ],
+    "tidekin_sea_path_021": [
+      0.4,
+      0.85
+    ],
+    "tidekin_sea_site_021": [
+      0.3,
+      0.83
+    ],
+    "tidekin_sea_path_026": [
+      0.53,
+      0.81
+    ],
+    "tidekin_sea_site_026": [
+      0.48,
+      0.9
+    ],
+    "tidekin_sea_path_031": [
+      0.58,
+      0.69
+    ],
+    "tidekin_sea_site_031": [
+      0.51,
+      0.63
+    ],
+    "tidekin_sea_path_036": [
+      0.66,
+      0.64
+    ],
+    "tidekin_sea_site_036": [
+      0.63,
+      0.54
+    ],
+    "tidekin_sea_return_061": [
+      0.71,
+      0.81
+    ],
+    "tidekin_sea_return_066": [
+      0.8,
+      0.8
+    ],
+    "tidekin_sea_return_071": [
+      0.84,
+      0.71
+    ],
+    "tidekin_sea_return_076": [
+      0.9,
+      0.66
+    ],
+    "tidekin_sea_return_101": [
+      0.91,
+      0.84
+    ],
+    "tidekin_sea_return_116": [
+      0.78,
+      0.92
+    ]
+  },
+  "elder_forests": {
+    "elder_forests_bm": [
+      0.23,
+      0.66
+    ],
+    "elder_forests_grn": [
+      0.18,
+      0.59
+    ],
+    "elder_forests_hh": [
+      0.3,
+      0.59
+    ],
+    "elder_forests_rt": [
+      0.32,
+      0.7
+    ],
+    "elder_forests_ml": [
+      0.22,
+      0.75
+    ],
+    "elder_forests_gp": [
+      0.13,
+      0.7
+    ],
+    "elder_forests_pw": [
+      0.66,
+      0.41
+    ],
+    "elder_forests_sw": [
+      0.72,
+      0.32
+    ],
+    "elder_forests_eh": [
+      0.78,
+      0.37
+    ],
+    "elder_forests_cg": [
+      0.7,
+      0.49
+    ],
+    "elder_forests_sv": [
+      0.81,
+      0.47
+    ],
+    "elder_forests_tb": [
+      0.38,
+      0.33
+    ],
+    "elder_forests_cc": [
+      0.42,
+      0.26
+    ],
+    "elder_forests_hg": [
+      0.49,
+      0.2
+    ],
+    "elder_forests_ab": [
+      0.46,
+      0.13
+    ],
+    "elder_forests_lc": [
+      0.54,
+      0.09
+    ]
+  },
+  "sky_reaches": {
+    "sky_reaches_ll": [
+      0.18,
+      0.58
+    ],
+    "sky_reaches_sm": [
+      0.12,
+      0.5
+    ],
+    "sky_reaches_wa": [
+      0.24,
+      0.51
+    ],
+    "sky_reaches_gy": [
+      0.28,
+      0.61
+    ],
+    "sky_reaches_ci": [
+      0.2,
+      0.69
+    ],
+    "sky_reaches_ud": [
+      0.1,
+      0.62
+    ],
+    "sky_reaches_lh": [
+      0.61,
+      0.34
+    ],
+    "sky_reaches_sb": [
+      0.64,
+      0.27
+    ],
+    "sky_reaches_vw": [
+      0.72,
+      0.3
+    ],
+    "sky_reaches_rsp": [
+      0.7,
+      0.2
+    ],
+    "sky_reaches_bh": [
+      0.78,
+      0.18
+    ],
+    "sky_reaches_wc": [
+      0.79,
+      0.28
+    ],
+    "sky_reaches_ur": [
+      0.85,
+      0.33
+    ],
+    "sky_reaches_skv": [
+      0.73,
+      0.39
+    ],
+    "sky_reaches_sp": [
+      0.83,
+      0.5
+    ],
+    "sky_reaches_wh": [
+      0.9,
+      0.44
+    ],
+    "sky_reaches_sg": [
+      0.94,
+      0.34
+    ]
+  },
+  "broken_mountains": {
+    "broken_mountains_ht": [
+      0.28,
+      0.72
+    ],
+    "broken_mountains_fm": [
+      0.19,
+      0.68
+    ],
+    "broken_mountains_la": [
+      0.33,
+      0.65
+    ],
+    "broken_mountains_dl": [
+      0.35,
+      0.78
+    ],
+    "broken_mountains_sa": [
+      0.23,
+      0.81
+    ],
+    "broken_mountains_mg": [
+      0.65,
+      0.28
+    ],
+    "broken_mountains_slb": [
+      0.7,
+      0.19
+    ],
+    "broken_mountains_qw": [
+      0.78,
+      0.24
+    ],
+    "broken_mountains_ch": [
+      0.85,
+      0.18
+    ],
+    "broken_mountains_fs": [
+      0.82,
+      0.34
+    ],
+    "broken_mountains_iv": [
+      0.72,
+      0.37
+    ],
+    "broken_mountains_avs": [
+      0.18,
+      0.24
+    ],
+    "broken_mountains_sf": [
+      0.2,
+      0.14
+    ]
+  },
+  "underdeep": {
+    "underdeep_lld": [
+      0.2,
+      0.31
+    ],
+    "underdeep_rj": [
+      0.12,
+      0.24
+    ],
+    "underdeep_rm": [
+      0.25,
+      0.24
+    ],
+    "underdeep_sa2": [
+      0.3,
+      0.33
+    ],
+    "underdeep_ty2": [
+      0.28,
+      0.43
+    ],
+    "underdeep_fr": [
+      0.19,
+      0.46
+    ],
+    "underdeep_ff": [
+      0.1,
+      0.39
+    ],
+    "underdeep_na": [
+      0.09,
+      0.31
+    ],
+    "underdeep_vh": [
+      0.4,
+      0.19
+    ],
+    "underdeep_rgb": [
+      0.44,
+      0.1
+    ],
+    "underdeep_pwk": [
+      0.52,
+      0.13
+    ],
+    "underdeep_af": [
+      0.57,
+      0.21
+    ],
+    "underdeep_ga": [
+      0.51,
+      0.28
+    ],
+    "underdeep_rv": [
+      0.41,
+      0.28
+    ],
+    "underdeep_ov": [
+      0.35,
+      0.35
+    ],
+    "underdeep_rh": [
+      0.73,
+      0.42
+    ],
+    "underdeep_rr": [
+      0.83,
+      0.35
+    ],
+    "underdeep_cs": [
+      0.9,
+      0.49
+    ],
+    "underdeep_dld": [
+      0.84,
+      0.67
+    ]
+  },
+  "ember_desert": {
+    "ember_desert_cy": [
+      0.22,
+      0.7
+    ],
+    "ember_desert_cc": [
+      0.15,
+      0.64
+    ],
+    "ember_desert_sm2": [
+      0.27,
+      0.64
+    ],
+    "ember_desert_ca": [
+      0.32,
+      0.74
+    ],
+    "ember_desert_dyd": [
+      0.26,
+      0.81
+    ],
+    "ember_desert_wi": [
+      0.18,
+      0.81
+    ],
+    "ember_desert_ba": [
+      0.1,
+      0.74
+    ],
+    "ember_desert_ag": [
+      0.65,
+      0.26
+    ],
+    "ember_desert_lb": [
+      0.67,
+      0.16
+    ],
+    "ember_desert_cwk": [
+      0.75,
+      0.2
+    ],
+    "ember_desert_htal": [
+      0.79,
+      0.3
+    ],
+    "ember_desert_lct": [
+      0.71,
+      0.34
+    ],
+    "ember_desert_asp": [
+      0.52,
+      0.18
+    ],
+    "ember_desert_mc": [
+      0.43,
+      0.15
+    ],
+    "ember_desert_sfn": [
+      0.87,
+      0.17
+    ],
+    "ember_desert_sci": [
+      0.92,
+      0.08
+    ]
+  },
+  "ice_lands": {
+    "ice_lands_fmk": [
+      0.19,
+      0.55
+    ],
+    "ice_lands_tci": [
+      0.12,
+      0.47
+    ],
+    "ice_lands_ta": [
+      0.26,
+      0.49
+    ],
+    "ice_lands_hlg": [
+      0.25,
+      0.63
+    ],
+    "ice_lands_hga": [
+      0.13,
+      0.65
+    ],
+    "ice_lands_wg": [
+      0.66,
+      0.28
+    ],
+    "ice_lands_wb": [
+      0.66,
+      0.17
+    ],
+    "ice_lands_tw": [
+      0.75,
+      0.21
+    ],
+    "ice_lands_ah": [
+      0.8,
+      0.13
+    ],
+    "ice_lands_hh": [
+      0.81,
+      0.29
+    ],
+    "ice_lands_bt": [
+      0.77,
+      0.67
+    ],
+    "ice_lands_id": [
+      0.84,
+      0.6
+    ],
+    "ice_lands_fg": [
+      0.89,
+      0.7
+    ],
+    "ice_lands_av": [
+      0.93,
+      0.62
+    ]
+  },
+  "ashen_scar": {
+    "ashen_scar_road_0": [
+      0.23,
+      0.61
+    ],
+    "ashen_scar_road_1": [
+      0.72,
+      0.7
+    ],
+    "ashen_scar_threshold": [
+      0.85,
+      0.8
+    ],
+    "ashen_scar_depth_1": [
+      0.82,
+      0.72
+    ],
+    "ashen_scar_depth_2": [
+      0.88,
+      0.66
+    ],
+    "ashen_scar_depth_3": [
+      0.81,
+      0.59
+    ],
+    "ashen_scar_depth_4": [
+      0.85,
+      0.51
+    ],
+    "ashen_scar_depth_5": [
+      0.9,
+      0.44
+    ],
+    "ashen_scar_depth_6": [
+      0.86,
+      0.35
+    ],
+    "ashen_scar_depth_7": [
+      0.91,
+      0.27
+    ],
+    "ashen_scar_depth_8": [
+      0.86,
+      0.19
+    ],
+    "ashen_scar_depth_9": [
+      0.8,
+      0.13
+    ],
+    "ashen_scar_depth_10": [
+      0.89,
+      0.08
+    ]
+  },
+  "shattered_march": {
+    "shattered_march_road_0": [
+      0.18,
+      0.72
+    ],
+    "shattered_march_road_1": [
+      0.26,
+      0.65
+    ],
+    "shattered_march_gate": [
+      0.39,
+      0.7
+    ],
+    "shattered_march_plaza": [
+      0.48,
+      0.61
+    ],
+    "shattered_march_bazaar": [
+      0.6,
+      0.59
+    ],
+    "shattered_march_shrine": [
+      0.7,
+      0.5
+    ],
+    "shattered_march_base": [
+      0.6,
+      0.4
+    ],
+    "shattered_march_threshold": [
+      0.7,
+      0.29
+    ],
+    "shattered_march_depth_1": [
+      0.76,
+      0.32
+    ],
+    "shattered_march_depth_2": [
+      0.8,
+      0.25
+    ],
+    "shattered_march_depth_3": [
+      0.87,
+      0.3
+    ],
+    "shattered_march_depth_4": [
+      0.91,
+      0.24
+    ],
+    "shattered_march_depth_5": [
+      0.87,
+      0.19
+    ],
+    "shattered_march_depth_6": [
+      0.92,
+      0.13
+    ],
+    "shattered_march_depth_7": [
+      0.84,
+      0.1
+    ],
+    "shattered_march_depth_8": [
+      0.79,
+      0.17
+    ],
+    "shattered_march_depth_9": [
+      0.73,
+      0.12
+    ],
+    "shattered_march_depth_10": [
+      0.74,
+      0.05
+    ]
+  },
+  "gloamfen": {
+    "gloamfen_road_0": [
+      0.22,
+      0.49
+    ],
+    "gloamfen_road_1": [
+      0.58,
+      0.66
+    ],
+    "gloamfen_threshold": [
+      0.78,
+      0.36
+    ],
+    "gloamfen_depth_1": [
+      0.84,
+      0.29
+    ],
+    "gloamfen_depth_2": [
+      0.91,
+      0.27
+    ],
+    "gloamfen_depth_3": [
+      0.88,
+      0.39
+    ],
+    "gloamfen_depth_4": [
+      0.94,
+      0.45
+    ],
+    "gloamfen_depth_5": [
+      0.87,
+      0.49
+    ],
+    "gloamfen_depth_6": [
+      0.8,
+      0.47
+    ],
+    "gloamfen_depth_7": [
+      0.75,
+      0.55
+    ],
+    "gloamfen_depth_8": [
+      0.83,
+      0.59
+    ],
+    "gloamfen_depth_9": [
+      0.91,
+      0.58
+    ],
+    "gloamfen_depth_10": [
+      0.87,
+      0.67
+    ]
+  },
+  "verdant_maw": {
+    "verdant_maw_road_0": [
+      0.25,
+      0.6
+    ],
+    "verdant_maw_road_1": [
+      0.52,
+      0.64
+    ],
+    "verdant_maw_threshold": [
+      0.76,
+      0.39
+    ],
+    "verdant_maw_depth_1": [
+      0.83,
+      0.31
+    ],
+    "verdant_maw_depth_2": [
+      0.91,
+      0.26
+    ],
+    "verdant_maw_depth_3": [
+      0.91,
+      0.36
+    ],
+    "verdant_maw_depth_4": [
+      0.85,
+      0.42
+    ],
+    "verdant_maw_depth_5": [
+      0.93,
+      0.47
+    ],
+    "verdant_maw_depth_6": [
+      0.87,
+      0.54
+    ],
+    "verdant_maw_depth_7": [
+      0.77,
+      0.53
+    ],
+    "verdant_maw_depth_8": [
+      0.73,
+      0.62
+    ],
+    "verdant_maw_depth_9": [
+      0.82,
+      0.64
+    ],
+    "verdant_maw_depth_10": [
+      0.87,
+      0.73
+    ]
+  }
+}

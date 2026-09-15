@@ -365,3 +365,7 @@ See [the human surface rig](docs/characters/human-surface-rig.md) and
 [the bare-body pose preview](artifacts/human_body_showcase.png).
 
 Before producing hundreds of items, finish one vertical slice: Human + one armor set + sword/shield + locomotion + one attack. Validate pivots, silhouette, hand swapping, draw-order changes during attacks, and hit timing. Then lock the asset contract and roll it across the other seven lineages.
+
+## World atlas
+
+Press **M** or **Map · M** while playing to see all twelve regions, eight strongholds, four dungeons and their roads. Open a region, then zoom into its stronghold or story site to inspect the submap graph. New submaps are chart entries only. See the [atlas controls and catalog](src/world/README.md).

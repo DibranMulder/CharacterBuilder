@@ -34,3 +34,7 @@ The original v1 moodboard direction is restored. The Babylon v2 style experiment
 - [Exact prompts](prompts.json), one built-in generation call per lineage. Each uses the current silhouette sheet and its relevant boss sheet as visual references.
 
 All final PNGs are saved in this directory. `humans-v2.png` corrects Tessa and Orin's role labels; the initial Human render is retained as `humans.png`. The correction prompt is included in the prompt set. `.gdignore` keeps these art boards out of Godot imports. No game runtime dependency is added by this gallery.
+
+## Tidekin creatures
+
+[Creature moodboard](tidekin-monsters.png): all sixteen species from DESIGN-0023, including helpful wildlife and the optional Undertow Regent. This companion expands the Tidekin art direction without replacing the culture board or its assigned Mireback guardian. All sixteen creatures now have static transparent sprites used by the connected Tidekin prototype; final encounter balance and animation remain separate work.

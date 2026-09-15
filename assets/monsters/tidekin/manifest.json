@@ -1,0 +1,353 @@
+{
+  "tool": "built-in image_gen",
+  "reference": "designs/moodboards/tidekin.png",
+  "moodboard": {
+    "file": "designs/moodboards/tidekin-monsters.png",
+    "prompt": "Create an expanded companion MONSTERS MOODBOARD for the attached Tidekin regional moodboard. A polished landscape 4:3 fantasy game art direction sheet, navy and brass outer frame, warm ivory parchment, teal sea palette, clean dark contours and rich soft cel-painted storybook anime creatures. Title exactly 'TIDEKIN \u00b7 CREATURES OF THE SEA'. Main area a clean 4 by 4 grid of sixteen clearly separated full-body creature portraits, each with its EXACT NAME legibly under it. In reading order: Silt Skitter: small sand-coloured shore crab with teal shell ridges and two raised coral-orange claws; Ripplefin Sprout: bright teal tadpole-fish with translucent gold fins and a little kelp sprout, kind inquisitive eyes; Shellbell Nymph: small gentle sea nymph creature living in a pearl spiral bell-shell, delicate fin limbs and bubbles; Coral Nipper: compact reef crustacean with broad coral-red paired pincers and angular teal shell; Tidepool Crowncrab: stout ivory crab bearing a coral crown shaped as a defensive shield; Mangrove Snapper: camouflaged root-knot ambush creature with woody jaws, kelp leaves and hooked root feet; Floodhall Lanternfish: gentle deep teal fish with a luminous pearl lantern lure and broad translucent fins; Reefsong Whalelet: small rounded blue-green whale with ivory belly, musical spiral markings and warm gentle eyes; Tidal Gate Eel: long teal eel with bronze gate-like dorsal fins and controlled pale electric accents; Stormshell Skitter: large slate-blue crab with storm-weathered shell plates that open into angled defensive shards; Blackwater Pincer: dark indigo crustacean with two huge ivory-luminous pincers and sea-glass eyes; Bellowshell Crawler: low sea crawler with layered accordion bellows shell, bronze vents and tiny steam wisps; Riptide Coil: spiralling long sea serpent with turquoise current fins and pale spiral shell armour; Pearlglass Sentinel: corrupted quadruped reef construct made of milky pearlglass plates around a teal prism core; Confluence Eel: powerful indigo eel with three clearly separated glowing current channels along its fins; The Undertow Regent: majestic colossal corrupted regulator-beast, crown-like coral shell, tide wheel core, sweeping eel tail and massive crustacean forelimbs. All designs must look native to the attached Tidekin culture and ecology. Distinct silhouettes, never humanoid adventurers, no gore. Helpful wildlife should look gentle, hostile creatures should have readable claws/jaws/attack anatomy. All 16 cells evenly sized; no extra creatures, no duplicated names. Footer small palette strip: teal, indigo, pearl ivory, coral orange, kelp green, bronze. This is a concept-art board, not a gameplay sprite sheet."
+  },
+  "sprite_sheet": {
+    "file": "assets/monsters/tidekin/creatures.png",
+    "status": "RGBA export; individually trimmed sprites; static poses",
+    "prompt": "Create one production transparent PNG sprite atlas for a 2D side-scrolling game. Exactly 4 columns x 4 rows, equal square cells, image square 2048x2048 or larger. Each cell contains one single full-body monster centered with at least 12 percent completely transparent margin to every cell edge. No grid lines, labels, text, backgrounds, ground, shadows, scenery, borders or moodboard decoration. Real RGBA alpha transparency everywhere outside the creatures, NOT a painted checkerboard. Match each corresponding creature's anatomy, materials, colors and detailed clean-contour cel-painted storybook anime style in the reference monster moodboard. Single neutral standing or swimming pose per cell, right-facing profile/three-quarter side view appropriate to a side-scroller. Fit every appendage within its own cell, with no overlaps between cells. Row-major order top left to bottom right EXACTLY: 1. Silt Skitter: small sand-coloured shore crab with teal shell ridges and two raised coral-orange claws; 2. Ripplefin Sprout: bright teal tadpole-fish with translucent gold fins and a little kelp sprout, kind inquisitive eyes; 3. Shellbell Nymph: small gentle sea nymph creature living in a pearl spiral bell-shell, delicate fin limbs and bubbles; 4. Coral Nipper: compact reef crustacean with broad coral-red paired pincers and angular teal shell; 5. Tidepool Crowncrab: stout ivory crab bearing a coral crown shaped as a defensive shield; 6. Mangrove Snapper: camouflaged root-knot ambush creature with woody jaws, kelp leaves and hooked root feet; 7. Floodhall Lanternfish: gentle deep teal fish with a luminous pearl lantern lure and broad translucent fins; 8. Reefsong Whalelet: small rounded blue-green whale with ivory belly, musical spiral markings and warm gentle eyes; 9. Tidal Gate Eel: long teal eel with bronze gate-like dorsal fins and controlled pale electric accents; 10. Stormshell Skitter: large slate-blue crab with storm-weathered shell plates that open into angled defensive shards; 11. Blackwater Pincer: dark indigo crustacean with two huge ivory-luminous pincers and sea-glass eyes; 12. Bellowshell Crawler: low sea crawler with layered accordion bellows shell, bronze vents and tiny steam wisps; 13. Riptide Coil: spiralling long sea serpent with turquoise current fins and pale spiral shell armour; 14. Pearlglass Sentinel: corrupted quadruped reef construct made of milky pearlglass plates around a teal prism core; 15. Confluence Eel: powerful indigo eel with three clearly separated glowing current channels along its fins; 16. The Undertow Regent: majestic colossal corrupted regulator-beast, crown-like coral shell, tide wheel core, sweeping eel tail and massive crustacean forelimbs. No extra creatures. Gentle wildlife looks friendly; hostile silhouettes retain readable attack anatomy. All 16 are separate usable sprites.",
+    "source_file": "assets/monsters/tidekin/creatures-source.png",
+    "cleanup": "User-approved local checkerboard removal; tools/prepare_tidekin_sprites.py"
+  },
+  "creatures": [
+    {
+      "id": "silt_skitter",
+      "name": "Silt Skitter",
+      "description": "small sand-coloured shore crab with teal shell ridges and two raised coral-orange claws",
+      "disposition": "hostile",
+      "column": 0,
+      "row": 0,
+      "runtime": "Tidekin playtest",
+      "file": "assets/monsters/tidekin/silt_skitter.png",
+      "source_rect": [
+        0,
+        0,
+        313,
+        315
+      ],
+      "pivot": [
+        0.5,
+        1.0
+      ],
+      "animation": "single pose; runtime transforms only for playable creatures"
+    },
+    {
+      "id": "ripplefin_sprout",
+      "name": "Ripplefin Sprout",
+      "description": "bright teal tadpole-fish with translucent gold fins and a little kelp sprout, kind inquisitive eyes",
+      "disposition": "benevolent",
+      "column": 1,
+      "row": 0,
+      "runtime": "Tidekin playtest",
+      "file": "assets/monsters/tidekin/ripplefin_sprout.png",
+      "source_rect": [
+        313,
+        0,
+        636,
+        315
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "animation": "single pose; runtime transforms only for playable creatures"
+    },
+    {
+      "id": "shellbell_nymph",
+      "name": "Shellbell Nymph",
+      "description": "small gentle sea nymph creature living in a pearl spiral bell-shell, delicate fin limbs and bubbles",
+      "disposition": "benevolent",
+      "column": 2,
+      "row": 0,
+      "runtime": "planned encounter; art only",
+      "file": "assets/monsters/tidekin/shellbell_nymph.png",
+      "source_rect": [
+        636,
+        0,
+        932,
+        315
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "animation": "single pose; runtime transforms only for playable creatures"
+    },
+    {
+      "id": "coral_nipper",
+      "name": "Coral Nipper",
+      "description": "compact reef crustacean with broad coral-red paired pincers and angular teal shell",
+      "disposition": "hostile",
+      "column": 3,
+      "row": 0,
+      "runtime": "planned encounter; art only",
+      "file": "assets/monsters/tidekin/coral_nipper.png",
+      "source_rect": [
+        932,
+        0,
+        1254,
+        315
+      ],
+      "pivot": [
+        0.5,
+        1.0
+      ],
+      "animation": "single pose; runtime transforms only for playable creatures"
+    },
+    {
+      "id": "tidepool_crowncrab",
+      "name": "Tidepool Crowncrab",
+      "description": "stout ivory crab bearing a coral crown shaped as a defensive shield",
+      "disposition": "neutral",
+      "column": 0,
+      "row": 1,
+      "runtime": "planned encounter; art only",
+      "file": "assets/monsters/tidekin/tidepool_crowncrab.png",
+      "source_rect": [
+        0,
+        315,
+        311,
+        608
+      ],
+      "pivot": [
+        0.5,
+        1.0
+      ],
+      "animation": "single pose; runtime transforms only for playable creatures"
+    },
+    {
+      "id": "mangrove_snapper",
+      "name": "Mangrove Snapper",
+      "description": "camouflaged root-knot ambush creature with woody jaws, kelp leaves and hooked root feet",
+      "disposition": "hostile",
+      "column": 1,
+      "row": 1,
+      "runtime": "planned encounter; art only",
+      "file": "assets/monsters/tidekin/mangrove_snapper.png",
+      "source_rect": [
+        311,
+        315,
+        646,
+        608
+      ],
+      "pivot": [
+        0.5,
+        1.0
+      ],
+      "animation": "single pose; runtime transforms only for playable creatures"
+    },
+    {
+      "id": "floodhall_lanternfish",
+      "name": "Floodhall Lanternfish",
+      "description": "gentle deep teal fish with a luminous pearl lantern lure and broad translucent fins",
+      "disposition": "benevolent",
+      "column": 2,
+      "row": 1,
+      "runtime": "planned encounter; art only",
+      "file": "assets/monsters/tidekin/floodhall_lanternfish.png",
+      "source_rect": [
+        646,
+        315,
+        935,
+        608
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "animation": "single pose; runtime transforms only for playable creatures"
+    },
+    {
+      "id": "reefsong_whalelet",
+      "name": "Reefsong Whalelet",
+      "description": "small rounded blue-green whale with ivory belly, musical spiral markings and warm gentle eyes",
+      "disposition": "benevolent",
+      "column": 3,
+      "row": 1,
+      "runtime": "planned encounter; art only",
+      "file": "assets/monsters/tidekin/reefsong_whalelet.png",
+      "source_rect": [
+        935,
+        315,
+        1254,
+        608
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "animation": "single pose; runtime transforms only for playable creatures"
+    },
+    {
+      "id": "tidal_gate_eel",
+      "name": "Tidal Gate Eel",
+      "description": "long teal eel with bronze gate-like dorsal fins and controlled pale electric accents",
+      "disposition": "hostile",
+      "column": 0,
+      "row": 2,
+      "runtime": "planned encounter; art only",
+      "file": "assets/monsters/tidekin/tidal_gate_eel.png",
+      "source_rect": [
+        0,
+        608,
+        313,
+        884
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "animation": "single pose; runtime transforms only for playable creatures"
+    },
+    {
+      "id": "stormshell_skitter",
+      "name": "Stormshell Skitter",
+      "description": "large slate-blue crab with storm-weathered shell plates that open into angled defensive shards",
+      "disposition": "hostile",
+      "column": 1,
+      "row": 2,
+      "runtime": "planned encounter; art only",
+      "file": "assets/monsters/tidekin/stormshell_skitter.png",
+      "source_rect": [
+        313,
+        608,
+        630,
+        884
+      ],
+      "pivot": [
+        0.5,
+        1.0
+      ],
+      "animation": "single pose; runtime transforms only for playable creatures"
+    },
+    {
+      "id": "blackwater_pincer",
+      "name": "Blackwater Pincer",
+      "description": "dark indigo crustacean with two huge ivory-luminous pincers and sea-glass eyes",
+      "disposition": "hostile",
+      "column": 2,
+      "row": 2,
+      "runtime": "planned encounter; art only",
+      "file": "assets/monsters/tidekin/blackwater_pincer.png",
+      "source_rect": [
+        630,
+        608,
+        936,
+        884
+      ],
+      "pivot": [
+        0.5,
+        1.0
+      ],
+      "animation": "single pose; runtime transforms only for playable creatures"
+    },
+    {
+      "id": "bellowshell_crawler",
+      "name": "Bellowshell Crawler",
+      "description": "low sea crawler with layered accordion bellows shell, bronze vents and tiny steam wisps",
+      "disposition": "hostile",
+      "column": 3,
+      "row": 2,
+      "runtime": "planned encounter; art only",
+      "file": "assets/monsters/tidekin/bellowshell_crawler.png",
+      "source_rect": [
+        936,
+        608,
+        1254,
+        884
+      ],
+      "pivot": [
+        0.5,
+        1.0
+      ],
+      "animation": "single pose; runtime transforms only for playable creatures"
+    },
+    {
+      "id": "riptide_coil",
+      "name": "Riptide Coil",
+      "description": "spiralling long sea serpent with turquoise current fins and pale spiral shell armour",
+      "disposition": "hostile",
+      "column": 0,
+      "row": 3,
+      "runtime": "planned encounter; art only",
+      "file": "assets/monsters/tidekin/riptide_coil.png",
+      "source_rect": [
+        0,
+        884,
+        322,
+        1254
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "animation": "single pose; runtime transforms only for playable creatures"
+    },
+    {
+      "id": "pearlglass_sentinel",
+      "name": "Pearlglass Sentinel",
+      "description": "corrupted quadruped reef construct made of milky pearlglass plates around a teal prism core",
+      "disposition": "corrupted",
+      "column": 1,
+      "row": 3,
+      "runtime": "planned encounter; art only",
+      "file": "assets/monsters/tidekin/pearlglass_sentinel.png",
+      "source_rect": [
+        322,
+        884,
+        616,
+        1254
+      ],
+      "pivot": [
+        0.5,
+        1.0
+      ],
+      "animation": "single pose; runtime transforms only for playable creatures"
+    },
+    {
+      "id": "confluence_eel",
+      "name": "Confluence Eel",
+      "description": "powerful indigo eel with three clearly separated glowing current channels along its fins",
+      "disposition": "hostile",
+      "column": 2,
+      "row": 3,
+      "runtime": "planned encounter; art only",
+      "file": "assets/monsters/tidekin/confluence_eel.png",
+      "source_rect": [
+        616,
+        884,
+        939,
+        1254
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "animation": "single pose; runtime transforms only for playable creatures"
+    },
+    {
+      "id": "undertow_regent",
+      "name": "The Undertow Regent",
+      "description": "majestic colossal corrupted regulator-beast, crown-like coral shell, tide wheel core, sweeping eel tail and massive crustacean forelimbs",
+      "disposition": "optional Group boss",
+      "column": 3,
+      "row": 3,
+      "runtime": "planned encounter; art only",
+      "file": "assets/monsters/tidekin/undertow_regent.png",
+      "source_rect": [
+        939,
+        884,
+        1254,
+        1254
+      ],
+      "pivot": [
+        0.5,
+        1.0
+      ],
+      "animation": "single pose; runtime transforms only for playable creatures"
+    }
+  ]
+}

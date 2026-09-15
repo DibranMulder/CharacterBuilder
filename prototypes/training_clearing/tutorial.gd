@@ -82,6 +82,7 @@ func _enter(destination: int, from_east := false):
 	model.stamina = previous.stamina
 	model.xp = previous.xp
 	model.adventure_level = previous.adventure_level
+	model.skill_cooldown = previous.skill_cooldown
 	model.potion_cooldown = previous.potion_cooldown
 	model.lineage_cooldowns = previous.lineage_cooldowns.duplicate()
 	model.mana_delay = previous.mana_delay
@@ -131,9 +132,9 @@ func hint() -> Dictionary:
 			if not actions.has("equip"): return _hint("Try your new gear", "I · Pouch → select gear → Equip",at)
 			if not actions.has("disciplines"): return _hint("See what you have learned", "L · Skills → Disciplines & Levels",at)
 		3:
-			if finished: return _hint("The hollow is safe", "Tutorial complete · Return west to Rowan",Vector2(1000,480))
+			if finished: return _hint("The hollow is safe", "Tutorial complete · West portal + ↑ to return",Vector2(1000,480))
 			return _hint("Defeat the Elder Briar", "Watch its warning · Defend, strike, heal",Vector2(1000,440))
-	return _hint("Next map →", "Walk through the stone arch",Vector2(model.world_width-65,480))
+	return _hint("Next map →", "Stand in the portal light · ↑ to travel",Vector2(model.world_width-65,480))
 
 func _hint(title: String, text: String, at: Vector2) -> Dictionary:
 	return {"title":title,"text":text,"at":at}

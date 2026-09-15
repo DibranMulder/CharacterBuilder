@@ -4,7 +4,12 @@ extends Node2D
 const Encounter := preload("res://prototypes/training_clearing/encounter.gd")
 const Avatar := preload("res://prototypes/training_clearing/vanguard_visual.gd")
 const Chronicle := preload("res://src/ui/chronicle_theme.gd")
+const Journey = preload("res://prototypes/human_hometown/town_save.gd")
 const Profiles = preload("res://src/discipline_profiles.gd")
+var bindings = preload("res://src/action_bindings.gd").new()
+var bindings_panel: Control
+var bindings_button: Button
+var paused_before_bindings := false
 var save_timer := 0.0
 var show_play_controls := false
 var show_tutorial_entry := true
@@ -33,6 +38,10 @@ var skill_buttons: Array[Button] = []
 var last_pose := ""
 var inventory_panel: Panel
 var skill_overview: Control
+var map_panel: Control
+var training_portal_markers: Array[Node2D] = []
+var paused_before_map := false
+var world_map_button: Button
 var paused_before_skills := false
 var paused_before_inventory := false
 var hp_button: Button
@@ -64,6 +73,7 @@ func _ready() -> void:
 		"lineage": "human", "loadout": CharacterCatalog.reference_loadout("human"),
 	})
 	avatar.configure(selection.lineage, selection.loadout.duplicate())
+	bindings.load_for(avatar.race_id)
 	model.configure_equipment(avatar.loadout)
 	model.inventory.configure(avatar.race_id, avatar.loadout)
 	model.progression = Profiles.get_profile(get_tree(),avatar.race_id)
@@ -90,15 +100,31 @@ func _ready() -> void:
 	model.activity.connect(tutorial.record)
 	tutorial_panel = preload("res://prototypes/training_clearing/tutorial_panel.gd").new()
 	tutorial_panel.guide = tutorial
+	tutorial_panel.bindings = bindings
 	tutorial_panel.model = model
 	add_child(tutorial_panel)
 	if get_tree().get_meta("start_clearing_tutorial",false):
 		_start_tutorial()
 	get_tree().remove_meta("start_clearing_tutorial")
 	get_window().focus_exited.connect(_lose_focus)
+	if get_tree().has_meta("wendmere_resume_training"):
+		tutorial = get_tree().get_meta("wendmere_training_route")
+		tutorial_panel.guide = tutorial
+		_adopt_map(get_tree().get_meta("wendmere_resume_training"))
+		get_tree().remove_meta("wendmere_resume_training")
+		_equipment_changed()
+	get_tree().set_meta("wendmere_transfer",false)
 	_update_view(0)
+	if tutorial.started: _save_progress()
+	if get_tree().has_meta("map_test_transfer"): _finish_test_teleport.call_deferred()
 
 func _build_ui() -> void:
+	for i in 2:
+		var marker := preload("res://src/ui/world_interaction_marker.gd").new()
+		add_child(marker)
+		training_portal_markers.append(marker)
+	bindings_button = _button("Bindings · B",Vector2(590,20),Vector2(138,38))
+	bindings_button.pressed.connect(_toggle_bindings)
 	tutorial_button = _button("Tutorial · T",Vector2(738,66),Vector2(124,38))
 	tutorial_button.pressed.connect(_toggle_tutorial_hints)
 	map_label = _label("",Vector2(462,77),17)
@@ -111,6 +137,8 @@ func _build_ui() -> void:
 	builder_button = _button("Builder", Vector2(1010, 66), Vector2(112, 38))
 	builder_button.pressed.connect(func(): get_tree().change_scene_to_file("res://main.tscn"))
 	_button("Pause · Esc", Vector2(872, 20), Vector2(128, 38)).pressed.connect(_toggle_pause)
+	world_map_button = _button("Map · M",Vector2(1012,70),Vector2(115,34))
+	world_map_button.pressed.connect(_toggle_world_map)
 	restart_button = _button("Restart · R", Vector2(872, 66), Vector2(128, 38))
 	restart_button.pressed.connect(_restart)
 	_button("Pouch · I", Vector2(1010,20), Vector2(112,38)).pressed.connect(_toggle_inventory)
@@ -176,8 +204,52 @@ func _button(value: String, at: Vector2, dimensions: Vector2) -> Button:
 	add_child(button)
 	return button
 
+func _toggle_world_map() -> void:
+	if is_instance_valid(bindings_panel): return
+	if is_instance_valid(map_panel):
+		map_panel.queue_free()
+		map_panel = null
+		paused = paused_before_map
+		avatar.process_mode = Node.PROCESS_MODE_DISABLED if paused else Node.PROCESS_MODE_INHERIT
+		_update_view(0)
+		return
+	if is_instance_valid(dialogue) or is_instance_valid(shop) or is_instance_valid(inventory_panel) or is_instance_valid(skill_overview): return
+	paused_before_map = paused
+	if not paused: _toggle_pause()
+	map_panel = preload("res://src/ui/world_map.gd").new()
+	var atlas = preload("res://src/world/world_catalog.gd")
+	map_panel.current = atlas.from_runtime(model.map_id)
+	map_panel.lineage = model.inventory.lineage
+	map_panel.quest_stage = get_tree().get_meta("wendmere_quest",0)
+	map_panel.explored = get_tree().get_meta("wendmere_districts",{}).keys()
+	var route = tutorial if tutorial.started else (get_tree().get_meta("wendmere_training_route") if get_tree().has_meta("wendmere_training_route") else null)
+	if route != null:
+		for index in route.visits: map_panel.explored.append(route.MAPS[index].id)
+	if model.map_id.begins_with("wendmere_"):
+		map_panel.allow_travel = true
+		map_panel.travel_requested.connect(_travel_from_map)
+	map_panel.test_teleport_requested.connect(_teleport_from_map)
+	map_panel.closed.connect(_toggle_world_map)
+	add_child(map_panel)
+	_update_view(0)
+
+func _travel_from_map(_destination: String) -> void:
+	pass # Only the existing hometown controller supports deliberate map travel.
+
 func _unhandled_key_input(event: InputEvent) -> void:
 	if not event is InputEventKey or not event.pressed or event.echo:
+		return
+	if is_instance_valid(bindings_panel):
+		if event.physical_keycode in [KEY_B, KEY_ESCAPE]: _toggle_bindings()
+		return
+	if is_instance_valid(map_panel):
+		if event.physical_keycode in [KEY_M,KEY_ESCAPE]:
+			_toggle_world_map()
+			get_viewport().set_input_as_handled()
+		return
+	if event.physical_keycode == KEY_M:
+		_toggle_world_map()
+		get_viewport().set_input_as_handled()
 		return
 	if is_instance_valid(shop) or is_instance_valid(dialogue):
 		if event.physical_keycode == KEY_ESCAPE:
@@ -195,15 +267,25 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		return
 	if is_instance_valid(inventory_panel):
 		return
+	if event.physical_keycode == KEY_UP:
+		if _activate_portal():
+			get_viewport().set_input_as_handled()
+			return
+		if model.has_method("can_climb") and model.can_climb(): return
+		_jump()
+		return
+	if event.physical_keycode in bindings.KEYS:
+		_activate_binding(bindings.action_for(event.physical_keycode))
+		get_viewport().set_input_as_handled()
+		return
 	match event.physical_keycode:
+		KEY_B: _toggle_bindings()
 		KEY_T: _toggle_tutorial_hints()
 		KEY_E: _talk_to_rowan()
-		KEY_H: _potion("hp")
-		KEY_M: _potion("mana")
-		KEY_SPACE, KEY_W, KEY_UP: _jump()
-		KEY_J, KEY_1: _attack(false)
+		KEY_SPACE, KEY_W: _jump()
+		KEY_J: _attack(false)
 		KEY_K: _attack(true)
-		KEY_3, KEY_4, KEY_5, KEY_6, KEY_7, KEY_8: _lineage_skill(event.physical_keycode-KEY_3)
+		KEY_7, KEY_8: _lineage_skill(event.physical_keycode-KEY_3)
 		KEY_ESCAPE: _toggle_pause()
 		KEY_R: _restart()
 
@@ -231,7 +313,8 @@ func _attack(power: bool) -> void:
 			feedback.push({"kind":"notice", "text":model.last_rejection, "position":model.position + Vector2(0,-170)})
 
 func _toggle_pause() -> void:
-	if is_instance_valid(skill_overview) or is_instance_valid(inventory_panel) or is_instance_valid(dialogue) or is_instance_valid(shop):
+	if is_instance_valid(bindings_panel): return
+	if is_instance_valid(map_panel) or is_instance_valid(skill_overview) or is_instance_valid(inventory_panel) or is_instance_valid(dialogue) or is_instance_valid(shop):
 		return
 	paused = not paused
 	avatar.process_mode = Node.PROCESS_MODE_DISABLED if paused else Node.PROCESS_MODE_INHERIT
@@ -288,6 +371,7 @@ func _travel_map() -> void:
 	for direction in [-1,1]:
 		if tutorial.can_travel(direction):
 			_adopt_map(tutorial.travel(direction))
+			_save_progress()
 			return
 
 func _restart() -> void:
@@ -315,6 +399,8 @@ func _restart() -> void:
 	_update_view(0)
 
 func _toggle_inventory() -> void:
+	if is_instance_valid(bindings_panel): return
+	if is_instance_valid(map_panel): return
 	if is_instance_valid(skill_overview) or is_instance_valid(dialogue) or is_instance_valid(shop): return
 	if is_instance_valid(inventory_panel):
 		inventory_panel.queue_free()
@@ -335,6 +421,8 @@ func _toggle_inventory() -> void:
 	tutorial.record("pouch")
 
 func _toggle_skills() -> void:
+	if is_instance_valid(bindings_panel): return
+	if is_instance_valid(map_panel): return
 	if is_instance_valid(dialogue) or is_instance_valid(shop): return
 	if is_instance_valid(skill_overview):
 		skill_overview.queue_free()
@@ -349,6 +437,7 @@ func _toggle_skills() -> void:
 	skill_overview.lineage = avatar.race_id
 	skill_overview.progression = model.progression
 	skill_overview.combat_model = model
+	skill_overview.bindings = bindings
 	skill_overview.closed.connect(_toggle_skills)
 	skill_overview.pouch_requested.connect(_skills_to_pouch)
 	add_child(skill_overview)
@@ -424,7 +513,7 @@ func _physics_process(delta: float) -> void:
 		var muzzle: Vector2 = to_local(socket) + Vector2(camera_x, camera_y)
 		var available := []
 		for skill in model.lineage_kit(): available.append(model.progression.allows(skill))
-		model.step(delta, direction, touch_guard or Input.is_physical_key_pressed(KEY_SHIFT) or Input.is_physical_key_pressed(KEY_2), muzzle)
+		model.step(delta, direction, touch_guard or Input.is_physical_key_pressed(KEY_SHIFT) or bindings.held("guard"), muzzle)
 		for i in available.size():
 			if not available[i] and model.progression.allows(model.lineage_kit()[i]):
 				feedback.push({"kind":"level","text":"Unlocked: "+model.lineage_kit()[i].name,"position":model.position+Vector2(0,-220)})
@@ -441,14 +530,13 @@ func _physics_process(delta: float) -> void:
 			_save_progress()
 			save_timer = 0
 	tutorial.observe(model)
-	_travel_map()
 	_update_view(delta)
 
 func _update_view(delta: float) -> void:
 	if is_instance_valid(skill_overview) and skill_overview.discipline_panel.visible:
 		tutorial.record("disciplines")
 	tutorial.observe(model)
-	var menu_open := is_instance_valid(dialogue) or is_instance_valid(shop) or is_instance_valid(inventory_panel) or is_instance_valid(skill_overview)
+	var menu_open := is_instance_valid(bindings_panel) or is_instance_valid(map_panel) or is_instance_valid(dialogue) or is_instance_valid(shop) or is_instance_valid(inventory_panel) or is_instance_valid(skill_overview)
 	tutorial_panel.visible = tutorial.active and not menu_open
 	var viewport_size := get_viewport_rect().size
 	var factor := minf(viewport_size.x / 1152.0, viewport_size.y / 648.0)
@@ -465,6 +553,7 @@ func _update_view(delta: float) -> void:
 		var show_button: bool = not menu_open and (tutorial.started or show_play_controls or (paused and child.position.y < 100))
 		if child in [builder_button,restart_button]: show_button = paused and not menu_open
 		if child == tutorial_button: show_button = show_tutorial_entry and not menu_open
+		if child in [world_map_button,bindings_button]: show_button = not menu_open
 		if child == talk_button: show_button = (tutorial.started or show_play_controls) and not paused and model.can_talk_to_rowan()
 		child.visible = show_button
 	tutorial_button.text = "Hints · T" if tutorial.started else "Tutorial · T"
@@ -475,8 +564,11 @@ func _update_view(delta: float) -> void:
 		tutorial_panel.camera = Vector2(camera_x,camera_y)
 		tutorial_panel.refresh()
 	_update_menu_hint()
+	_update_portal_hints(menu_open)
 	for i in skill_buttons.size():
 		var tile := skill_buttons[i]
+		tile.hotkey = bindings.label_for("skill:%d" % i)
+		tile.visible = not menu_open
 		tile.cooldown = model.lineage_cooldowns[i]
 		tile.cooldown_max = tile.skill.cooldown
 		tile.mana_available = model.mana >= tile.skill.mana
@@ -499,10 +591,10 @@ func _update_view(delta: float) -> void:
 	avatar.modulate = reaction.tint()
 	avatar.visible = model.health > 0
 	if model.health > 0 and model.attack_time <= 0 and not paused:
-		var pose := "guard" if model.guarding else ("air" if not model.grounded else ("run" if absf(model.velocity.x) > 20 else "idle"))
+		var pose: String = _movement_pose()
 		if pose != last_pose:
-			if pose == "run":
-				avatar.play_motion(&"run")
+			if pose in ["run","climb"]:
+				avatar.play_motion(StringName(pose))
 			else:
 				avatar.present_static_pose(pose)
 			last_pose = pose
@@ -514,17 +606,17 @@ func _update_view(delta: float) -> void:
 	feedback.queue_redraw()
 	hud.text = "%d coins" % model.inventory.coins
 	guard_button.disabled = not model.can_guard
-	guard_button.text = "GUARD\nShift / 2" if model.can_guard else "NO SHIELD"
+	guard_button.text = "GUARD\nShift " + bindings.label_for("guard") if model.can_guard else "NO SHIELD"
 	attack_button.disabled = model.weapon == "none"
-	attack_button.text = "SPELL\nJ / 1 · 8 mana" if model.mana_cost() > 0 else "ATTACK\nJ / 1"
-	hp_button.text = "HP ×%d · H" % model.inventory.potions.hp
-	mana_button.text = "Mana ×%d · M" % model.inventory.potions.mana
+	attack_button.text = ("SPELL\nJ " if model.mana_cost() > 0 else "ATTACK\nJ ") + bindings.label_for("attack")
+	hp_button.text = "HP ×%d · %s" % [model.inventory.potions.hp,bindings.label_for("hp")]
+	mana_button.text = "Mana ×%d · %s" % [model.inventory.potions.mana,bindings.label_for("mana")]
 	hp_button.disabled = paused or model.health <= 0 or model.health >= 100 or model.inventory.potions.hp == 0 or model.potion_cooldown > 0
 	mana_button.disabled = paused or model.health <= 0 or model.mana >= 100 or model.inventory.potions.mana == 0 or model.potion_cooldown > 0
 	notice.text = "Paused" if paused else ("Recovering · %.1fs" % model.death_time if model.health <= 0 else "")
 	if is_instance_valid(dialogue): notice.text = ""
 	var power: Dictionary = model.lineage_kit()[4]
-	skill_button.text = "POWER · %.1fs" % model.lineage_cooldowns[4] if model.lineage_cooldowns[4] > 0 else "POWER STRIKE\nK / 7 · %d mana" % power.mana
+	skill_button.text = "POWER · %.1fs" % model.lineage_cooldowns[4] if model.lineage_cooldowns[4] > 0 else "POWER STRIKE\nK / %s · %d mana" % [bindings.label_for("skill:4"),power.mana]
 	skill_button.disabled = paused or not model.progression.allows(power) or model.lineage_cooldowns[4] > 0 or model.mana < power.mana
 	skill_button.tooltip_text = model.progression.requirement_text(power)
 	queue_redraw()
@@ -541,6 +633,8 @@ func _return_to_town() -> void:
 	home_model.attack_time = 0
 	home_model.projectiles.clear()
 	get_tree().set_meta("training_character",{"lineage":model.inventory.lineage,"loadout":model.inventory.equipped.duplicate(),"facing":&"left"})
+	Journey.write(get_tree(),home_model,tutorial)
+	get_tree().set_meta("wendmere_transfer",true)
 	get_tree().change_scene_to_file("res://prototypes/human_hometown/human_hometown.tscn")
 
 func _update_menu_hint() -> void:
@@ -556,6 +650,8 @@ func _update_menu_hint() -> void:
 	menu_hint.visible = not hint.is_empty()
 
 func _save_progress() -> void:
+	if not get_tree().get_meta("wendmere_transfer",false):
+		if Journey.write(get_tree(),model,tutorial) != OK: push_warning("Journey could not be saved locally.")
 	if Profiles.save(get_tree()) != OK: push_warning("Discipline progress could not be saved locally.")
 
 func _exit_tree() -> void:
@@ -627,23 +723,8 @@ func _draw_map_landmarks() -> void:
 				draw_line(Vector2(x,480),Vector2(x-25,310),Color("344e4f"),17)
 				draw_line(Vector2(x-10,390),Vector2(x+40,350),Color("344e4f"),9)
 
-func _draw_portal(x: float, open: bool, destination: String, west := false) -> void:
-	var color := Color("8edcca") if open else Color("b3a88a")
-	for offset in [-34,34]:
-		draw_style_box(_ledge_style(),Rect2(x+offset-9,353,18,127))
-	draw_arc(Vector2(x,353),34,PI,TAU,16,Color("a4a98a"),18,true)
-	if open:
-		draw_line(Vector2(x-14,451),Vector2(x+14,451),color,3)
-		var direction := -1 if west else 1
-		draw_line(Vector2(x+14*direction,451),Vector2(x+5*direction,443),color,3)
-		draw_line(Vector2(x+14*direction,451),Vector2(x+5*direction,459),color,3)
-	else:
-		draw_line(Vector2(x-28,430),Vector2(x+28,430),color,4)
-	var font := ThemeDB.fallback_font
-	var caption := destination if open else "Practice first"
-	var width := font.get_string_size(caption,HORIZONTAL_ALIGNMENT_LEFT,-1,14).x
-	draw_string_outline(font,Vector2(x-width/2,311),caption,HORIZONTAL_ALIGNMENT_LEFT,-1,14,3,Color("162a2c"))
-	draw_string(font,Vector2(x-width/2,311),caption,HORIZONTAL_ALIGNMENT_LEFT,-1,14,color)
+func _draw_portal(x: float, open: bool, _destination: String, _west := false) -> void:
+	preload("res://prototypes/human_hometown/portal_visual.gd").paint(self,Vector2(x,480),not open,Time.get_ticks_msec()/1000.0)
 
 func _ledge_style() -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
@@ -696,3 +777,94 @@ func _draw_enemy(enemy: Dictionary) -> void:
 	draw_rect(Rect2(enemy.x - 35, 388 - radius, 70 * enemy.hp / enemy.max_hp, 5), Color("c8d794"))
 	var title := "ELDER BRIAR · ELITE" if enemy.elite else "BRIAR CRAWLER"
 	draw_string(ThemeDB.fallback_font, Vector2(enemy.x - 64, 380 - radius), title, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, INK)
+
+func _movement_pose() -> String:
+	return "guard" if model.guarding else ("air" if not model.grounded else ("run" if absf(model.velocity.x) > 20 else "idle"))
+
+func _activate_binding(action: String) -> void:
+	if action == "attack": _attack(false)
+	elif action in ["hp", "mana"]: _potion(action)
+	elif action.begins_with("skill:"): _lineage_skill(int(action.get_slice(":",1)))
+
+func _toggle_bindings() -> void:
+	if is_instance_valid(bindings_panel):
+		bindings_panel.queue_free()
+		bindings_panel = null
+		paused = paused_before_bindings
+		avatar.process_mode = Node.PROCESS_MODE_DISABLED if paused else Node.PROCESS_MODE_INHERIT
+		_update_view(0)
+		return
+	if is_instance_valid(map_panel) or is_instance_valid(skill_overview) or is_instance_valid(inventory_panel) or is_instance_valid(dialogue) or is_instance_valid(shop): return
+	paused_before_bindings = paused
+	if not paused: _toggle_pause()
+	bindings_panel = preload("res://src/ui/action_bindings_panel.gd").new()
+	bindings_panel.bindings = bindings
+	bindings_panel.kit = model.lineage_kit()
+	bindings_panel.progression = model.progression
+	bindings_panel.closed.connect(_toggle_bindings)
+	bindings_panel.changed.connect(func(): _update_view(0))
+	add_child(bindings_panel)
+	_update_view(0)
+
+func _activate_portal() -> bool:
+	if paused or not tutorial.started or not model.grounded or absf(model.position.y-Encounter.FLOOR_Y) > 12: return false
+	var near_west: bool = model.position.x <= 85 and (tutorial.index > 0 or get_tree().has_meta("wendmere_model"))
+	var near_east: bool = model.position.x >= model.world_width-85 and tutorial.index < tutorial.MAPS.size()-1
+	if not near_west and not near_east: return false
+	_travel_map()
+	return true
+
+func _update_portal_hints(menu_open: bool) -> void:
+	for i in training_portal_markers.size():
+		var west := i == 0
+		var available: bool = tutorial.started and ((tutorial.index > 0 or get_tree().has_meta("wendmere_model")) if west else tutorial.index < tutorial.MAPS.size()-1)
+		var destination := "Wendmere"
+		if tutorial.started:
+			if west and tutorial.index > 0: destination = tutorial.MAPS[tutorial.index-1].name
+			elif not west and tutorial.index < tutorial.MAPS.size()-1: destination = tutorial.MAPS[tutorial.index+1].name
+		var usable: bool = west or tutorial.map_ready()
+		training_portal_markers[i].refresh(Vector2((65 if west else model.world_width-65)-camera_x,400-camera_y),destination+"\n"+("↑ · Travel" if usable else "Finish the practice first"),usable,available and not menu_open and not paused,"west" if west else "east")
+
+func _teleport_from_map(destination: String) -> void:
+	if not is_instance_valid(map_panel): return
+	var target := preload("res://src/world/test_map_travel.gd").destination(destination)
+	if target.is_empty():
+		map_panel.status.text = "This map is not playable yet."
+		return
+	get_tree().set_meta("map_test_transfer",{"target":target,"player":model})
+	get_tree().set_meta("training_character",{"lineage":model.inventory.lineage,"loadout":model.inventory.equipped.duplicate(),"facing":&"right"})
+	for key in ["clearing_departure","wendmere_resume_training","start_clearing_tutorial"]:
+		if get_tree().has_meta(key): get_tree().remove_meta(key)
+	if target.kind == "town": get_tree().set_meta("wendmere_destination",target.id)
+	_toggle_world_map()
+	get_tree().set_meta("wendmere_transfer",true)
+	get_tree().change_scene_to_file.call_deferred(target.scene)
+
+func _finish_test_teleport() -> void:
+	if not get_tree().has_meta("map_test_transfer"): return
+	var transfer: Dictionary = get_tree().get_meta("map_test_transfer")
+	if scene_file_path != transfer.target.scene: return
+	get_tree().remove_meta("map_test_transfer")
+	_apply_test_destination(transfer.target,transfer.player)
+	model.velocity = Vector2.ZERO
+	model.grounded = true
+	model.recovery_anchor = model.position
+	model.attack_time = 0
+	model.projectiles.clear()
+	model.guarding = false
+	model.invulnerable = 1
+	if model.health <= 0:
+		model.health = 100
+		model.death_time = 0
+	paused = false
+	avatar.process_mode = Node.PROCESS_MODE_INHERIT
+	_equipment_changed()
+	_update_view(0)
+
+func _apply_test_destination(target: Dictionary, player) -> void:
+	model.carry_player_from(player)
+	tutorial = preload("res://prototypes/training_clearing/tutorial.gd").new()
+	tutorial.started = true
+	tutorial.model = model
+	tutorial_panel.guide = tutorial
+	_adopt_map(tutorial._enter(target.index))

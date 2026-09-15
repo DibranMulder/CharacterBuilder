@@ -1,0 +1,3486 @@
+{
+  "version": 1,
+  "sources": [
+    "DESIGN-0010",
+    "DESIGN-0014",
+    "DESIGN-0015"
+  ],
+  "regions": [
+    {
+      "id": "open_lands",
+      "name": "Open Lands",
+      "lineage": "Humans",
+      "allegiance": "Light",
+      "kind": "homeland",
+      "village": "Wendmere Crossroads",
+      "stronghold": "The King's Keep",
+      "story": "The Princess's Tower",
+      "route_kind": "roads",
+      "position": [
+        0.26,
+        0.42
+      ],
+      "groups": [
+        {
+          "id": "village",
+          "name": "Wendmere Crossroads",
+          "nodes": [
+            "square",
+            "market",
+            "apothecary",
+            "trainers",
+            "inn",
+            "approach"
+          ]
+        },
+        {
+          "id": "stronghold",
+          "name": "The King's Keep",
+          "nodes": [
+            "gatehouse",
+            "barracks",
+            "service",
+            "hall",
+            "king",
+            "archive"
+          ]
+        },
+        {
+          "id": "story",
+          "name": "The Princess's Tower",
+          "nodes": [
+            "tower",
+            "stair",
+            "solar"
+          ]
+        },
+        {
+          "id": "wilds",
+          "name": "Willow Trail & the wilds",
+          "nodes": [
+            "trail",
+            "yard",
+            "camp",
+            "grove"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "square",
+          "name": "Village Square",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "wendmere_square",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "market",
+          "name": "Market Row",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "wendmere_market",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "apothecary",
+          "name": "Apothecary Lane",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "wendmere_apothecary",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "trainers",
+          "name": "Trainers' Yard",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "wendmere_trainers",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "inn",
+          "name": "Hearth Inn",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "wendmere_inn",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "approach",
+          "name": "Stronghold Approach",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "wendmere_approach",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "gatehouse",
+          "name": "Gatehouse Court",
+          "group": "stronghold",
+          "access": "Light",
+          "runtime_id": "wendmere_gatehouse",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "barracks",
+          "name": "Warden Barracks",
+          "group": "stronghold",
+          "access": "Light",
+          "runtime_id": "wendmere_barracks",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "service",
+          "name": "Service District",
+          "group": "stronghold",
+          "access": "Light",
+          "runtime_id": "wendmere_service",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "hall",
+          "name": "Great Hall",
+          "group": "stronghold",
+          "access": "Light",
+          "runtime_id": "wendmere_hall",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "king",
+          "name": "The King's Room",
+          "group": "stronghold",
+          "access": "Light",
+          "runtime_id": "wendmere_king",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "archive",
+          "name": "Treasury and Archive",
+          "group": "stronghold",
+          "access": "Light",
+          "runtime_id": "wendmere_archive",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "tower",
+          "name": "Tower Base",
+          "group": "story",
+          "access": "Light",
+          "runtime_id": "wendmere_tower",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "stair",
+          "name": "Winding Stair",
+          "group": "story",
+          "access": "Light",
+          "runtime_id": "wendmere_stair",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "solar",
+          "name": "The Solar",
+          "group": "story",
+          "access": "Light",
+          "runtime_id": "wendmere_solar",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "trail",
+          "name": "Willow Trail",
+          "group": "wilds",
+          "access": "Shared",
+          "runtime_id": "trail",
+          "source": "tutorial.gd"
+        },
+        {
+          "id": "yard",
+          "name": "Warden's Yard",
+          "group": "wilds",
+          "access": "Shared",
+          "runtime_id": "yard",
+          "source": "tutorial.gd"
+        },
+        {
+          "id": "camp",
+          "name": "Rowan's Camp",
+          "group": "wilds",
+          "access": "Shared",
+          "runtime_id": "camp",
+          "source": "tutorial.gd"
+        },
+        {
+          "id": "grove",
+          "name": "Briar Hollow",
+          "group": "wilds",
+          "access": "Shared",
+          "runtime_id": "grove",
+          "source": "tutorial.gd"
+        }
+      ],
+      "edges": [
+        {
+          "a": "square",
+          "b": "market",
+          "kind": "roads"
+        },
+        {
+          "a": "square",
+          "b": "apothecary",
+          "kind": "roads"
+        },
+        {
+          "a": "square",
+          "b": "trainers",
+          "kind": "roads"
+        },
+        {
+          "a": "trainers",
+          "b": "inn",
+          "kind": "roads"
+        },
+        {
+          "a": "square",
+          "b": "approach",
+          "kind": "roads"
+        },
+        {
+          "a": "approach",
+          "b": "gatehouse",
+          "kind": "roads"
+        },
+        {
+          "a": "gatehouse",
+          "b": "barracks",
+          "kind": "roads"
+        },
+        {
+          "a": "gatehouse",
+          "b": "service",
+          "kind": "roads"
+        },
+        {
+          "a": "barracks",
+          "b": "hall",
+          "kind": "roads"
+        },
+        {
+          "a": "hall",
+          "b": "king",
+          "kind": "roads"
+        },
+        {
+          "a": "hall",
+          "b": "archive",
+          "kind": "roads"
+        },
+        {
+          "a": "hall",
+          "b": "tower",
+          "kind": "roads"
+        },
+        {
+          "a": "tower",
+          "b": "stair",
+          "kind": "roads"
+        },
+        {
+          "a": "stair",
+          "b": "solar",
+          "kind": "roads"
+        },
+        {
+          "a": "square",
+          "b": "trail",
+          "kind": "woodland trail"
+        },
+        {
+          "a": "trail",
+          "b": "yard",
+          "kind": "woodland trail"
+        },
+        {
+          "a": "yard",
+          "b": "camp",
+          "kind": "woodland trail"
+        },
+        {
+          "a": "camp",
+          "b": "grove",
+          "kind": "woodland trail"
+        }
+      ]
+    },
+    {
+      "id": "tidekin_sea",
+      "name": "Tidekin Sea",
+      "lineage": "Tidekin",
+      "allegiance": "Light",
+      "kind": "homeland",
+      "village": "Tidewharf",
+      "stronghold": "Pearl Citadel",
+      "story": "The Sunken Shrine",
+      "route_kind": "currents",
+      "position": [
+        0.16,
+        0.68
+      ],
+      "groups": [
+        {
+          "id": "village",
+          "name": "Tidewharf",
+          "nodes": [
+            "tidekin_sea_land",
+            "tidekin_sea_cm",
+            "tidekin_sea_lag",
+            "tidekin_sea_ka",
+            "tidekin_sea_dy",
+            "tidekin_sea_inn",
+            "tidekin_sea_caus"
+          ]
+        },
+        {
+          "id": "stronghold",
+          "name": "Pearl Citadel",
+          "nodes": [
+            "tidekin_sea_gs",
+            "tidekin_sea_rb",
+            "tidekin_sea_cw",
+            "tidekin_sea_ph",
+            "tidekin_sea_tc",
+            "tidekin_sea_dv"
+          ]
+        },
+        {
+          "id": "story",
+          "name": "The Sunken Shrine",
+          "nodes": [
+            "tidekin_sea_sc",
+            "tidekin_sea_fn",
+            "tidekin_sea_cr",
+            "tidekin_sea_ps"
+          ]
+        },
+        {
+          "id": "wilds",
+          "name": "Tidekin shoreline and outer seas",
+          "nodes": [
+            "tidekin_sea_path_001",
+            "tidekin_sea_site_001",
+            "tidekin_sea_path_006",
+            "tidekin_sea_site_006",
+            "tidekin_sea_path_011",
+            "tidekin_sea_site_011",
+            "tidekin_sea_path_016",
+            "tidekin_sea_site_016",
+            "tidekin_sea_path_021",
+            "tidekin_sea_site_021",
+            "tidekin_sea_path_026",
+            "tidekin_sea_site_026",
+            "tidekin_sea_path_031",
+            "tidekin_sea_site_031",
+            "tidekin_sea_path_036",
+            "tidekin_sea_site_036",
+            "tidekin_sea_return_061",
+            "tidekin_sea_return_066",
+            "tidekin_sea_return_071",
+            "tidekin_sea_return_076",
+            "tidekin_sea_return_101",
+            "tidekin_sea_return_116"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "tidekin_sea_land",
+          "name": "Tidewharf Landing",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_land",
+          "source": "DESIGN-0014",
+          "levels": "None"
+        },
+        {
+          "id": "tidekin_sea_path_001",
+          "name": "Siltbank Shallows",
+          "group": "wilds",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_path_001",
+          "source": "DESIGN-0023",
+          "levels": "1\u20135"
+        },
+        {
+          "id": "tidekin_sea_site_001",
+          "name": "Ripplefin Pools",
+          "group": "wilds",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_site_001",
+          "source": "DESIGN-0023",
+          "levels": "None hostile; aid creature 1\u20135"
+        },
+        {
+          "id": "tidekin_sea_cm",
+          "name": "Coral Market",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_cm",
+          "source": "DESIGN-0014",
+          "levels": "None"
+        },
+        {
+          "id": "tidekin_sea_lag",
+          "name": "Tidal Lagoon",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_lag",
+          "source": "DESIGN-0014",
+          "levels": "None"
+        },
+        {
+          "id": "tidekin_sea_ka",
+          "name": "Kelp Apothecary",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_ka",
+          "source": "DESIGN-0014",
+          "levels": "None"
+        },
+        {
+          "id": "tidekin_sea_dy",
+          "name": "Divers' Yard",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_dy",
+          "source": "DESIGN-0014",
+          "levels": "None"
+        },
+        {
+          "id": "tidekin_sea_inn",
+          "name": "Foamrest Inn",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_inn",
+          "source": "DESIGN-0014",
+          "levels": "None"
+        },
+        {
+          "id": "tidekin_sea_caus",
+          "name": "Tidal Gate Causeway",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_caus",
+          "source": "DESIGN-0014",
+          "levels": "None"
+        },
+        {
+          "id": "tidekin_sea_gs",
+          "name": "Gatehall of Shells",
+          "group": "stronghold",
+          "access": "Light",
+          "runtime_id": "tidekin_sea_gs",
+          "source": "DESIGN-0014",
+          "levels": "None"
+        },
+        {
+          "id": "tidekin_sea_rb",
+          "name": "Reefguard Barracks",
+          "group": "stronghold",
+          "access": "Light",
+          "runtime_id": "tidekin_sea_rb",
+          "source": "DESIGN-0014",
+          "levels": "None"
+        },
+        {
+          "id": "tidekin_sea_cw",
+          "name": "Cistern Works",
+          "group": "stronghold",
+          "access": "Light",
+          "runtime_id": "tidekin_sea_cw",
+          "source": "DESIGN-0014",
+          "levels": "None"
+        },
+        {
+          "id": "tidekin_sea_ph",
+          "name": "Pearl Hall",
+          "group": "stronghold",
+          "access": "Light",
+          "runtime_id": "tidekin_sea_ph",
+          "source": "DESIGN-0014",
+          "levels": "None"
+        },
+        {
+          "id": "tidekin_sea_tc",
+          "name": "The Tide Chamber",
+          "group": "stronghold",
+          "access": "Light",
+          "runtime_id": "tidekin_sea_tc",
+          "source": "DESIGN-0014",
+          "levels": "None"
+        },
+        {
+          "id": "tidekin_sea_dv",
+          "name": "Deepvault",
+          "group": "stronghold",
+          "access": "Light",
+          "runtime_id": "tidekin_sea_dv",
+          "source": "DESIGN-0014",
+          "levels": "None"
+        },
+        {
+          "id": "tidekin_sea_sc",
+          "name": "Shrine Causeway",
+          "group": "story",
+          "access": "Light",
+          "runtime_id": "tidekin_sea_sc",
+          "source": "DESIGN-0014",
+          "levels": "None"
+        },
+        {
+          "id": "tidekin_sea_fn",
+          "name": "Flooded Nave",
+          "group": "story",
+          "access": "Light",
+          "runtime_id": "tidekin_sea_fn",
+          "source": "DESIGN-0014",
+          "levels": "None"
+        },
+        {
+          "id": "tidekin_sea_cr",
+          "name": "Coral Reliquary",
+          "group": "story",
+          "access": "Light",
+          "runtime_id": "tidekin_sea_cr",
+          "source": "DESIGN-0014",
+          "levels": "None"
+        },
+        {
+          "id": "tidekin_sea_ps",
+          "name": "The Pearl Sanctum",
+          "group": "story",
+          "access": "Light",
+          "runtime_id": "tidekin_sea_ps",
+          "source": "DESIGN-0014",
+          "levels": "None"
+        },
+        {
+          "id": "tidekin_sea_path_006",
+          "name": "Shellbell Strand",
+          "group": "wilds",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_path_006",
+          "source": "DESIGN-0023",
+          "levels": "6\u201310"
+        },
+        {
+          "id": "tidekin_sea_site_006",
+          "name": "Nursery Reef",
+          "group": "wilds",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_site_006",
+          "source": "DESIGN-0023",
+          "levels": "None hostile; aid creature 6\u201310"
+        },
+        {
+          "id": "tidekin_sea_path_011",
+          "name": "Coral Shelf Road",
+          "group": "wilds",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_path_011",
+          "source": "DESIGN-0023",
+          "levels": "11\u201315"
+        },
+        {
+          "id": "tidekin_sea_site_011",
+          "name": "Nipper Cliffs",
+          "group": "wilds",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_site_011",
+          "source": "DESIGN-0023",
+          "levels": "11\u201315"
+        },
+        {
+          "id": "tidekin_sea_path_016",
+          "name": "Terrace Tideway",
+          "group": "wilds",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_path_016",
+          "source": "DESIGN-0023",
+          "levels": "16\u201320"
+        },
+        {
+          "id": "tidekin_sea_site_016",
+          "name": "Crowncrab Basin",
+          "group": "wilds",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_site_016",
+          "source": "DESIGN-0023",
+          "levels": "16\u201320 only if provoked"
+        },
+        {
+          "id": "tidekin_sea_path_021",
+          "name": "Mangrove Channels",
+          "group": "wilds",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_path_021",
+          "source": "DESIGN-0023",
+          "levels": "21\u201325"
+        },
+        {
+          "id": "tidekin_sea_site_021",
+          "name": "Snapper Rootbeds",
+          "group": "wilds",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_site_021",
+          "source": "DESIGN-0023",
+          "levels": "21\u201325"
+        },
+        {
+          "id": "tidekin_sea_path_026",
+          "name": "Lanternwater Halls",
+          "group": "wilds",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_path_026",
+          "source": "DESIGN-0023",
+          "levels": "26\u201330"
+        },
+        {
+          "id": "tidekin_sea_site_026",
+          "name": "Floodhall Passage",
+          "group": "wilds",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_site_026",
+          "source": "DESIGN-0023",
+          "levels": "None hostile; aid creature 26\u201330"
+        },
+        {
+          "id": "tidekin_sea_path_031",
+          "name": "Reefsong Current",
+          "group": "wilds",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_path_031",
+          "source": "DESIGN-0023",
+          "levels": "31\u201335"
+        },
+        {
+          "id": "tidekin_sea_site_031",
+          "name": "Whalelet Sanctuary",
+          "group": "wilds",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_site_031",
+          "source": "DESIGN-0023",
+          "levels": "None hostile; aid creature 31\u201335"
+        },
+        {
+          "id": "tidekin_sea_path_036",
+          "name": "Outer Sluiceway",
+          "group": "wilds",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_path_036",
+          "source": "DESIGN-0023",
+          "levels": "36\u201340"
+        },
+        {
+          "id": "tidekin_sea_site_036",
+          "name": "Gate Eel Narrows",
+          "group": "wilds",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_site_036",
+          "source": "DESIGN-0023",
+          "levels": "36\u201340"
+        },
+        {
+          "id": "tidekin_sea_return_061",
+          "name": "Stormtide Terraces",
+          "group": "wilds",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_return_061",
+          "source": "DESIGN-0023",
+          "levels": "61\u201365"
+        },
+        {
+          "id": "tidekin_sea_return_066",
+          "name": "Blackwater Reef",
+          "group": "wilds",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_return_066",
+          "source": "DESIGN-0023",
+          "levels": "66\u201370"
+        },
+        {
+          "id": "tidekin_sea_return_071",
+          "name": "Pressurehall Passage",
+          "group": "wilds",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_return_071",
+          "source": "DESIGN-0023",
+          "levels": "71\u201375"
+        },
+        {
+          "id": "tidekin_sea_return_076",
+          "name": "Maelstrom Causeway",
+          "group": "wilds",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_return_076",
+          "source": "DESIGN-0023",
+          "levels": "76\u201380"
+        },
+        {
+          "id": "tidekin_sea_return_101",
+          "name": "First Pearl Shoals",
+          "group": "wilds",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_return_101",
+          "source": "DESIGN-0023",
+          "levels": "101\u2013105"
+        },
+        {
+          "id": "tidekin_sea_return_116",
+          "name": "Worldtide Confluence",
+          "group": "wilds",
+          "access": "Shared",
+          "runtime_id": "tidekin_sea_return_116",
+          "source": "DESIGN-0023",
+          "levels": "116\u2013120; optional boss 120"
+        }
+      ],
+      "edges": [
+        {
+          "a": "tidekin_sea_lag",
+          "b": "tidekin_sea_land",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_land",
+          "b": "tidekin_sea_path_001",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_land",
+          "b": "tidekin_sea_return_061",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_land",
+          "b": "tidekin_sea_return_101",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_land",
+          "b": "tidekin_sea_return_116",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_path_001",
+          "b": "tidekin_sea_site_001",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_path_001",
+          "b": "tidekin_sea_path_006",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_cm",
+          "b": "tidekin_sea_lag",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_ka",
+          "b": "tidekin_sea_lag",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_dy",
+          "b": "tidekin_sea_lag",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_caus",
+          "b": "tidekin_sea_lag",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_dy",
+          "b": "tidekin_sea_inn",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_caus",
+          "b": "tidekin_sea_gs",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_gs",
+          "b": "tidekin_sea_rb",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_cw",
+          "b": "tidekin_sea_gs",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_gs",
+          "b": "tidekin_sea_ph",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_ph",
+          "b": "tidekin_sea_tc",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_dv",
+          "b": "tidekin_sea_ph",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_ph",
+          "b": "tidekin_sea_sc",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_fn",
+          "b": "tidekin_sea_sc",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_cr",
+          "b": "tidekin_sea_fn",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_cr",
+          "b": "tidekin_sea_ps",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_path_006",
+          "b": "tidekin_sea_site_006",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_path_006",
+          "b": "tidekin_sea_path_011",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_path_011",
+          "b": "tidekin_sea_site_011",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_path_011",
+          "b": "tidekin_sea_path_016",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_path_016",
+          "b": "tidekin_sea_site_016",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_path_016",
+          "b": "tidekin_sea_path_021",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_path_021",
+          "b": "tidekin_sea_site_021",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_path_021",
+          "b": "tidekin_sea_path_026",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_path_026",
+          "b": "tidekin_sea_site_026",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_path_026",
+          "b": "tidekin_sea_path_031",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_path_031",
+          "b": "tidekin_sea_site_031",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_path_031",
+          "b": "tidekin_sea_path_036",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_path_036",
+          "b": "tidekin_sea_site_036",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_return_061",
+          "b": "tidekin_sea_return_066",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_return_066",
+          "b": "tidekin_sea_return_071",
+          "kind": "currents"
+        },
+        {
+          "a": "tidekin_sea_return_071",
+          "b": "tidekin_sea_return_076",
+          "kind": "currents"
+        }
+      ]
+    },
+    {
+      "id": "elder_forests",
+      "name": "Elder Forests",
+      "lineage": "Grove Centaurs",
+      "allegiance": "Light",
+      "kind": "homeland",
+      "village": "Rootway Commons",
+      "stronghold": "The Heartgrove",
+      "story": "Elder Tree: Trial of Paths",
+      "route_kind": "root paths",
+      "position": [
+        0.33,
+        0.76
+      ],
+      "groups": [
+        {
+          "id": "village",
+          "name": "Rootway Commons",
+          "nodes": [
+            "elder_forests_bm",
+            "elder_forests_grn",
+            "elder_forests_hh",
+            "elder_forests_rt",
+            "elder_forests_ml",
+            "elder_forests_gp"
+          ]
+        },
+        {
+          "id": "stronghold",
+          "name": "The Heartgrove",
+          "nodes": [
+            "elder_forests_pw",
+            "elder_forests_sw",
+            "elder_forests_eh",
+            "elder_forests_cg",
+            "elder_forests_sv"
+          ]
+        },
+        {
+          "id": "story",
+          "name": "Elder Tree: Trial of Paths",
+          "nodes": [
+            "elder_forests_tb",
+            "elder_forests_cc",
+            "elder_forests_hg",
+            "elder_forests_ab",
+            "elder_forests_lc"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "elder_forests_bm",
+          "name": "Barkstall Market",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "elder_forests_grn",
+          "name": "Rootway Green",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "elder_forests_hh",
+          "name": "Herbalist's Hollow",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "elder_forests_rt",
+          "name": "Runners' Track",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "elder_forests_ml",
+          "name": "Mossrest Lodge",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "elder_forests_gp",
+          "name": "Grovegate Path",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "elder_forests_pw",
+          "name": "Pathguard Warren",
+          "group": "stronghold",
+          "access": "Light",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "elder_forests_sw",
+          "name": "Sap Works",
+          "group": "stronghold",
+          "access": "Light",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "elder_forests_eh",
+          "name": "Elderroot Hall",
+          "group": "stronghold",
+          "access": "Light",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "elder_forests_cg",
+          "name": "The Council Grove",
+          "group": "stronghold",
+          "access": "Light",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "elder_forests_sv",
+          "name": "Seedvault",
+          "group": "stronghold",
+          "access": "Light",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "elder_forests_tb",
+          "name": "Trunk Base",
+          "group": "story",
+          "access": "Light",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "elder_forests_cc",
+          "name": "Canopy Climb",
+          "group": "story",
+          "access": "Light",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "elder_forests_hg",
+          "name": "Hanging Gardens",
+          "group": "story",
+          "access": "Light",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "elder_forests_ab",
+          "name": "Antler Bridge",
+          "group": "story",
+          "access": "Light",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "elder_forests_lc",
+          "name": "The Luminous Clearing",
+          "group": "story",
+          "access": "Light",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        }
+      ],
+      "edges": [
+        {
+          "a": "elder_forests_bm",
+          "b": "elder_forests_grn",
+          "kind": "root paths"
+        },
+        {
+          "a": "elder_forests_hh",
+          "b": "elder_forests_grn",
+          "kind": "root paths"
+        },
+        {
+          "a": "elder_forests_rt",
+          "b": "elder_forests_grn",
+          "kind": "root paths"
+        },
+        {
+          "a": "elder_forests_rt",
+          "b": "elder_forests_ml",
+          "kind": "root paths"
+        },
+        {
+          "a": "elder_forests_grn",
+          "b": "elder_forests_gp",
+          "kind": "root paths"
+        },
+        {
+          "a": "elder_forests_gp",
+          "b": "elder_forests_pw",
+          "kind": "root paths"
+        },
+        {
+          "a": "elder_forests_pw",
+          "b": "elder_forests_sw",
+          "kind": "root paths"
+        },
+        {
+          "a": "elder_forests_pw",
+          "b": "elder_forests_eh",
+          "kind": "root paths"
+        },
+        {
+          "a": "elder_forests_eh",
+          "b": "elder_forests_cg",
+          "kind": "root paths"
+        },
+        {
+          "a": "elder_forests_eh",
+          "b": "elder_forests_sv",
+          "kind": "root paths"
+        },
+        {
+          "a": "elder_forests_eh",
+          "b": "elder_forests_tb",
+          "kind": "root paths"
+        },
+        {
+          "a": "elder_forests_tb",
+          "b": "elder_forests_cc",
+          "kind": "root paths"
+        },
+        {
+          "a": "elder_forests_cc",
+          "b": "elder_forests_hg",
+          "kind": "root paths"
+        },
+        {
+          "a": "elder_forests_hg",
+          "b": "elder_forests_ab",
+          "kind": "root paths"
+        },
+        {
+          "a": "elder_forests_ab",
+          "b": "elder_forests_lc",
+          "kind": "root paths"
+        }
+      ]
+    },
+    {
+      "id": "sky_reaches",
+      "name": "Sky Reaches",
+      "lineage": "Aeralith",
+      "allegiance": "Light",
+      "kind": "homeland",
+      "village": "Lowdock",
+      "stronghold": "Skyspire Aerie",
+      "story": "Observatory of Storms",
+      "route_kind": "lifts",
+      "position": [
+        0.245,
+        0.17
+      ],
+      "groups": [
+        {
+          "id": "village",
+          "name": "Lowdock",
+          "nodes": [
+            "sky_reaches_ll",
+            "sky_reaches_sm",
+            "sky_reaches_wa",
+            "sky_reaches_gy",
+            "sky_reaches_ci",
+            "sky_reaches_ud"
+          ]
+        },
+        {
+          "id": "stronghold",
+          "name": "Skyspire Aerie",
+          "nodes": [
+            "sky_reaches_lh",
+            "sky_reaches_sb",
+            "sky_reaches_vw",
+            "sky_reaches_rsp",
+            "sky_reaches_bh",
+            "sky_reaches_wc",
+            "sky_reaches_ur",
+            "sky_reaches_skv"
+          ]
+        },
+        {
+          "id": "story",
+          "name": "Observatory of Storms",
+          "nodes": [
+            "sky_reaches_sp",
+            "sky_reaches_wh",
+            "sky_reaches_sg"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "sky_reaches_ll",
+          "name": "Lowdock Landing",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "sky_reaches_sm",
+          "name": "Skymarket",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "sky_reaches_wa",
+          "name": "Windbell Apothecary",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "sky_reaches_gy",
+          "name": "Glidewrights' Yard",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "sky_reaches_ci",
+          "name": "Cloudrest Inn",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "sky_reaches_ud",
+          "name": "The Upper Dock",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "sky_reaches_lh",
+          "name": "Liftgate Hall",
+          "group": "stronghold",
+          "access": "Light",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "sky_reaches_sb",
+          "name": "Skywatch Barracks",
+          "group": "stronghold",
+          "access": "Light",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "sky_reaches_vw",
+          "name": "Vane Works",
+          "group": "stronghold",
+          "access": "Light",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "sky_reaches_rsp",
+          "name": "The Rope-Bridge Span",
+          "group": "stronghold",
+          "access": "Light",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "sky_reaches_bh",
+          "name": "Bell Hall",
+          "group": "stronghold",
+          "access": "Light",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "sky_reaches_wc",
+          "name": "The Windcourt",
+          "group": "stronghold",
+          "access": "Light",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "sky_reaches_ur",
+          "name": "The Upper Roost",
+          "group": "stronghold",
+          "access": "Light",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "sky_reaches_skv",
+          "name": "Sky Vault",
+          "group": "stronghold",
+          "access": "Light",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "sky_reaches_sp",
+          "name": "Spire Base",
+          "group": "story",
+          "access": "Light",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "sky_reaches_wh",
+          "name": "Wind-harp Ascent",
+          "group": "story",
+          "access": "Light",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "sky_reaches_sg",
+          "name": "The Star Gallery",
+          "group": "story",
+          "access": "Light",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        }
+      ],
+      "edges": [
+        {
+          "a": "sky_reaches_ll",
+          "b": "sky_reaches_sm",
+          "kind": "lifts"
+        },
+        {
+          "a": "sky_reaches_ll",
+          "b": "sky_reaches_wa",
+          "kind": "lifts"
+        },
+        {
+          "a": "sky_reaches_ll",
+          "b": "sky_reaches_gy",
+          "kind": "lifts"
+        },
+        {
+          "a": "sky_reaches_gy",
+          "b": "sky_reaches_ci",
+          "kind": "lifts"
+        },
+        {
+          "a": "sky_reaches_ll",
+          "b": "sky_reaches_ud",
+          "kind": "lifts"
+        },
+        {
+          "a": "sky_reaches_ud",
+          "b": "sky_reaches_lh",
+          "kind": "lifts"
+        },
+        {
+          "a": "sky_reaches_lh",
+          "b": "sky_reaches_sb",
+          "kind": "lifts"
+        },
+        {
+          "a": "sky_reaches_lh",
+          "b": "sky_reaches_vw",
+          "kind": "lifts"
+        },
+        {
+          "a": "sky_reaches_lh",
+          "b": "sky_reaches_rsp",
+          "kind": "lifts"
+        },
+        {
+          "a": "sky_reaches_rsp",
+          "b": "sky_reaches_bh",
+          "kind": "lifts"
+        },
+        {
+          "a": "sky_reaches_bh",
+          "b": "sky_reaches_wc",
+          "kind": "lifts"
+        },
+        {
+          "a": "sky_reaches_bh",
+          "b": "sky_reaches_ur",
+          "kind": "lifts"
+        },
+        {
+          "a": "sky_reaches_wc",
+          "b": "sky_reaches_skv",
+          "kind": "lifts"
+        },
+        {
+          "a": "sky_reaches_bh",
+          "b": "sky_reaches_sp",
+          "kind": "lifts"
+        },
+        {
+          "a": "sky_reaches_sp",
+          "b": "sky_reaches_wh",
+          "kind": "lifts"
+        },
+        {
+          "a": "sky_reaches_wh",
+          "b": "sky_reaches_sg",
+          "kind": "lifts"
+        }
+      ]
+    },
+    {
+      "id": "broken_mountains",
+      "name": "Broken Mountains",
+      "lineage": "Crag Trolls",
+      "allegiance": "Dark",
+      "kind": "homeland",
+      "village": "Hoistyard",
+      "stronghold": "Stormgate Hold",
+      "story": "The Storm Forge",
+      "route_kind": "ridge roads",
+      "position": [
+        0.68,
+        0.29
+      ],
+      "groups": [
+        {
+          "id": "village",
+          "name": "Hoistyard",
+          "nodes": [
+            "broken_mountains_ht",
+            "broken_mountains_fm",
+            "broken_mountains_la",
+            "broken_mountains_dl",
+            "broken_mountains_sa"
+          ]
+        },
+        {
+          "id": "stronghold",
+          "name": "Stormgate Hold",
+          "nodes": [
+            "broken_mountains_mg",
+            "broken_mountains_slb",
+            "broken_mountains_qw",
+            "broken_mountains_ch",
+            "broken_mountains_fs",
+            "broken_mountains_iv"
+          ]
+        },
+        {
+          "id": "story",
+          "name": "The Storm Forge",
+          "nodes": [
+            "broken_mountains_avs",
+            "broken_mountains_sf"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "broken_mountains_ht",
+          "name": "Hoistyard Terrace",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "broken_mountains_fm",
+          "name": "Forge Market",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "broken_mountains_la",
+          "name": "Lichen Apothecary",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "broken_mountains_dl",
+          "name": "Deeprest Lodge",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "broken_mountains_sa",
+          "name": "Stormgate Approach",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "broken_mountains_mg",
+          "name": "Monolith Gatehouse",
+          "group": "stronghold",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "broken_mountains_slb",
+          "name": "Slabguard Barracks",
+          "group": "stronghold",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "broken_mountains_qw",
+          "name": "Quarry Works",
+          "group": "stronghold",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "broken_mountains_ch",
+          "name": "Clanhall",
+          "group": "stronghold",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "broken_mountains_fs",
+          "name": "The Forge Seat",
+          "group": "stronghold",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "broken_mountains_iv",
+          "name": "Iron Vault",
+          "group": "stronghold",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "broken_mountains_avs",
+          "name": "The Avalanche Stair",
+          "group": "story",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "broken_mountains_sf",
+          "name": "The Storm Forge",
+          "group": "story",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        }
+      ],
+      "edges": [
+        {
+          "a": "broken_mountains_ht",
+          "b": "broken_mountains_fm",
+          "kind": "ridge roads"
+        },
+        {
+          "a": "broken_mountains_ht",
+          "b": "broken_mountains_la",
+          "kind": "ridge roads"
+        },
+        {
+          "a": "broken_mountains_ht",
+          "b": "broken_mountains_dl",
+          "kind": "ridge roads"
+        },
+        {
+          "a": "broken_mountains_ht",
+          "b": "broken_mountains_sa",
+          "kind": "ridge roads"
+        },
+        {
+          "a": "broken_mountains_sa",
+          "b": "broken_mountains_mg",
+          "kind": "ridge roads"
+        },
+        {
+          "a": "broken_mountains_mg",
+          "b": "broken_mountains_slb",
+          "kind": "ridge roads"
+        },
+        {
+          "a": "broken_mountains_mg",
+          "b": "broken_mountains_qw",
+          "kind": "ridge roads"
+        },
+        {
+          "a": "broken_mountains_mg",
+          "b": "broken_mountains_ch",
+          "kind": "ridge roads"
+        },
+        {
+          "a": "broken_mountains_ch",
+          "b": "broken_mountains_fs",
+          "kind": "ridge roads"
+        },
+        {
+          "a": "broken_mountains_ch",
+          "b": "broken_mountains_iv",
+          "kind": "ridge roads"
+        },
+        {
+          "a": "broken_mountains_ch",
+          "b": "broken_mountains_avs",
+          "kind": "ridge roads"
+        },
+        {
+          "a": "broken_mountains_avs",
+          "b": "broken_mountains_sf",
+          "kind": "ridge roads"
+        }
+      ]
+    },
+    {
+      "id": "underdeep",
+      "name": "Underdeep",
+      "lineage": "Deep Goblins",
+      "allegiance": "Dark",
+      "kind": "homeland",
+      "village": "Lampcap Junction",
+      "stronghold": "The Deepworks Nexus",
+      "story": "Crystal Seam / Runaway Rail",
+      "route_kind": "tunnels",
+      "position": [
+        0.7,
+        0.77
+      ],
+      "groups": [
+        {
+          "id": "village",
+          "name": "Lampcap Junction",
+          "nodes": [
+            "underdeep_lld",
+            "underdeep_rj",
+            "underdeep_rm",
+            "underdeep_sa2",
+            "underdeep_ty2",
+            "underdeep_fr",
+            "underdeep_ff",
+            "underdeep_na"
+          ]
+        },
+        {
+          "id": "stronghold",
+          "name": "The Deepworks Nexus",
+          "nodes": [
+            "underdeep_vh",
+            "underdeep_rgb",
+            "underdeep_pwk",
+            "underdeep_af",
+            "underdeep_ga",
+            "underdeep_rv",
+            "underdeep_ov"
+          ]
+        },
+        {
+          "id": "story",
+          "name": "Crystal Seam / Runaway Rail",
+          "nodes": [
+            "underdeep_rh",
+            "underdeep_rr",
+            "underdeep_cs",
+            "underdeep_dld"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "underdeep_lld",
+          "name": "Lampcap Landing",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "underdeep_rj",
+          "name": "The Rail Junction",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "underdeep_rm",
+          "name": "Rivet Market",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "underdeep_sa2",
+          "name": "Sporeworks Apothecary",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "underdeep_ty2",
+          "name": "Tinkerers' Yard",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "underdeep_fr",
+          "name": "Funglight Rest",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "underdeep_ff",
+          "name": "Fungus Farms",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "underdeep_na",
+          "name": "Nexus Approach",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "underdeep_vh",
+          "name": "Ventgate Hall",
+          "group": "stronghold",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "underdeep_rgb",
+          "name": "Railguard Barracks",
+          "group": "stronghold",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "underdeep_pwk",
+          "name": "Pump Works",
+          "group": "stronghold",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "underdeep_af",
+          "name": "Assembly Floor",
+          "group": "stronghold",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "underdeep_ga",
+          "name": "Great Gearworks Assembly",
+          "group": "stronghold",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "underdeep_rv",
+          "name": "The Reactor Vault",
+          "group": "stronghold",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "underdeep_ov",
+          "name": "Ore Vault",
+          "group": "stronghold",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "underdeep_rh",
+          "name": "Railhead",
+          "group": "story",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "underdeep_rr",
+          "name": "The Runaway Rail",
+          "group": "story",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "underdeep_cs",
+          "name": "The Crystal Seam",
+          "group": "story",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "underdeep_dld",
+          "name": "The Deep Lode",
+          "group": "story",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        }
+      ],
+      "edges": [
+        {
+          "a": "underdeep_lld",
+          "b": "underdeep_rj",
+          "kind": "tunnels"
+        },
+        {
+          "a": "underdeep_rj",
+          "b": "underdeep_rm",
+          "kind": "tunnels"
+        },
+        {
+          "a": "underdeep_rj",
+          "b": "underdeep_sa2",
+          "kind": "tunnels"
+        },
+        {
+          "a": "underdeep_rj",
+          "b": "underdeep_ty2",
+          "kind": "tunnels"
+        },
+        {
+          "a": "underdeep_ty2",
+          "b": "underdeep_fr",
+          "kind": "tunnels"
+        },
+        {
+          "a": "underdeep_rj",
+          "b": "underdeep_ff",
+          "kind": "tunnels"
+        },
+        {
+          "a": "underdeep_rj",
+          "b": "underdeep_na",
+          "kind": "tunnels"
+        },
+        {
+          "a": "underdeep_na",
+          "b": "underdeep_vh",
+          "kind": "tunnels"
+        },
+        {
+          "a": "underdeep_vh",
+          "b": "underdeep_rgb",
+          "kind": "tunnels"
+        },
+        {
+          "a": "underdeep_vh",
+          "b": "underdeep_pwk",
+          "kind": "tunnels"
+        },
+        {
+          "a": "underdeep_vh",
+          "b": "underdeep_af",
+          "kind": "tunnels"
+        },
+        {
+          "a": "underdeep_af",
+          "b": "underdeep_ga",
+          "kind": "tunnels"
+        },
+        {
+          "a": "underdeep_af",
+          "b": "underdeep_rv",
+          "kind": "tunnels"
+        },
+        {
+          "a": "underdeep_ga",
+          "b": "underdeep_ov",
+          "kind": "tunnels"
+        },
+        {
+          "a": "underdeep_af",
+          "b": "underdeep_rh",
+          "kind": "tunnels"
+        },
+        {
+          "a": "underdeep_rh",
+          "b": "underdeep_rr",
+          "kind": "tunnels"
+        },
+        {
+          "a": "underdeep_rr",
+          "b": "underdeep_cs",
+          "kind": "tunnels"
+        },
+        {
+          "a": "underdeep_cs",
+          "b": "underdeep_dld",
+          "kind": "tunnels"
+        }
+      ]
+    },
+    {
+      "id": "ember_desert",
+      "name": "Ember Desert",
+      "lineage": "Sunscour",
+      "allegiance": "Dark",
+      "kind": "homeland",
+      "village": "The Caravanserai",
+      "stronghold": "The Shade Bastion",
+      "story": "Solar Furnace / Mirage Aqueduct",
+      "route_kind": "caravan roads",
+      "position": [
+        0.855,
+        0.58
+      ],
+      "groups": [
+        {
+          "id": "village",
+          "name": "The Caravanserai",
+          "nodes": [
+            "ember_desert_cy",
+            "ember_desert_cc",
+            "ember_desert_sm2",
+            "ember_desert_ca",
+            "ember_desert_dyd",
+            "ember_desert_wi",
+            "ember_desert_ba"
+          ]
+        },
+        {
+          "id": "stronghold",
+          "name": "The Shade Bastion",
+          "nodes": [
+            "ember_desert_ag",
+            "ember_desert_lb",
+            "ember_desert_cwk",
+            "ember_desert_htal",
+            "ember_desert_lct"
+          ]
+        },
+        {
+          "id": "story",
+          "name": "Solar Furnace / Mirage Aqueduct",
+          "nodes": [
+            "ember_desert_asp",
+            "ember_desert_mc",
+            "ember_desert_sfn",
+            "ember_desert_sci"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "ember_desert_cy",
+          "name": "The Caravan Yard",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "ember_desert_cc",
+          "name": "Caravanserai Court",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "ember_desert_sm2",
+          "name": "Shade Market",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "ember_desert_ca",
+          "name": "Cistern Apothecary",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "ember_desert_dyd",
+          "name": "Drill Yard",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "ember_desert_wi",
+          "name": "Waterrest Inn",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "ember_desert_ba",
+          "name": "Bastion Approach",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "ember_desert_ag",
+          "name": "Aqueduct Gatehouse",
+          "group": "stronghold",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "ember_desert_lb",
+          "name": "Legion Barracks",
+          "group": "stronghold",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "ember_desert_cwk",
+          "name": "Cistern Works",
+          "group": "stronghold",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "ember_desert_htal",
+          "name": "Hall of Tallies",
+          "group": "stronghold",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "ember_desert_lct",
+          "name": "The Legion Court",
+          "group": "stronghold",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "ember_desert_asp",
+          "name": "Aqueduct Span",
+          "group": "story",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "ember_desert_mc",
+          "name": "Mirage Causeway",
+          "group": "story",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "ember_desert_sfn",
+          "name": "The Solar Furnace",
+          "group": "story",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "ember_desert_sci",
+          "name": "The Sunken Cistern",
+          "group": "story",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        }
+      ],
+      "edges": [
+        {
+          "a": "ember_desert_cy",
+          "b": "ember_desert_cc",
+          "kind": "caravan roads"
+        },
+        {
+          "a": "ember_desert_cc",
+          "b": "ember_desert_sm2",
+          "kind": "caravan roads"
+        },
+        {
+          "a": "ember_desert_cc",
+          "b": "ember_desert_ca",
+          "kind": "caravan roads"
+        },
+        {
+          "a": "ember_desert_cc",
+          "b": "ember_desert_dyd",
+          "kind": "caravan roads"
+        },
+        {
+          "a": "ember_desert_dyd",
+          "b": "ember_desert_wi",
+          "kind": "caravan roads"
+        },
+        {
+          "a": "ember_desert_cc",
+          "b": "ember_desert_ba",
+          "kind": "caravan roads"
+        },
+        {
+          "a": "ember_desert_ba",
+          "b": "ember_desert_ag",
+          "kind": "caravan roads"
+        },
+        {
+          "a": "ember_desert_ag",
+          "b": "ember_desert_lb",
+          "kind": "caravan roads"
+        },
+        {
+          "a": "ember_desert_ag",
+          "b": "ember_desert_cwk",
+          "kind": "caravan roads"
+        },
+        {
+          "a": "ember_desert_ag",
+          "b": "ember_desert_htal",
+          "kind": "caravan roads"
+        },
+        {
+          "a": "ember_desert_htal",
+          "b": "ember_desert_lct",
+          "kind": "caravan roads"
+        },
+        {
+          "a": "ember_desert_htal",
+          "b": "ember_desert_asp",
+          "kind": "caravan roads"
+        },
+        {
+          "a": "ember_desert_asp",
+          "b": "ember_desert_mc",
+          "kind": "caravan roads"
+        },
+        {
+          "a": "ember_desert_mc",
+          "b": "ember_desert_sfn",
+          "kind": "caravan roads"
+        },
+        {
+          "a": "ember_desert_sfn",
+          "b": "ember_desert_sci",
+          "kind": "caravan roads"
+        }
+      ]
+    },
+    {
+      "id": "ice_lands",
+      "name": "Ice Lands",
+      "lineage": "Rimeborn",
+      "allegiance": "Dark",
+      "kind": "homeland",
+      "village": "Thawcamp",
+      "stronghold": "The Aurora Hall",
+      "story": "Snow-buried Ruin / Aurora Vault",
+      "route_kind": "snow paths",
+      "position": [
+        0.82,
+        0.13
+      ],
+      "groups": [
+        {
+          "id": "village",
+          "name": "Thawcamp",
+          "nodes": [
+            "ice_lands_fmk",
+            "ice_lands_tci",
+            "ice_lands_ta",
+            "ice_lands_hlg",
+            "ice_lands_hga"
+          ]
+        },
+        {
+          "id": "stronghold",
+          "name": "The Aurora Hall",
+          "nodes": [
+            "ice_lands_wg",
+            "ice_lands_wb",
+            "ice_lands_tw",
+            "ice_lands_ah",
+            "ice_lands_hh"
+          ]
+        },
+        {
+          "id": "story",
+          "name": "Snow-buried Ruin / Aurora Vault",
+          "nodes": [
+            "ice_lands_bt",
+            "ice_lands_id",
+            "ice_lands_fg",
+            "ice_lands_av"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "ice_lands_fmk",
+          "name": "Furmarket",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "ice_lands_tci",
+          "name": "Thawcamp Circle",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "ice_lands_ta",
+          "name": "Tallow Apothecary",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "ice_lands_hlg",
+          "name": "Hunters' Lodge",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "ice_lands_hga",
+          "name": "Hearthgate Approach",
+          "group": "village",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "ice_lands_wg",
+          "name": "Windbreak Gatehouse",
+          "group": "stronghold",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "ice_lands_wb",
+          "name": "Warmthguard Barracks",
+          "group": "stronghold",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "ice_lands_tw",
+          "name": "Thermal Works",
+          "group": "stronghold",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "ice_lands_ah",
+          "name": "The Aurora Hall",
+          "group": "stronghold",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "ice_lands_hh",
+          "name": "The Hearth Hall",
+          "group": "stronghold",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "ice_lands_bt",
+          "name": "Buried Threshold",
+          "group": "story",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "ice_lands_id",
+          "name": "Ice-cave Descent",
+          "group": "story",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "ice_lands_fg",
+          "name": "The Frozen Gallery",
+          "group": "story",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        },
+        {
+          "id": "ice_lands_av",
+          "name": "The Aurora Vault",
+          "group": "story",
+          "access": "Dark",
+          "runtime_id": "",
+          "source": "DESIGN-0014"
+        }
+      ],
+      "edges": [
+        {
+          "a": "ice_lands_fmk",
+          "b": "ice_lands_tci",
+          "kind": "snow paths"
+        },
+        {
+          "a": "ice_lands_ta",
+          "b": "ice_lands_tci",
+          "kind": "snow paths"
+        },
+        {
+          "a": "ice_lands_hlg",
+          "b": "ice_lands_tci",
+          "kind": "snow paths"
+        },
+        {
+          "a": "ice_lands_tci",
+          "b": "ice_lands_hga",
+          "kind": "snow paths"
+        },
+        {
+          "a": "ice_lands_hga",
+          "b": "ice_lands_wg",
+          "kind": "snow paths"
+        },
+        {
+          "a": "ice_lands_wg",
+          "b": "ice_lands_wb",
+          "kind": "snow paths"
+        },
+        {
+          "a": "ice_lands_wg",
+          "b": "ice_lands_tw",
+          "kind": "snow paths"
+        },
+        {
+          "a": "ice_lands_wg",
+          "b": "ice_lands_ah",
+          "kind": "snow paths"
+        },
+        {
+          "a": "ice_lands_ah",
+          "b": "ice_lands_hh",
+          "kind": "snow paths"
+        },
+        {
+          "a": "ice_lands_ah",
+          "b": "ice_lands_bt",
+          "kind": "snow paths"
+        },
+        {
+          "a": "ice_lands_bt",
+          "b": "ice_lands_id",
+          "kind": "snow paths"
+        },
+        {
+          "a": "ice_lands_id",
+          "b": "ice_lands_fg",
+          "kind": "snow paths"
+        },
+        {
+          "a": "ice_lands_fg",
+          "b": "ice_lands_av",
+          "kind": "snow paths"
+        }
+      ]
+    },
+    {
+      "id": "ashen_scar",
+      "name": "Ashen Scar",
+      "lineage": "",
+      "allegiance": "Neutral",
+      "kind": "frontier",
+      "village": "",
+      "stronghold": "",
+      "story": "Cinder Vault",
+      "danger": "Elite",
+      "route_kind": "volcanic paths",
+      "position": [
+        0.49,
+        0.18
+      ],
+      "groups": [
+        {
+          "id": "frontier",
+          "name": "Ashen Scar crossings",
+          "nodes": [
+            "ashen_scar_road_0",
+            "ashen_scar_road_1"
+          ]
+        },
+        {
+          "id": "dungeon",
+          "name": "Cinder Vault",
+          "nodes": [
+            "ashen_scar_threshold",
+            "ashen_scar_depth_1",
+            "ashen_scar_depth_2",
+            "ashen_scar_depth_3",
+            "ashen_scar_depth_4",
+            "ashen_scar_depth_5",
+            "ashen_scar_depth_6",
+            "ashen_scar_depth_7",
+            "ashen_scar_depth_8",
+            "ashen_scar_depth_9",
+            "ashen_scar_depth_10"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "ashen_scar_road_0",
+          "name": "Storm Ridge",
+          "group": "frontier",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "ashen_scar_road_1",
+          "name": "Quarry Road",
+          "group": "frontier",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "ashen_scar_threshold",
+          "name": "Cinder Vault Entrance",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "ashen_scar_depth_1",
+          "name": "Depth 1",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "ashen_scar_depth_2",
+          "name": "Depth 2",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "ashen_scar_depth_3",
+          "name": "Depth 3",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "ashen_scar_depth_4",
+          "name": "Depth 4",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "ashen_scar_depth_5",
+          "name": "Depth 5",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "ashen_scar_depth_6",
+          "name": "Depth 6",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "ashen_scar_depth_7",
+          "name": "Depth 7",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "ashen_scar_depth_8",
+          "name": "Depth 8",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "ashen_scar_depth_9",
+          "name": "Depth 9",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "ashen_scar_depth_10",
+          "name": "Depth 10",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        }
+      ],
+      "edges": [
+        {
+          "a": "ashen_scar_road_0",
+          "b": "ashen_scar_road_1",
+          "kind": "volcanic paths"
+        },
+        {
+          "a": "ashen_scar_road_0",
+          "b": "ashen_scar_threshold",
+          "kind": "volcanic paths"
+        },
+        {
+          "a": "ashen_scar_threshold",
+          "b": "ashen_scar_depth_1",
+          "kind": "descent"
+        },
+        {
+          "a": "ashen_scar_depth_1",
+          "b": "ashen_scar_depth_2",
+          "kind": "descent"
+        },
+        {
+          "a": "ashen_scar_depth_2",
+          "b": "ashen_scar_depth_3",
+          "kind": "descent"
+        },
+        {
+          "a": "ashen_scar_depth_3",
+          "b": "ashen_scar_depth_4",
+          "kind": "descent"
+        },
+        {
+          "a": "ashen_scar_depth_4",
+          "b": "ashen_scar_depth_5",
+          "kind": "descent"
+        },
+        {
+          "a": "ashen_scar_depth_5",
+          "b": "ashen_scar_depth_6",
+          "kind": "descent"
+        },
+        {
+          "a": "ashen_scar_depth_6",
+          "b": "ashen_scar_depth_7",
+          "kind": "descent"
+        },
+        {
+          "a": "ashen_scar_depth_7",
+          "b": "ashen_scar_depth_8",
+          "kind": "descent"
+        },
+        {
+          "a": "ashen_scar_depth_8",
+          "b": "ashen_scar_depth_9",
+          "kind": "descent"
+        },
+        {
+          "a": "ashen_scar_depth_9",
+          "b": "ashen_scar_depth_10",
+          "kind": "descent"
+        },
+        {
+          "a": "ashen_scar_depth_10",
+          "b": "ashen_scar_threshold",
+          "kind": "return portal"
+        }
+      ]
+    },
+    {
+      "id": "shattered_march",
+      "name": "Shattered March",
+      "lineage": "",
+      "allegiance": "Neutral",
+      "kind": "frontier",
+      "village": "Abandoned City of Babylon",
+      "stronghold": "",
+      "story": "Fallen Observatory",
+      "danger": "Group",
+      "route_kind": "ruined roads",
+      "position": [
+        0.51,
+        0.48
+      ],
+      "groups": [
+        {
+          "id": "frontier",
+          "name": "Abandoned City of Babylon",
+          "nodes": [
+            "shattered_march_road_0",
+            "shattered_march_road_1",
+            "shattered_march_gate",
+            "shattered_march_plaza",
+            "shattered_march_bazaar",
+            "shattered_march_shrine",
+            "shattered_march_base"
+          ]
+        },
+        {
+          "id": "dungeon",
+          "name": "Tower of Babylon \u00b7 Fallen Observatory",
+          "nodes": [
+            "shattered_march_threshold",
+            "shattered_march_depth_1",
+            "shattered_march_depth_2",
+            "shattered_march_depth_3",
+            "shattered_march_depth_4",
+            "shattered_march_depth_5",
+            "shattered_march_depth_6",
+            "shattered_march_depth_7",
+            "shattered_march_depth_8",
+            "shattered_march_depth_9",
+            "shattered_march_depth_10"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "shattered_march_road_0",
+          "name": "The Great Road",
+          "group": "frontier",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "shattered_march_road_1",
+          "name": "Caravan Road",
+          "group": "frontier",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "shattered_march_gate",
+          "name": "Ruined City Gate",
+          "group": "frontier",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "shattered_march_plaza",
+          "name": "The Broken Concourse",
+          "group": "frontier",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "shattered_march_bazaar",
+          "name": "Hanging Bazaar Ruins",
+          "group": "frontier",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "shattered_march_shrine",
+          "name": "Shrine of the Old Accord",
+          "group": "frontier",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "shattered_march_base",
+          "name": "Base of the Tower of Babylon",
+          "group": "frontier",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "shattered_march_threshold",
+          "name": "Tower Threshold",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "shattered_march_depth_1",
+          "name": "1 \u00b7 Flooded Vaults",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "shattered_march_depth_2",
+          "name": "2 \u00b7 The Shifted Stairs",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "shattered_march_depth_3",
+          "name": "3 \u00b7 Hall of Tongues",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "shattered_march_depth_4",
+          "name": "4 \u00b7 The Sundered Library",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "shattered_march_depth_5",
+          "name": "5 \u00b7 Gearfall Shafts",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "shattered_march_depth_6",
+          "name": "6 \u00b7 Cistern of Echoes",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "shattered_march_depth_7",
+          "name": "7 \u00b7 The Whispering Ascent",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "shattered_march_depth_8",
+          "name": "8 \u00b7 Skybroken Ramparts",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "shattered_march_depth_9",
+          "name": "9 \u00b7 The Broken Orrery",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "shattered_march_depth_10",
+          "name": "10 \u00b7 The Fallen Observatory",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        }
+      ],
+      "edges": [
+        {
+          "a": "shattered_march_gate",
+          "b": "shattered_march_plaza",
+          "kind": "ruined roads"
+        },
+        {
+          "a": "shattered_march_plaza",
+          "b": "shattered_march_bazaar",
+          "kind": "ruined roads"
+        },
+        {
+          "a": "shattered_march_plaza",
+          "b": "shattered_march_shrine",
+          "kind": "ruined roads"
+        },
+        {
+          "a": "shattered_march_plaza",
+          "b": "shattered_march_base",
+          "kind": "ruined roads"
+        },
+        {
+          "a": "shattered_march_road_0",
+          "b": "shattered_march_plaza",
+          "kind": "ruined roads"
+        },
+        {
+          "a": "shattered_march_road_1",
+          "b": "shattered_march_plaza",
+          "kind": "ruined roads"
+        },
+        {
+          "a": "shattered_march_base",
+          "b": "shattered_march_threshold",
+          "kind": "ruined roads"
+        },
+        {
+          "a": "shattered_march_threshold",
+          "b": "shattered_march_depth_1",
+          "kind": "descent"
+        },
+        {
+          "a": "shattered_march_depth_1",
+          "b": "shattered_march_depth_2",
+          "kind": "descent"
+        },
+        {
+          "a": "shattered_march_depth_2",
+          "b": "shattered_march_depth_3",
+          "kind": "descent"
+        },
+        {
+          "a": "shattered_march_depth_3",
+          "b": "shattered_march_depth_4",
+          "kind": "descent"
+        },
+        {
+          "a": "shattered_march_depth_4",
+          "b": "shattered_march_depth_5",
+          "kind": "descent"
+        },
+        {
+          "a": "shattered_march_depth_5",
+          "b": "shattered_march_depth_6",
+          "kind": "descent"
+        },
+        {
+          "a": "shattered_march_depth_6",
+          "b": "shattered_march_depth_7",
+          "kind": "descent"
+        },
+        {
+          "a": "shattered_march_depth_7",
+          "b": "shattered_march_depth_8",
+          "kind": "descent"
+        },
+        {
+          "a": "shattered_march_depth_8",
+          "b": "shattered_march_depth_9",
+          "kind": "descent"
+        },
+        {
+          "a": "shattered_march_depth_9",
+          "b": "shattered_march_depth_10",
+          "kind": "descent"
+        },
+        {
+          "a": "shattered_march_depth_10",
+          "b": "shattered_march_threshold",
+          "kind": "return portal"
+        }
+      ]
+    },
+    {
+      "id": "gloamfen",
+      "name": "Gloamfen",
+      "lineage": "",
+      "allegiance": "Neutral",
+      "kind": "frontier",
+      "village": "",
+      "stronghold": "",
+      "story": "Mireglass Catacombs",
+      "danger": "Veteran",
+      "route_kind": "drowned paths",
+      "position": [
+        0.505,
+        0.69
+      ],
+      "groups": [
+        {
+          "id": "frontier",
+          "name": "Gloamfen crossings",
+          "nodes": [
+            "gloamfen_road_0",
+            "gloamfen_road_1"
+          ]
+        },
+        {
+          "id": "dungeon",
+          "name": "Mireglass Catacombs",
+          "nodes": [
+            "gloamfen_threshold",
+            "gloamfen_depth_1",
+            "gloamfen_depth_2",
+            "gloamfen_depth_3",
+            "gloamfen_depth_4",
+            "gloamfen_depth_5",
+            "gloamfen_depth_6",
+            "gloamfen_depth_7",
+            "gloamfen_depth_8",
+            "gloamfen_depth_9",
+            "gloamfen_depth_10"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "gloamfen_road_0",
+          "name": "Tidal Currents",
+          "group": "frontier",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "gloamfen_road_1",
+          "name": "Flooded Tunnels",
+          "group": "frontier",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "gloamfen_threshold",
+          "name": "Mireglass Catacombs Entrance",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "gloamfen_depth_1",
+          "name": "Depth 1",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "gloamfen_depth_2",
+          "name": "Depth 2",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "gloamfen_depth_3",
+          "name": "Depth 3",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "gloamfen_depth_4",
+          "name": "Depth 4",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "gloamfen_depth_5",
+          "name": "Depth 5",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "gloamfen_depth_6",
+          "name": "Depth 6",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "gloamfen_depth_7",
+          "name": "Depth 7",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "gloamfen_depth_8",
+          "name": "Depth 8",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "gloamfen_depth_9",
+          "name": "Depth 9",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "gloamfen_depth_10",
+          "name": "Depth 10",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        }
+      ],
+      "edges": [
+        {
+          "a": "gloamfen_road_0",
+          "b": "gloamfen_road_1",
+          "kind": "drowned paths"
+        },
+        {
+          "a": "gloamfen_road_0",
+          "b": "gloamfen_threshold",
+          "kind": "drowned paths"
+        },
+        {
+          "a": "gloamfen_threshold",
+          "b": "gloamfen_depth_1",
+          "kind": "descent"
+        },
+        {
+          "a": "gloamfen_depth_1",
+          "b": "gloamfen_depth_2",
+          "kind": "descent"
+        },
+        {
+          "a": "gloamfen_depth_2",
+          "b": "gloamfen_depth_3",
+          "kind": "descent"
+        },
+        {
+          "a": "gloamfen_depth_3",
+          "b": "gloamfen_depth_4",
+          "kind": "descent"
+        },
+        {
+          "a": "gloamfen_depth_4",
+          "b": "gloamfen_depth_5",
+          "kind": "descent"
+        },
+        {
+          "a": "gloamfen_depth_5",
+          "b": "gloamfen_depth_6",
+          "kind": "descent"
+        },
+        {
+          "a": "gloamfen_depth_6",
+          "b": "gloamfen_depth_7",
+          "kind": "descent"
+        },
+        {
+          "a": "gloamfen_depth_7",
+          "b": "gloamfen_depth_8",
+          "kind": "descent"
+        },
+        {
+          "a": "gloamfen_depth_8",
+          "b": "gloamfen_depth_9",
+          "kind": "descent"
+        },
+        {
+          "a": "gloamfen_depth_9",
+          "b": "gloamfen_depth_10",
+          "kind": "descent"
+        },
+        {
+          "a": "gloamfen_depth_10",
+          "b": "gloamfen_threshold",
+          "kind": "return portal"
+        }
+      ]
+    },
+    {
+      "id": "verdant_maw",
+      "name": "Verdant Maw",
+      "lineage": "",
+      "allegiance": "Neutral",
+      "kind": "frontier",
+      "village": "",
+      "stronghold": "",
+      "story": "Coilroot Depths",
+      "danger": "Group",
+      "route_kind": "root paths",
+      "position": [
+        0.52,
+        0.87
+      ],
+      "groups": [
+        {
+          "id": "frontier",
+          "name": "Verdant Maw crossings",
+          "nodes": [
+            "verdant_maw_road_0",
+            "verdant_maw_road_1"
+          ]
+        },
+        {
+          "id": "dungeon",
+          "name": "Coilroot Depths",
+          "nodes": [
+            "verdant_maw_threshold",
+            "verdant_maw_depth_1",
+            "verdant_maw_depth_2",
+            "verdant_maw_depth_3",
+            "verdant_maw_depth_4",
+            "verdant_maw_depth_5",
+            "verdant_maw_depth_6",
+            "verdant_maw_depth_7",
+            "verdant_maw_depth_8",
+            "verdant_maw_depth_9",
+            "verdant_maw_depth_10"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "id": "verdant_maw_road_0",
+          "name": "Root Paths",
+          "group": "frontier",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "verdant_maw_road_1",
+          "name": "Sinkhole Descent",
+          "group": "frontier",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "verdant_maw_threshold",
+          "name": "Coilroot Depths Entrance",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "verdant_maw_depth_1",
+          "name": "Depth 1",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "verdant_maw_depth_2",
+          "name": "Depth 2",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "verdant_maw_depth_3",
+          "name": "Depth 3",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "verdant_maw_depth_4",
+          "name": "Depth 4",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "verdant_maw_depth_5",
+          "name": "Depth 5",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "verdant_maw_depth_6",
+          "name": "Depth 6",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "verdant_maw_depth_7",
+          "name": "Depth 7",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "verdant_maw_depth_8",
+          "name": "Depth 8",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "verdant_maw_depth_9",
+          "name": "Depth 9",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        },
+        {
+          "id": "verdant_maw_depth_10",
+          "name": "Depth 10",
+          "group": "dungeon",
+          "access": "Shared",
+          "runtime_id": "",
+          "source": "DESIGN-0015"
+        }
+      ],
+      "edges": [
+        {
+          "a": "verdant_maw_road_0",
+          "b": "verdant_maw_road_1",
+          "kind": "root paths"
+        },
+        {
+          "a": "verdant_maw_road_0",
+          "b": "verdant_maw_threshold",
+          "kind": "root paths"
+        },
+        {
+          "a": "verdant_maw_threshold",
+          "b": "verdant_maw_depth_1",
+          "kind": "descent"
+        },
+        {
+          "a": "verdant_maw_depth_1",
+          "b": "verdant_maw_depth_2",
+          "kind": "descent"
+        },
+        {
+          "a": "verdant_maw_depth_2",
+          "b": "verdant_maw_depth_3",
+          "kind": "descent"
+        },
+        {
+          "a": "verdant_maw_depth_3",
+          "b": "verdant_maw_depth_4",
+          "kind": "descent"
+        },
+        {
+          "a": "verdant_maw_depth_4",
+          "b": "verdant_maw_depth_5",
+          "kind": "descent"
+        },
+        {
+          "a": "verdant_maw_depth_5",
+          "b": "verdant_maw_depth_6",
+          "kind": "descent"
+        },
+        {
+          "a": "verdant_maw_depth_6",
+          "b": "verdant_maw_depth_7",
+          "kind": "descent"
+        },
+        {
+          "a": "verdant_maw_depth_7",
+          "b": "verdant_maw_depth_8",
+          "kind": "descent"
+        },
+        {
+          "a": "verdant_maw_depth_8",
+          "b": "verdant_maw_depth_9",
+          "kind": "descent"
+        },
+        {
+          "a": "verdant_maw_depth_9",
+          "b": "verdant_maw_depth_10",
+          "kind": "descent"
+        },
+        {
+          "a": "verdant_maw_depth_10",
+          "b": "verdant_maw_threshold",
+          "kind": "return portal"
+        }
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "a": "open_lands",
+      "b": "tidekin_sea",
+      "name": "Coast Road"
+    },
+    {
+      "a": "open_lands",
+      "b": "elder_forests",
+      "name": "Forest Road"
+    },
+    {
+      "a": "open_lands",
+      "b": "sky_reaches",
+      "name": "Sky Lifts"
+    },
+    {
+      "a": "tidekin_sea",
+      "b": "elder_forests",
+      "name": "Coastal Rootway"
+    },
+    {
+      "a": "broken_mountains",
+      "b": "underdeep",
+      "name": "Deep Road"
+    },
+    {
+      "a": "broken_mountains",
+      "b": "ember_desert",
+      "name": "Canyon Road"
+    },
+    {
+      "a": "broken_mountains",
+      "b": "ice_lands",
+      "name": "Glacier Pass"
+    },
+    {
+      "a": "sky_reaches",
+      "b": "ashen_scar",
+      "name": "Storm Ridge"
+    },
+    {
+      "a": "ashen_scar",
+      "b": "broken_mountains",
+      "name": "Quarry Road"
+    },
+    {
+      "a": "open_lands",
+      "b": "shattered_march",
+      "name": "The Great Road"
+    },
+    {
+      "a": "shattered_march",
+      "b": "ember_desert",
+      "name": "Caravan Road"
+    },
+    {
+      "a": "tidekin_sea",
+      "b": "gloamfen",
+      "name": "Tidal Currents"
+    },
+    {
+      "a": "gloamfen",
+      "b": "underdeep",
+      "name": "Flooded Tunnels"
+    },
+    {
+      "a": "elder_forests",
+      "b": "verdant_maw",
+      "name": "Root Paths"
+    },
+    {
+      "a": "verdant_maw",
+      "b": "underdeep",
+      "name": "Sinkhole Descent"
+    }
+  ]
+}

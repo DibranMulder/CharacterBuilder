@@ -1,0 +1,122 @@
+[
+  {
+    "id": "apothecary",
+    "file": "assets/maps/wendmere/apothecary.png",
+    "prompt": "Village-series prompt: see generation-notes.md",
+    "reference": "designs/moodboards/humans-v2.png",
+    "tool": "built-in image_gen",
+    "source": "/Users/dibranmulder/.codex/generated_images/01a094c1-69e7-75c0-9b5d-f97746cf7821/exec-79cc532b-597d-4061-8d21-ac3e18fe929c.png"
+  },
+  {
+    "id": "trainers",
+    "file": "assets/maps/wendmere/trainers.png",
+    "prompt": "Village-series prompt: see generation-notes.md",
+    "reference": "designs/moodboards/humans-v2.png",
+    "tool": "built-in image_gen",
+    "source": "/Users/dibranmulder/.codex/generated_images/01a094c1-69e7-75c0-9b5d-f97746cf7821/exec-c317fee7-da49-4ef0-9fb2-f857e9864fd1.png"
+  },
+  {
+    "id": "inn",
+    "file": "assets/maps/wendmere/inn.png",
+    "prompt": "Village-series prompt: see generation-notes.md",
+    "reference": "designs/moodboards/humans-v2.png",
+    "tool": "built-in image_gen",
+    "source": "/Users/dibranmulder/.codex/generated_images/01a094c1-69e7-75c0-9b5d-f97746cf7821/exec-fcd7a6a5-fb4a-44ef-8201-e2f7c5dec922.png"
+  },
+  {
+    "id": "approach",
+    "file": "assets/maps/wendmere/approach.png",
+    "prompt": "Village-series prompt: see generation-notes.md",
+    "reference": "designs/moodboards/humans-v2.png",
+    "tool": "built-in image_gen",
+    "source": "/Users/dibranmulder/.codex/generated_images/01a094c1-69e7-75c0-9b5d-f97746cf7821/exec-d64081f0-d534-4607-9b71-0219352c5460.png"
+  },
+  {
+    "id": "barracks",
+    "file": "assets/maps/wendmere/barracks.png",
+    "prompt": "Production 2D side-scrolling game background panorama, 3:1 landscape. Warden Barracks interior, oak bunks and weapon racks behind an empty foreground, royal blue tabards, ivory stone arches and brass lamps, a rear wooden gallery. Human homeland Wendmere. Cinematic storybook anime, clean dark contours and richly detailed soft cel-painted shading. Royal blue, warm ivory, muted gold, burgundy, oak, linen, brass, weathered stone. Side-on orthographic camera, uninterrupted level stone foreground walking lane whose front edge is at 73 percent image height, extending edge to edge. Architecture behind the lane, playable platforms will be added by the game. No people, no text, no UI, no borders. Match the attached Human moodboard's beautiful painted settlement style.",
+    "reference": "designs/moodboards/humans-v2.png",
+    "tool": "built-in image_gen",
+    "source": "/Users/dibranmulder/.codex/generated_images/01a094c1-69e7-75c0-9b5d-f97746cf7821/exec-cfce365a-434e-4f5d-8c16-bafbc3c607c5.png"
+  },
+  {
+    "id": "service",
+    "file": "assets/maps/wendmere/service.png",
+    "prompt": "Production 2D side-scrolling game background panorama, 3:1 landscape. Keep Service District courtyard, open kitchen on the left with bread ovens and copper pots, a working smithy on the right with anvil and glowing forge, ivory castle masonry and blue banners. Human homeland Wendmere. Cinematic storybook anime, clean dark contours and richly detailed soft cel-painted shading. Royal blue, warm ivory, muted gold, burgundy, oak, linen, brass, weathered stone. Side-on orthographic camera, uninterrupted level stone foreground walking lane whose front edge is at 73 percent image height, extending edge to edge. Architecture behind the lane, playable platforms will be added by the game. No people, no text, no UI, no borders. Match the attached Human moodboard's beautiful painted settlement style.",
+    "reference": "designs/moodboards/humans-v2.png",
+    "tool": "built-in image_gen",
+    "source": "/Users/dibranmulder/.codex/generated_images/01a094c1-69e7-75c0-9b5d-f97746cf7821/exec-4e2e55be-5143-40dc-8bc1-7670b43c4499.png"
+  },
+  {
+    "id": "hall",
+    "file": "assets/maps/wendmere/hall.png",
+    "prompt": "Production 2D side-scrolling game background panorama, 3:1 landscape. The Great Hall of the King's Keep, soaring ivory Gothic arches, tall stained glass windows, blue and muted gold road-knot banners, a long feast table behind the empty foreground aisle, three dark oak doors in the back. Human homeland Wendmere. Cinematic storybook anime, clean dark contours and richly detailed soft cel-painted shading. Royal blue, warm ivory, muted gold, burgundy, oak, linen, brass, weathered stone. Side-on orthographic camera, uninterrupted level stone foreground walking lane whose front edge is at 73 percent image height, extending edge to edge. Architecture behind the lane, playable platforms will be added by the game. No people, no text, no UI, no borders. Match the attached Human moodboard's beautiful painted settlement style.",
+    "reference": "designs/moodboards/humans-v2.png",
+    "tool": "built-in image_gen",
+    "source": "/Users/dibranmulder/.codex/generated_images/01a094c1-69e7-75c0-9b5d-f97746cf7821/exec-d38c22ed-b360-43cb-bb5b-60eadead08e2.png"
+  },
+  {
+    "id": "king",
+    "file": "assets/maps/wendmere/king.png",
+    "prompt": "Production 2D side-scrolling game background panorama, 3:1 landscape. The King's Room, an intimate regal throne hall of warm ivory stone, a grand oak and brass throne with burgundy cushions, royal blue gold banners, sunlight through high arches, no king or people. Human homeland Wendmere. Cinematic storybook anime, clean dark contours and richly detailed soft cel-painted shading. Royal blue, warm ivory, muted gold, burgundy, oak, linen, brass, weathered stone. Side-on orthographic camera, uninterrupted level stone foreground walking lane whose front edge is at 73 percent image height, extending edge to edge. Architecture behind the lane, playable platforms will be added by the game. No people, no text, no UI, no borders. Match the attached Human moodboard's beautiful painted settlement style.",
+    "reference": "designs/moodboards/humans-v2.png",
+    "tool": "built-in image_gen",
+    "source": "/Users/dibranmulder/.codex/generated_images/01a094c1-69e7-75c0-9b5d-f97746cf7821/exec-577cd4f7-7e6e-456d-a7d1-88816c87880d.png"
+  },
+  {
+    "id": "archive",
+    "file": "assets/maps/wendmere/archive.png",
+    "prompt": "Production 2D side-scrolling game background panorama, 3:1 landscape. Treasury and Archive inside the keep, floor-to-ceiling oak bookshelves full of manuscripts and scrolls, brass-bound chests and an astronomer's desk, warm ivory arches, candle glow, a sealed arched door outlined in faint cyan ward light. Human homeland Wendmere. Cinematic storybook anime, clean dark contours and richly detailed soft cel-painted shading. Royal blue, warm ivory, muted gold, burgundy, oak, linen, brass, weathered stone. Side-on orthographic camera, uninterrupted level stone foreground walking lane whose front edge is at 73 percent image height, extending edge to edge. Architecture behind the lane, playable platforms will be added by the game. No people, no text, no UI, no borders. Match the attached Human moodboard's beautiful painted settlement style.",
+    "reference": "designs/moodboards/humans-v2.png",
+    "tool": "built-in image_gen",
+    "source": "/Users/dibranmulder/.codex/generated_images/01a094c1-69e7-75c0-9b5d-f97746cf7821/exec-0a9a4994-d0b0-4653-ad65-f2130ede025d.png"
+  },
+  {
+    "id": "tower",
+    "file": "assets/maps/wendmere/tower.png",
+    "prompt": "Production 2D side-scrolling game background panorama, 3:1 landscape. Princess's Tower Base, a round ivory stone tower entrance at dusk, a sealed oak door edged in faint protective cyan light, ivy and royal blue banners, courtyard with brass lanterns and piles of archive crates. Human homeland Wendmere. Cinematic storybook anime, clean dark contours and richly detailed soft cel-painted shading. Royal blue, warm ivory, muted gold, burgundy, oak, linen, brass, weathered stone. Side-on orthographic camera, uninterrupted level stone foreground walking lane whose front edge is at 73 percent image height, extending edge to edge. Architecture behind the lane, playable platforms will be added by the game. No people, no text, no UI, no borders. Match the attached Human moodboard's beautiful painted settlement style.",
+    "reference": "designs/moodboards/humans-v2.png",
+    "tool": "built-in image_gen",
+    "source": "/Users/dibranmulder/.codex/generated_images/01a094c1-69e7-75c0-9b5d-f97746cf7821/exec-287e4380-d927-4c87-800e-994b8b04540a.png"
+  },
+  {
+    "id": "solar",
+    "file": "assets/maps/wendmere/solar.png",
+    "prompt": "Production 2D side-scrolling game background panorama, 3:1 landscape. The Solar at the top of the Princess's Tower, intimate ivory stone chamber at dusk, tall arched windows overlooking the luminous Open Lands and distant roads, astronomer's table with brass astrolabe, a sealed archive door edged in faint cyan protective light, blue drapes and warm candle glow. Human homeland Wendmere. Cinematic storybook anime, clean dark contours and richly detailed soft cel-painted shading. Royal blue, warm ivory, muted gold, burgundy, oak, linen, brass, weathered stone. Side-on orthographic camera, uninterrupted level stone foreground walking lane whose front edge is at 73 percent image height, extending edge to edge. Architecture behind the lane, playable platforms will be added by the game. No people, no text, no UI, no borders. Match the attached Human moodboard's beautiful painted settlement style.",
+    "reference": "designs/moodboards/humans-v2.png",
+    "tool": "built-in image_gen",
+    "source": "/Users/dibranmulder/.codex/generated_images/01a094c1-69e7-75c0-9b5d-f97746cf7821/exec-b9c36a7e-f593-4a3a-8b5f-139dd7b0ec37.png"
+  },
+  {
+    "id": "stair",
+    "file": "assets/maps/wendmere/stair.png",
+    "prompt": "Production 2D side-scrolling game background, landscape 3:2. The Winding Stair inside the Princess's Tower of Wendmere. Tall cutaway ivory stone tower with lofty arched windows at multiple heights looking out on dusk sky, blue gold banners, brass candle lamps, empty shelves and alcoves in background. Rich storybook anime cel-painted detail matching Human moodboard. Entire FRONT must be open empty space for the game to add a staircase ascending from lower left to upper right, do not paint stairs in foreground. Stone base floor at 90 percent image height, architecture rises above it. No people, text, borders or UI. Warm stone, dusk lavender and royal blue, muted gold.",
+    "reference": "designs/moodboards/humans-v2.png",
+    "tool": "built-in image_gen",
+    "source": "/Users/dibranmulder/.codex/generated_images/01a094c1-69e7-75c0-9b5d-f97746cf7821/exec-42ba4d38-34f9-445a-a1ec-3a5d04ac02c4.png"
+  },
+  {
+    "id": "ledge",
+    "file": "assets/maps/wendmere/ledge.png",
+    "prompt": "Production sprite for a beautiful cinematic storybook anime 2D platform game, matching the Human Wendmere reference. ONE horizontal architectural platform ledge only, isolated on genuine transparent background. Wide 3:1 canvas. A straight, perfectly flat warm ivory stone cap along the TOP EDGE, weathered layered grey ivory masonry beneath, ivy tufts on the sides, short projecting stone corbels and oak braces underneath. Entire object fits canvas with 5% empty transparent margin all around. Usable walking surface perfectly horizontal, side-on orthographic. Rich cel-painted stone detail, dark contours, warm sunlight. No background scenery, no ground plane, no text, no people, no UI, no platform legs extending to ground. Strong readable silhouette. Output with alpha.",
+    "reference": "designs/moodboards/humans-v2.png",
+    "tool": "built-in image_gen",
+    "source": "/Users/dibranmulder/.codex/generated_images/01a094c1-69e7-75c0-9b5d-f97746cf7821/exec-4145a8b8-e80e-4153-a44b-069919b5b686.png"
+  },
+  {
+    "id": "guardian",
+    "file": "assets/npcs/wendmere/guardian.png",
+    "prompt": "One production NPC sprite for a 2D storybook-anime side scrolling game, isolated on genuine transparent background. Waystone Guardian, an ancient friendly but mighty HUMAN HOMELAND STONE CONSTRUCT, not a human soldier: broad weathered ivory stone body and angular helmet-like stone head, moss and ivy at shoulder joints, glowing gentle blue eyes, royal blue and muted gold sash, original road-knot emblem, hammered brass fittings, carries an enormous old road-marker staff. Neutral side-facing three-quarter standing pose facing left, full body visible, feet on same baseline. 3.5 heads tall, imposing wide silhouette, beautiful rich cel-painted textures and clean dark contours. No scenery, no ground, no text, no borders. Match Human moodboard material and palette.",
+    "reference": "designs/moodboards/humans-v2.png",
+    "tool": "built-in image_gen",
+    "source": "/Users/dibranmulder/.codex/generated_images/01a094c1-69e7-75c0-9b5d-f97746cf7821/exec-4c1bf95b-dd0c-4a21-adfa-3bf66243db0f.png"
+  },
+  {
+    "id": "wildlife",
+    "file": "assets/npcs/wendmere/wildlife.png",
+    "prompt": "One production wildlife sprite atlas for a 2D storybook-anime side scrolling game on genuine transparent background. TWO separate creatures in a single row with generous empty gap. LEFT: Meadow Puffkin, a benevolent round small sheep-like cream wool meadow grazer with tiny brown hooves, leaf-like green ears and a tuft of little daisies, sweet friendly face, side facing right. RIGHT: Brookskip Otter, friendly sleek small brown river otter with creamy muzzle and long tail, sitting facing left with a little blue smooth river stone. Full bodies including feet and tails, baseline aligned. Rich cinematic storybook anime painted detail, clean dark contours, warm welcoming palette matching Human moodboard. No scenery or ground, no text, no frame, no UI.",
+    "reference": "designs/moodboards/humans-v2.png",
+    "tool": "built-in image_gen",
+    "source": "/Users/dibranmulder/.codex/generated_images/01a094c1-69e7-75c0-9b5d-f97746cf7821/exec-d191095a-7f82-4c84-a607-47ae742f0fda.png"
+  }
+]

@@ -1,0 +1,196 @@
+{
+  "villagers": {
+    "columns": 3,
+    "rows": 2,
+    "people": [
+      [
+        "elowen",
+        "Elowen, middle-aged female lorekeeper, silver braid, thoughtful long face, moss-green mantle over ivory dress, open old book and brass reading glasses"
+      ],
+      [
+        "broker",
+        "Perrin, lean middle-aged male exchange broker, dark brown skin, bald head and neat moustache, round spectacles, ochre waistcoat, burgundy sleeves, a large ledger"
+      ],
+      [
+        "brann",
+        "Brann, broad muscular adult male weaponsmith, shaggy brown hair and thick beard, dark leather apron over rolled ivory sleeves, hammer at his belt, one hand on hip"
+      ],
+      [
+        "tessa",
+        "Tessa, stocky adult female armorer, red braided hair and freckles, practical leather apron over weathered blue-grey steel armor, carrying a small round shield"
+      ],
+      [
+        "orin",
+        "Orin, elderly slim male wandwright, long grey beard and deeply lined face, deep blue hood and long oak-brown coat, curved wooden staff and brass lantern"
+      ],
+      [
+        "mira",
+        "Mira, elderly plump female apothecary, warm brown skin, white hair in a bun, sage green shawl over cream dress, mortar and pestle in hands"
+      ]
+    ],
+    "prompt": "Create ONE production NPC sprite atlas on genuinely TRANSPARENT background with exactly 6 separate FULL-BODY ADULT HUMAN characters, laid out in an EXACT uniform 3-column by 2-row grid. Landscape canvas 3:2, preferably 1536x1024. Each character occupies only its own equal cell with generous transparent margins, every head, foot, prop and weapon wholly inside that cell. No separators, labels, text, ground, shadows outside silhouettes, scenery, frames or UI. Characters face three-quarter RIGHT in relaxed standing poses, feet aligned consistently near bottom of each cell. No overlapping characters. All are independent town NPCs, NOT variants of the young brown-haired hero. Clearly distinct adult ages, facial features, hair, body builds, outfits and silhouettes. Style matches the attached Human moodboard: beautiful cinematic storybook anime, clean dark outlines, rich soft cel-painted shading, compact ADULT proportions around 4 heads tall, royal blue/warm ivory/field green/muted gold/burgundy accents, oak leather wool brass weathered steel. Read order LEFT TO RIGHT, TOP ROW THEN BOTTOM ROW:\n1. Elowen, middle-aged female lorekeeper, silver braid, thoughtful long face, moss-green mantle over ivory dress, open old book and brass reading glasses\n2. Perrin, lean middle-aged male exchange broker, dark brown skin, bald head and neat moustache, round spectacles, ochre waistcoat, burgundy sleeves, a large ledger\n3. Brann, broad muscular adult male weaponsmith, shaggy brown hair and thick beard, dark leather apron over rolled ivory sleeves, hammer at his belt, one hand on hip\n4. Tessa, stocky adult female armorer, red braided hair and freckles, practical leather apron over weathered blue-grey steel armor, carrying a small round shield\n5. Orin, elderly slim male wandwright, long grey beard and deeply lined face, deep blue hood and long oak-brown coat, curved wooden staff and brass lantern\n6. Mira, elderly plump female apothecary, warm brown skin, white hair in a bun, sage green shawl over cream dress, mortar and pestle in hands\nPreserve each character's unique face and assigned role props. Exact grid, one full character per cell. Transparent alpha everywhere outside the figures.",
+    "source": "/Users/dibranmulder/.codex/generated_images/01a094c1-69e7-75c0-9b5d-f97746cf7821/exec-2209a389-171c-49e7-8958-5300904f31ec.png",
+    "key_prompt": "Edit this exact NPC sprite sheet. Keep every character, pose, outfit, face, weapon and layout EXACTLY unchanged. Replace ONLY all checkerboard background squares throughout, including all empty gaps between limbs and props, with perfectly uniform flat vivid magenta RGB 255,0,255 (#ff00ff). No checkerboard. No shadows on backdrop. No alpha transparency visualization. This is a game chroma-key sprite sheet; every empty background pixel must be solid vivid magenta. Preserve the dark character outlines and full figures. Output same dimensions and grid.",
+    "key_source": "/Users/dibranmulder/.codex/generated_images/01a094c1-69e7-75c0-9b5d-f97746cf7821/exec-cfeaf344-40f9-4489-9af2-3037ca61334c.png",
+    "asset": "assets/npcs/wendmere/residents_villagers.png"
+  },
+  "townsfolk": {
+    "columns": 3,
+    "rows": 2,
+    "people": [
+      [
+        "grocer",
+        "Bramble, portly older male grocer, large curled brown moustache, green apron and ivory shirt, loaf of bread and basket, no weapon"
+      ],
+      [
+        "innkeeper",
+        "Maren, stout middle-aged female innkeeper, dark auburn hair in a bun, burgundy dress with ivory apron, brass tankard and welcoming smile"
+      ],
+      [
+        "quartermaster",
+        "Odo, sturdy older male quartermaster, bald with short grey beard, quilted brown vest and broad belt, large canvas pack and manifest"
+      ],
+      [
+        "orchard",
+        "Tamsin, adult female orchard keeper, tanned skin and long red braid, straw hat, green work tunic and brown trousers, apple basket"
+      ],
+      [
+        "cook",
+        "Ada, elderly female cook, wrinkled olive face, white hair and ivory cook's bonnet, blue dress and flour-dusted apron, large wooden spoon"
+      ],
+      [
+        "smith",
+        "Torren, tall muscular adult male keep smith, dark brown skin and cropped black hair, sleeveless leather apron, rolled trousers, iron tongs"
+      ]
+    ],
+    "prompt": "Create ONE production NPC sprite atlas on genuinely TRANSPARENT background with exactly 6 separate FULL-BODY ADULT HUMAN characters, laid out in an EXACT uniform 3-column by 2-row grid. Landscape canvas 3:2, preferably 1536x1024. Each character occupies only its own equal cell with generous transparent margins, every head, foot, prop and weapon wholly inside that cell. No separators, labels, text, ground, shadows outside silhouettes, scenery, frames or UI. Characters face three-quarter RIGHT in relaxed standing poses, feet aligned consistently near bottom of each cell. No overlapping characters. All are independent town NPCs, NOT variants of the young brown-haired hero. Clearly distinct adult ages, facial features, hair, body builds, outfits and silhouettes. Style matches the attached Human moodboard: beautiful cinematic storybook anime, clean dark outlines, rich soft cel-painted shading, compact ADULT proportions around 4 heads tall, royal blue/warm ivory/field green/muted gold/burgundy accents, oak leather wool brass weathered steel. Read order LEFT TO RIGHT, TOP ROW THEN BOTTOM ROW:\n1. Bramble, portly older male grocer, large curled brown moustache, green apron and ivory shirt, loaf of bread and basket, no weapon\n2. Maren, stout middle-aged female innkeeper, dark auburn hair in a bun, burgundy dress with ivory apron, brass tankard and welcoming smile\n3. Odo, sturdy older male quartermaster, bald with short grey beard, quilted brown vest and broad belt, large canvas pack and manifest\n4. Tamsin, adult female orchard keeper, tanned skin and long red braid, straw hat, green work tunic and brown trousers, apple basket\n5. Ada, elderly female cook, wrinkled olive face, white hair and ivory cook's bonnet, blue dress and flour-dusted apron, large wooden spoon\n6. Torren, tall muscular adult male keep smith, dark brown skin and cropped black hair, sleeveless leather apron, rolled trousers, iron tongs\nPreserve each character's unique face and assigned role props. Exact grid, one full character per cell. Transparent alpha everywhere outside the figures.",
+    "source": "/Users/dibranmulder/.codex/generated_images/01a094c1-69e7-75c0-9b5d-f97746cf7821/exec-9902f130-72f3-4819-a091-6aeaf77e57d9.png",
+    "key_prompt": "Edit this exact NPC sprite sheet. Keep every character, pose, outfit, face, weapon and layout EXACTLY unchanged. Replace ONLY all checkerboard background squares throughout, including all empty gaps between limbs and props, with perfectly uniform flat vivid magenta RGB 255,0,255 (#ff00ff). No checkerboard. No shadows on backdrop. No alpha transparency visualization. This is a game chroma-key sprite sheet; every empty background pixel must be solid vivid magenta. Preserve the dark character outlines and full figures. Output same dimensions and grid.",
+    "key_source": "/Users/dibranmulder/.codex/generated_images/01a094c1-69e7-75c0-9b5d-f97746cf7821/exec-1268d931-a717-4b75-8865-81af42f9e609.png",
+    "asset": "assets/npcs/wendmere/residents_townsfolk.png"
+  },
+  "trainers": {
+    "columns": 3,
+    "rows": 2,
+    "people": [
+      [
+        "trainer_0",
+        "Hale, broad middle-aged male VANGUARD trainer, blond beard, weathered face, royal-blue tabard over full steel plate, prominent kite shield and sword"
+      ],
+      [
+        "trainer_1",
+        "Runa, muscular adult female RAVAGER trainer, short swept red hair, burgundy and charcoal heavy leather, holds an enormous two-handed greataxe"
+      ],
+      [
+        "trainer_2",
+        "Ash, lean adult male RANGER trainer, tan skin, black ponytail, field-green hood folded down, leather jerkin, longbow and quiver"
+      ],
+      [
+        "trainer_3",
+        "Nessa, athletic adult female DUELIST trainer, olive skin, sharp black bob haircut, burgundy fitted leather coat, TWO distinct short swords one in each hand"
+      ],
+      [
+        "trainer_4",
+        "Iven, tall elderly male ARCANIST trainer, grey curls and short beard, blue pointed wizard hat, long ivory and indigo robes, luminous blue crystal staff"
+      ],
+      [
+        "trainer_5",
+        "Soleil, adult female WARDEN trainer, dark brown skin and white braids, ivory and moss-green ceremonial robes, holds a glowing brass sun-disc focus"
+      ]
+    ],
+    "prompt": "Create ONE production NPC sprite atlas on genuinely TRANSPARENT background with exactly 6 separate FULL-BODY ADULT HUMAN characters, laid out in an EXACT uniform 3-column by 2-row grid. Landscape canvas 3:2, preferably 1536x1024. Each character occupies only its own equal cell with generous transparent margins, every head, foot, prop and weapon wholly inside that cell. No separators, labels, text, ground, shadows outside silhouettes, scenery, frames or UI. Characters face three-quarter RIGHT in relaxed standing poses, feet aligned consistently near bottom of each cell. No overlapping characters. All are independent town NPCs, NOT variants of the young brown-haired hero. Clearly distinct adult ages, facial features, hair, body builds, outfits and silhouettes. Style matches the attached Human moodboard: beautiful cinematic storybook anime, clean dark outlines, rich soft cel-painted shading, compact ADULT proportions around 4 heads tall, royal blue/warm ivory/field green/muted gold/burgundy accents, oak leather wool brass weathered steel. Read order LEFT TO RIGHT, TOP ROW THEN BOTTOM ROW:\n1. Hale, broad middle-aged male VANGUARD trainer, blond beard, weathered face, royal-blue tabard over full steel plate, prominent kite shield and sword\n2. Runa, muscular adult female RAVAGER trainer, short swept red hair, burgundy and charcoal heavy leather, holds an enormous two-handed greataxe\n3. Ash, lean adult male RANGER trainer, tan skin, black ponytail, field-green hood folded down, leather jerkin, longbow and quiver\n4. Nessa, athletic adult female DUELIST trainer, olive skin, sharp black bob haircut, burgundy fitted leather coat, TWO distinct short swords one in each hand\n5. Iven, tall elderly male ARCANIST trainer, grey curls and short beard, blue pointed wizard hat, long ivory and indigo robes, luminous blue crystal staff\n6. Soleil, adult female WARDEN trainer, dark brown skin and white braids, ivory and moss-green ceremonial robes, holds a glowing brass sun-disc focus\nPreserve each character's unique face and assigned role props. Exact grid, one full character per cell. Transparent alpha everywhere outside the figures.",
+    "source": "/Users/dibranmulder/.codex/generated_images/01a094c1-69e7-75c0-9b5d-f97746cf7821/exec-158724e1-0401-407b-8d8c-a5ac8937b69e.png",
+    "key_prompt": "Edit this exact NPC sprite sheet. Keep every character, pose, outfit, face, weapon and layout EXACTLY unchanged. Replace ONLY all checkerboard background squares throughout, including all empty gaps between limbs and props, with perfectly uniform flat vivid magenta RGB 255,0,255 (#ff00ff). No checkerboard. No shadows on backdrop. No alpha transparency visualization. This is a game chroma-key sprite sheet; every empty background pixel must be solid vivid magenta. Preserve the dark character outlines and full figures. Output same dimensions and grid.",
+    "key_source": "/Users/dibranmulder/.codex/generated_images/01a094c1-69e7-75c0-9b5d-f97746cf7821/exec-961087fd-b637-459a-910f-c26f20a483ab.png",
+    "asset": "assets/npcs/wendmere/residents_trainers.png"
+  },
+  "wardens": {
+    "columns": 3,
+    "rows": 2,
+    "people": [
+      [
+        "gatecaptain",
+        "Beren, burly older male gate captain, grey moustache visible below open visor, weathered steel plate and blue tabard, long halberd"
+      ],
+      [
+        "courier",
+        "Wren, young ADULT female courier, dark brown skin and short black curls, royal-blue short coat, yellow scarf, full messenger satchel and rolled letter"
+      ],
+      [
+        "aldren",
+        "Captain Aldren, imposing middle-aged female warden captain, silver undercut hair, mature stern face with small scar, heavy blue and steel armor, sword and broad shield"
+      ],
+      [
+        "recruit",
+        "Finch, young ADULT male recruit, tall lanky build, curly red hair and freckles, blue padded gambeson, simple steel shoulder guards, spear"
+      ],
+      [
+        "herald",
+        "Cerys, elegant adult female royal herald, long black braid, burgundy-and-gold tabard, brass trumpet and rolled proclamation"
+      ],
+      [
+        "steward",
+        "Oswin, portly elderly male steward, bald head, white sideburns, monocle, elaborate blue waistcoat with gold chain, ledger under arm"
+      ]
+    ],
+    "prompt": "Create ONE production NPC sprite atlas on genuinely TRANSPARENT background with exactly 6 separate FULL-BODY ADULT HUMAN characters, laid out in an EXACT uniform 3-column by 2-row grid. Landscape canvas 3:2, preferably 1536x1024. Each character occupies only its own equal cell with generous transparent margins, every head, foot, prop and weapon wholly inside that cell. No separators, labels, text, ground, shadows outside silhouettes, scenery, frames or UI. Characters face three-quarter RIGHT in relaxed standing poses, feet aligned consistently near bottom of each cell. No overlapping characters. All are independent town NPCs, NOT variants of the young brown-haired hero. Clearly distinct adult ages, facial features, hair, body builds, outfits and silhouettes. Style matches the attached Human moodboard: beautiful cinematic storybook anime, clean dark outlines, rich soft cel-painted shading, compact ADULT proportions around 4 heads tall, royal blue/warm ivory/field green/muted gold/burgundy accents, oak leather wool brass weathered steel. Read order LEFT TO RIGHT, TOP ROW THEN BOTTOM ROW:\n1. Beren, burly older male gate captain, grey moustache visible below open visor, weathered steel plate and blue tabard, long halberd\n2. Wren, young ADULT female courier, dark brown skin and short black curls, royal-blue short coat, yellow scarf, full messenger satchel and rolled letter\n3. Captain Aldren, imposing middle-aged female warden captain, silver undercut hair, mature stern face with small scar, heavy blue and steel armor, sword and broad shield\n4. Finch, young ADULT male recruit, tall lanky build, curly red hair and freckles, blue padded gambeson, simple steel shoulder guards, spear\n5. Cerys, elegant adult female royal herald, long black braid, burgundy-and-gold tabard, brass trumpet and rolled proclamation\n6. Oswin, portly elderly male steward, bald head, white sideburns, monocle, elaborate blue waistcoat with gold chain, ledger under arm\nPreserve each character's unique face and assigned role props. Exact grid, one full character per cell. Transparent alpha everywhere outside the figures.",
+    "source": "/Users/dibranmulder/.codex/generated_images/01a094c1-69e7-75c0-9b5d-f97746cf7821/exec-dcb5a7b7-f2fc-4ef8-acbe-204c5bf81ef4.png",
+    "key_prompt": "Edit this exact NPC sprite sheet. Keep every character, pose, outfit, face, weapon and layout EXACTLY unchanged. Replace ONLY all checkerboard background squares throughout, including all empty gaps between limbs and props, with perfectly uniform flat vivid magenta RGB 255,0,255 (#ff00ff). No checkerboard. No shadows on backdrop. No alpha transparency visualization. This is a game chroma-key sprite sheet; every empty background pixel must be solid vivid magenta. Preserve the dark character outlines and full figures. Output same dimensions and grid.",
+    "key_source": "/Users/dibranmulder/.codex/generated_images/01a094c1-69e7-75c0-9b5d-f97746cf7821/exec-11d6e8b9-5fcc-4a3f-942d-dedf457ea2cb.png",
+    "asset": "assets/npcs/wendmere/residents_wardens.png"
+  },
+  "court": {
+    "columns": 3,
+    "rows": 2,
+    "people": [
+      [
+        "king",
+        "The Oathbound King, imposing broad mature male monarch, greying beard and stern weathered face, ornate GOLD CROWN, heavy weathered ivory steel armor, royal-blue gold shield, enormous burgundy cape, sword, regal and visibly older"
+      ],
+      [
+        "counsellor",
+        "Edda, elderly female royal counsellor, dark brown skin and white braided bun, long warm ivory and gold robes, slim carved staff and thoughtful expression"
+      ],
+      [
+        "meriel",
+        "Meriel, middle-aged female archivist, silver shoulder-length hair, round spectacles, long indigo scholar robe, large open book held close to her chest"
+      ],
+      [
+        "treasurer",
+        "Corvin, thin older male treasurer, angular face, neat black-and-grey beard, gold spectacles, brown and muted-gold robe, ring of keys and coin pouch"
+      ],
+      [
+        "lyra",
+        "Lyra, young ADULT female heir-warden princess, long dark auburn braid, distinctive mature determined face, royal-blue mantle over light silver armor and ivory tunic, blue ward-light lantern, no crown"
+      ],
+      [
+        "attendant",
+        "Seren, slim adult male warden attendant, long black hair tied back, gentle angular face, flowing ivory robe and blue sashes, folded scroll"
+      ]
+    ],
+    "prompt": "Create ONE production NPC sprite atlas on genuinely TRANSPARENT background with exactly 6 separate FULL-BODY ADULT HUMAN characters, laid out in an EXACT uniform 3-column by 2-row grid. Landscape canvas 3:2, preferably 1536x1024. Each character occupies only its own equal cell with generous transparent margins, every head, foot, prop and weapon wholly inside that cell. No separators, labels, text, ground, shadows outside silhouettes, scenery, frames or UI. Characters face three-quarter RIGHT in relaxed standing poses, feet aligned consistently near bottom of each cell. No overlapping characters. All are independent town NPCs, NOT variants of the young brown-haired hero. Clearly distinct adult ages, facial features, hair, body builds, outfits and silhouettes. Style matches the attached Human moodboard: beautiful cinematic storybook anime, clean dark outlines, rich soft cel-painted shading, compact ADULT proportions around 4 heads tall, royal blue/warm ivory/field green/muted gold/burgundy accents, oak leather wool brass weathered steel. Read order LEFT TO RIGHT, TOP ROW THEN BOTTOM ROW:\n1. The Oathbound King, imposing broad mature male monarch, greying beard and stern weathered face, ornate GOLD CROWN, heavy weathered ivory steel armor, royal-blue gold shield, enormous burgundy cape, sword, regal and visibly older\n2. Edda, elderly female royal counsellor, dark brown skin and white braided bun, long warm ivory and gold robes, slim carved staff and thoughtful expression\n3. Meriel, middle-aged female archivist, silver shoulder-length hair, round spectacles, long indigo scholar robe, large open book held close to her chest\n4. Corvin, thin older male treasurer, angular face, neat black-and-grey beard, gold spectacles, brown and muted-gold robe, ring of keys and coin pouch\n5. Lyra, young ADULT female heir-warden princess, long dark auburn braid, distinctive mature determined face, royal-blue mantle over light silver armor and ivory tunic, blue ward-light lantern, no crown\n6. Seren, slim adult male warden attendant, long black hair tied back, gentle angular face, flowing ivory robe and blue sashes, folded scroll\nPreserve each character's unique face and assigned role props. Exact grid, one full character per cell. Transparent alpha everywhere outside the figures.",
+    "source": "/Users/dibranmulder/.codex/generated_images/01a094c1-69e7-75c0-9b5d-f97746cf7821/exec-8ad2593a-8c55-418e-9a58-117e2776d675.png",
+    "key_prompt": "Edit this exact NPC sprite sheet. Keep every character, pose, outfit, face, weapon and layout EXACTLY unchanged. Replace ONLY all checkerboard background squares throughout, including all empty gaps between limbs and props, with perfectly uniform flat vivid magenta RGB 255,0,255 (#ff00ff). No checkerboard. No shadows on backdrop. No alpha transparency visualization. This is a game chroma-key sprite sheet; every empty background pixel must be solid vivid magenta. Preserve the dark character outlines and full figures. Output same dimensions and grid.",
+    "key_source": "/Users/dibranmulder/.codex/generated_images/01a094c1-69e7-75c0-9b5d-f97746cf7821/exec-28ac32dd-1ed6-49b0-8c79-7b0ff7f2c723.png",
+    "asset": "assets/npcs/wendmere/residents_court.png"
+  },
+  "towerfolk": {
+    "columns": 2,
+    "rows": 1,
+    "people": [
+      [
+        "keeper",
+        "Ansel, elderly stooped male tower keeper, bald pate and bushy silver side hair, lined kind face, thick brown work coat and patched blue scarf, holds a large brass lantern"
+      ],
+      [
+        "lamplighter",
+        "Pip, young ADULT female lamplighter, short curly red hair and freckles, soft flat cap, amber work coat and brown trousers, tool belt, long lamp-lighting pole"
+      ]
+    ],
+    "prompt": "Create ONE production NPC sprite atlas on genuinely TRANSPARENT background with exactly 2 separate FULL-BODY ADULT HUMAN characters, laid out in an EXACT uniform 2-column by 1-row grid. Landscape canvas 3:2, preferably 1536x1024. Each character occupies only its own equal cell with generous transparent margins, every head, foot, prop and weapon wholly inside that cell. No separators, labels, text, ground, shadows outside silhouettes, scenery, frames or UI. Characters face three-quarter RIGHT in relaxed standing poses, feet aligned consistently near bottom of each cell. No overlapping characters. All are independent town NPCs, NOT variants of the young brown-haired hero. Clearly distinct adult ages, facial features, hair, body builds, outfits and silhouettes. Style matches the attached Human moodboard: beautiful cinematic storybook anime, clean dark outlines, rich soft cel-painted shading, compact ADULT proportions around 4 heads tall, royal blue/warm ivory/field green/muted gold/burgundy accents, oak leather wool brass weathered steel. Read order LEFT TO RIGHT, TOP ROW THEN BOTTOM ROW:\n1. Ansel, elderly stooped male tower keeper, bald pate and bushy silver side hair, lined kind face, thick brown work coat and patched blue scarf, holds a large brass lantern\n2. Pip, young ADULT female lamplighter, short curly red hair and freckles, soft flat cap, amber work coat and brown trousers, tool belt, long lamp-lighting pole\nPreserve each character's unique face and assigned role props. Exact grid, one full character per cell. Transparent alpha everywhere outside the figures.",
+    "source": "/Users/dibranmulder/.codex/generated_images/01a094c1-69e7-75c0-9b5d-f97746cf7821/exec-1420c474-028c-4bbb-8e29-7759ff938d34.png",
+    "key_prompt": "Edit this exact NPC sprite sheet. Keep every character, pose, outfit, face, weapon and layout EXACTLY unchanged. Replace ONLY all checkerboard background squares throughout, including all empty gaps between limbs and props, with perfectly uniform flat vivid magenta RGB 255,0,255 (#ff00ff). No checkerboard. No shadows on backdrop. No alpha transparency visualization. This is a game chroma-key sprite sheet; every empty background pixel must be solid vivid magenta. Preserve the dark character outlines and full figures. Output same dimensions and grid.",
+    "key_source": "/Users/dibranmulder/.codex/generated_images/01a094c1-69e7-75c0-9b5d-f97746cf7821/exec-7e82098b-c943-406f-a69a-f57cb4691fa4.png",
+    "asset": "assets/npcs/wendmere/residents_towerfolk.png"
+  }
+}

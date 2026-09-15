@@ -1,4 +1,5 @@
 extends Control
+var bindings
 signal closed
 signal pouch_requested
 const Chronicle = preload("res://src/ui/chronicle_theme.gd")
@@ -112,7 +113,7 @@ func _select_lineage(id: String) -> void:
 	for key in lineage_buttons:
 		lineage_buttons[key].theme_type_variation = &"PrimaryButton" if key == id else &"QuietButton"
 	for i in 4:
-		tiles[i].configure(kit[i],str(i+3) if id == lineage else "")
+		tiles[i].configure(kit[i],(bindings.label_for("skill:%d" % i) if bindings != null else str(i+3)) if id == lineage else "")
 		tiles[i].locked = not progression.allows(kit[i]) and not sandbox
 		names[i].text = kit[i].name
 		var role: String = {"melee":"Frontal strike","bolt":"Ranged attack","dash":"Forward rush","retreat":"Backward escape","rootbolt":"Rooting projectile","slowbolt":"Slowing projectile","heal":"Healing","ward":"Absorption ward","pulse":"Radial knockback","drain":"Lifesteal projectile"}.get(kit[i].kind,"Combat skill")
@@ -129,7 +130,7 @@ func _select_skill(slot: int) -> void:
 	detail_name.text = skill.name
 	detail_text.text = skill.description
 	detail_text.text += "\n"+progression.requirement_text(skill)
-	values.text = "POWER       %d\nMANA          %d\nCOOLDOWN  %.1f s\nWINDUP       %.2f s\nREACH          %d\n\n%s"%[skill.power,skill.mana,skill.cooldown,skill.windup,skill.reach,"Hotkey %d"%(slot+3) if selected_lineage == lineage else "Opponent skill · Preview only"]
+	values.text = "POWER       %d\nMANA          %d\nCOOLDOWN  %.1f s\nWINDUP       %.2f s\nREACH          %d\n\n%s"%[skill.power,skill.mana,skill.cooldown,skill.windup,skill.reach,"Hotkey " + (bindings.label_for("skill:%d" % slot) if bindings != null else str(slot+3)) if selected_lineage == lineage else "Opponent skill · Preview only"]
 
 func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO,size),Chronicle.NAVY)

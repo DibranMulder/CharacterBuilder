@@ -60,12 +60,34 @@ func _ready() -> void:
 	hometown.pressed.connect(func():
 		get_tree().set_meta("start_clearing_tutorial",false)
 		get_tree().set_meta("training_character",{"lineage":avatar.race_id,"loadout":avatar.loadout.duplicate(),"facing":avatar.facing})
-		# A new builder visit uses this newly selected hero; training returns use the saved model.
+		# Resume the selected lineage journey; first visits use the builder outfit.
 		if get_tree().has_meta("wendmere_model"): get_tree().remove_meta("wendmere_model")
 		if get_tree().has_meta("wendmere_districts"): get_tree().remove_meta("wendmere_districts")
 		if get_tree().has_meta("wendmere_training_route"): get_tree().remove_meta("wendmere_training_route")
+		var journey = preload("res://prototypes/human_hometown/town_save.gd")
+		if get_tree().get_script() == null and journey.exists(avatar.race_id):
+			var restored: Dictionary = journey.read(get_tree(),avatar.race_id)
+			if not restored.ok:
+				var message := AcceptDialog.new()
+				message.dialog_text = restored.error
+				add_child(message)
+				message.popup_centered()
+				return
+			get_tree().change_scene_to_file(restored.scene)
+			return
+		get_tree().set_meta("wendmere_quest",0)
+		get_tree().set_meta("wendmere_journey",true)
 		get_tree().change_scene_to_file("res://prototypes/human_hometown/human_hometown.tscn"))
 	add_child(hometown)
+	var tidekin := Button.new()
+	tidekin.text = "Tidekin Sea"
+	tidekin.position = Vector2(535,592)
+	tidekin.size = Vector2(190,40)
+	tidekin.theme = preload("res://src/ui/chronicle_theme.gd").create()
+	tidekin.pressed.connect(func():
+		get_tree().set_meta("training_character",{"lineage":avatar.race_id,"loadout":avatar.loadout.duplicate(),"facing":avatar.facing})
+		get_tree().change_scene_to_file("res://prototypes/tidekin_sea/tidekin_sea.tscn"))
+	add_child(tidekin)
 	var arena := Button.new()
 	arena.text = "Sparring arena"
 	arena.position = Vector2(753,18)
@@ -78,6 +100,7 @@ func _ready() -> void:
 
 
 func _play_training_clearing(with_tutorial := false) -> void:
+	get_tree().set_meta("wendmere_journey",false)
 	# Builder launches start a new local session rather than reusing another town visitor.
 	for key in ["wendmere_model","wendmere_training_route","wendmere_districts","clearing_departure"]:
 		if get_tree().has_meta(key): get_tree().remove_meta(key)

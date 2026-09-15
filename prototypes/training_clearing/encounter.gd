@@ -85,6 +85,7 @@ func carry_player_from(other) -> void:
 	progression = other.progression
 	configure_equipment(inventory.equipped)
 	health = other.health
+	invulnerable = other.invulnerable
 	mana = other.mana
 	stamina = other.stamina
 	xp = other.xp

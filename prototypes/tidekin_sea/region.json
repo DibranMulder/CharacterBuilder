@@ -1,0 +1,2871 @@
+{
+  "maps": [
+    {
+      "id": "tidekin_sea_land",
+      "name": "Tidewharf Landing",
+      "access": "Shared",
+      "group": "village",
+      "level": 0,
+      "level_max": 0,
+      "levels": "None",
+      "width": 1800.0,
+      "art": "landing",
+      "species": [],
+      "layout": "Two ferry berths, a customs shelter and a three-way public signpost.",
+      "activity": "First Tidekin creation arrives here. Ferrymaster Tavi names the Coast Road, the Coastal Rootway and the dangerous Tidal Currents.",
+      "anchor": "Ferry bell; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_lag",
+        "tidekin_sea_path_001",
+        "tidekin_sea_return_061",
+        "tidekin_sea_return_101",
+        "tidekin_sea_return_116"
+      ],
+      "platforms": [
+        [
+          460,
+          400,
+          230,
+          20
+        ],
+        [
+          620,
+          320,
+          230,
+          20
+        ],
+        [
+          780,
+          240,
+          230,
+          20
+        ],
+        [
+          1000,
+          320,
+          230,
+          20
+        ],
+        [
+          1170,
+          400,
+          230,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          880,
+          240
+        ],
+        [
+          1530,
+          480
+        ]
+      ],
+      "vertical": false
+    },
+    {
+      "id": "tidekin_sea_path_001",
+      "name": "Siltbank Shallows",
+      "access": "Shared",
+      "group": "wilds",
+      "level": 1,
+      "level_max": 5,
+      "levels": "1\u20135",
+      "width": 2200.0,
+      "art": "shallows",
+      "species": [
+        "silt_skitter"
+      ],
+      "layout": "Three dry sandbars joined by shallow ramps; one clear sightline per fight.",
+      "activity": "Clear three distinct blocked runnels, then guide a marked water sample home.",
+      "anchor": "Siltbank warning post; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_land",
+        "tidekin_sea_site_001",
+        "tidekin_sea_path_006"
+      ],
+      "platforms": [
+        [
+          700,
+          400,
+          240,
+          20
+        ],
+        [
+          1200,
+          400,
+          240,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          1050,
+          480
+        ],
+        [
+          1530,
+          480
+        ]
+      ],
+      "vertical": false
+    },
+    {
+      "id": "tidekin_sea_site_001",
+      "name": "Ripplefin Pools",
+      "access": "Shared",
+      "group": "wilds",
+      "level": 1,
+      "level_max": 5,
+      "levels": "None hostile; aid creature 1\u20135",
+      "width": 2200.0,
+      "art": "pools",
+      "species": [
+        "ripplefin_sprout"
+      ],
+      "layout": "A sheltered nursery pool with a low bank and an overhead walkway.",
+      "activity": "Guide three individually marked stranded sprouts through reopened runnels.",
+      "anchor": "Nursery keeper's mat; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_path_001"
+      ],
+      "platforms": [
+        [
+          700,
+          400,
+          240,
+          20
+        ],
+        [
+          1200,
+          400,
+          240,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          1050,
+          480
+        ],
+        [
+          1530,
+          480
+        ]
+      ],
+      "vertical": false
+    },
+    {
+      "id": "tidekin_sea_cm",
+      "name": "Coral Market",
+      "access": "Shared",
+      "group": "village",
+      "level": 0,
+      "level_max": 0,
+      "levels": "None",
+      "width": 1800.0,
+      "art": "landing",
+      "species": [],
+      "layout": "A crescent of shell-awning stalls around a dry loading court.",
+      "activity": "Neri sells basic arms; Brineweft sells armor; Ossa keeps provisions. Broker Pel offers exchange information until the economy exists.",
+      "anchor": "Market bell platform; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_lag"
+      ],
+      "platforms": [
+        [
+          460,
+          400,
+          230,
+          20
+        ],
+        [
+          620,
+          320,
+          230,
+          20
+        ],
+        [
+          780,
+          240,
+          230,
+          20
+        ],
+        [
+          1000,
+          320,
+          230,
+          20
+        ],
+        [
+          1170,
+          400,
+          230,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          880,
+          240
+        ],
+        [
+          1530,
+          480
+        ]
+      ],
+      "vertical": false
+    },
+    {
+      "id": "tidekin_sea_lag",
+      "name": "Tidal Lagoon",
+      "access": "Shared",
+      "group": "village",
+      "level": 0,
+      "level_max": 0,
+      "levels": "None",
+      "width": 1800.0,
+      "art": "landing",
+      "species": [],
+      "layout": "A broad central basin ringed by a permanent upper boardwalk and three tide stairs.",
+      "activity": "Tidemender Sera introduces the blocked freshwater intake. Water changes lower scenery and optional shortcuts; every exit stays reachable.",
+      "anchor": "Central tide gauge; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_cm",
+        "tidekin_sea_ka",
+        "tidekin_sea_dy",
+        "tidekin_sea_land",
+        "tidekin_sea_caus"
+      ],
+      "platforms": [
+        [
+          460,
+          400,
+          230,
+          20
+        ],
+        [
+          620,
+          320,
+          230,
+          20
+        ],
+        [
+          780,
+          240,
+          230,
+          20
+        ],
+        [
+          1000,
+          320,
+          230,
+          20
+        ],
+        [
+          1170,
+          400,
+          230,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          880,
+          240
+        ],
+        [
+          1530,
+          480
+        ]
+      ],
+      "vertical": false
+    },
+    {
+      "id": "tidekin_sea_ka",
+      "name": "Kelp Apothecary",
+      "access": "Shared",
+      "group": "village",
+      "level": 0,
+      "level_max": 0,
+      "levels": "None",
+      "width": 1800.0,
+      "art": "landing",
+      "species": [],
+      "layout": "Kelp racks on three low terraces with a sheltered mixing room at the top.",
+      "activity": "Apothecary Vela teaches water sampling and sells the same baseline restorative supplies as other hometowns.",
+      "anchor": "Mortar-and-shell porch; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_lag"
+      ],
+      "platforms": [
+        [
+          460,
+          400,
+          230,
+          20
+        ],
+        [
+          620,
+          320,
+          230,
+          20
+        ],
+        [
+          780,
+          240,
+          230,
+          20
+        ],
+        [
+          1000,
+          320,
+          230,
+          20
+        ],
+        [
+          1170,
+          400,
+          230,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          880,
+          240
+        ],
+        [
+          1530,
+          480
+        ]
+      ],
+      "vertical": false
+    },
+    {
+      "id": "tidekin_sea_dy",
+      "name": "Divers' Yard",
+      "access": "Shared",
+      "group": "village",
+      "level": 0,
+      "level_max": 0,
+      "levels": "None",
+      "width": 1800.0,
+      "art": "landing",
+      "species": [],
+      "layout": "A dry sparring deck beside nonlethal floating-platform drills.",
+      "activity": "Six class trainers offer the shared skill overview. Divers do not impose a class, swimming or lineage prerequisite.",
+      "anchor": "Training gong; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_lag",
+        "tidekin_sea_inn"
+      ],
+      "platforms": [
+        [
+          460,
+          400,
+          230,
+          20
+        ],
+        [
+          620,
+          320,
+          230,
+          20
+        ],
+        [
+          780,
+          240,
+          230,
+          20
+        ],
+        [
+          1000,
+          320,
+          230,
+          20
+        ],
+        [
+          1170,
+          400,
+          230,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          880,
+          240
+        ],
+        [
+          1530,
+          480
+        ]
+      ],
+      "vertical": false
+    },
+    {
+      "id": "tidekin_sea_inn",
+      "name": "Foamrest Inn",
+      "access": "Shared",
+      "group": "village",
+      "level": 0,
+      "level_max": 0,
+      "levels": "None",
+      "width": 1800.0,
+      "art": "landing",
+      "species": [],
+      "layout": "A low shell lodge with a raised dry common room and return ramp.",
+      "activity": "Innkeeper Pell records local rumors and recovery guidance. Rest does not bind remote respawns or refill resources through travel.",
+      "anchor": "Hearth deck; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_dy"
+      ],
+      "platforms": [
+        [
+          460,
+          400,
+          230,
+          20
+        ],
+        [
+          620,
+          320,
+          230,
+          20
+        ],
+        [
+          780,
+          240,
+          230,
+          20
+        ],
+        [
+          1000,
+          320,
+          230,
+          20
+        ],
+        [
+          1170,
+          400,
+          230,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          880,
+          240
+        ],
+        [
+          1530,
+          480
+        ]
+      ],
+      "vertical": false
+    },
+    {
+      "id": "tidekin_sea_caus",
+      "name": "Tidal Gate Causeway",
+      "access": "Shared",
+      "group": "village",
+      "level": 0,
+      "level_max": 0,
+      "levels": "None",
+      "width": 1800.0,
+      "art": "landing",
+      "species": [],
+      "layout": "A wide causeway with an always-dry central crown and a tidal gatehouse beyond.",
+      "activity": "Reefwarden Nacre, a bonded guardian character, checks permanent Light allegiance. Refusal leaves a safe turn-back space on this map.",
+      "anchor": "Outer gate lantern; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_lag",
+        "tidekin_sea_gs"
+      ],
+      "platforms": [
+        [
+          460,
+          400,
+          230,
+          20
+        ],
+        [
+          620,
+          320,
+          230,
+          20
+        ],
+        [
+          780,
+          240,
+          230,
+          20
+        ],
+        [
+          1000,
+          320,
+          230,
+          20
+        ],
+        [
+          1170,
+          400,
+          230,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          880,
+          240
+        ],
+        [
+          1530,
+          480
+        ]
+      ],
+      "vertical": false
+    },
+    {
+      "id": "tidekin_sea_gs",
+      "name": "Gatehall of Shells",
+      "access": "Light",
+      "group": "stronghold",
+      "level": 0,
+      "level_max": 0,
+      "levels": "None",
+      "width": 1800.0,
+      "art": "citadel",
+      "species": [],
+      "layout": "A double shell arch and a visible return door above the sluice.",
+      "activity": "Shell Captain Iri confirms entry and points to the cistern, barracks and Pearl Hall. Guardian and sentries are not monsters.",
+      "anchor": "Inner gate bench; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_caus",
+        "tidekin_sea_rb",
+        "tidekin_sea_cw",
+        "tidekin_sea_ph"
+      ],
+      "platforms": [
+        [
+          380,
+          400,
+          225,
+          20
+        ],
+        [
+          520,
+          320,
+          225,
+          20
+        ],
+        [
+          660,
+          240,
+          225,
+          20
+        ],
+        [
+          800,
+          160,
+          225,
+          20
+        ],
+        [
+          940,
+          80,
+          225,
+          20
+        ],
+        [
+          1080,
+          0,
+          225,
+          20
+        ],
+        [
+          1220,
+          -80,
+          225,
+          20
+        ],
+        [
+          1360,
+          -160,
+          225,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          620,
+          480
+        ],
+        [
+          850,
+          160
+        ],
+        [
+          1420,
+          -160
+        ]
+      ],
+      "vertical": true
+    },
+    {
+      "id": "tidekin_sea_rb",
+      "name": "Reefguard Barracks",
+      "access": "Light",
+      "group": "stronghold",
+      "level": 0,
+      "level_max": 0,
+      "levels": "None",
+      "width": 1800.0,
+      "art": "citadel",
+      "species": [],
+      "layout": "A ring of bunks and drill platforms around an open equipment court.",
+      "activity": "Reefguard Sen demonstrates the dry-footing rule used by eel encounters; optional practice deals no permanent damage.",
+      "anchor": "Barracks standard; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_gs"
+      ],
+      "platforms": [],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          1050,
+          480
+        ],
+        [
+          1530,
+          480
+        ]
+      ],
+      "vertical": false
+    },
+    {
+      "id": "tidekin_sea_cw",
+      "name": "Cistern Works",
+      "access": "Light",
+      "group": "stronghold",
+      "level": 0,
+      "level_max": 0,
+      "levels": "None",
+      "width": 1800.0,
+      "art": "citadel",
+      "species": [],
+      "layout": "Parallel freshwater channels and a maintenance walkway above them.",
+      "activity": "Engineer Mero provides the missing intake diagram. Three valves have distinct marks and cannot be farmed by toggling.",
+      "anchor": "Maintenance shelter; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_gs"
+      ],
+      "platforms": [],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          1050,
+          480
+        ],
+        [
+          1530,
+          480
+        ]
+      ],
+      "vertical": false
+    },
+    {
+      "id": "tidekin_sea_ph",
+      "name": "Pearl Hall",
+      "access": "Light",
+      "group": "stronghold",
+      "level": 0,
+      "level_max": 0,
+      "levels": "None",
+      "width": 1800.0,
+      "art": "citadel",
+      "species": [],
+      "layout": "A fan-shaped ceremonial hall with a central pearl-lit dais.",
+      "activity": "Steward Amaya authorizes the shrine investigation; door signs distinguish Tide Chamber, Deepvault and shrine descent.",
+      "anchor": "Hall entry dais; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_gs",
+        "tidekin_sea_tc",
+        "tidekin_sea_dv",
+        "tidekin_sea_sc"
+      ],
+      "platforms": [
+        [
+          460,
+          400,
+          230,
+          20
+        ],
+        [
+          620,
+          320,
+          230,
+          20
+        ],
+        [
+          780,
+          240,
+          230,
+          20
+        ],
+        [
+          1000,
+          320,
+          230,
+          20
+        ],
+        [
+          1170,
+          400,
+          230,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          880,
+          240
+        ],
+        [
+          1530,
+          480
+        ]
+      ],
+      "vertical": false
+    },
+    {
+      "id": "tidekin_sea_tc",
+      "name": "The Tide Chamber",
+      "access": "Light",
+      "group": "stronghold",
+      "level": 0,
+      "level_max": 0,
+      "levels": "None",
+      "width": 1800.0,
+      "art": "citadel",
+      "species": [],
+      "layout": "An enclosed listening chamber above a broad tidal window.",
+      "activity": "The Tide Speaker explains the civic cost of the broken regulator. Dialogue concludes here; there is no throne-room boss.",
+      "anchor": "Listening bench; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_ph"
+      ],
+      "platforms": [
+        [
+          380,
+          400,
+          225,
+          20
+        ],
+        [
+          520,
+          320,
+          225,
+          20
+        ],
+        [
+          660,
+          240,
+          225,
+          20
+        ],
+        [
+          800,
+          160,
+          225,
+          20
+        ],
+        [
+          940,
+          80,
+          225,
+          20
+        ],
+        [
+          1080,
+          0,
+          225,
+          20
+        ],
+        [
+          1220,
+          -80,
+          225,
+          20
+        ],
+        [
+          1360,
+          -160,
+          225,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          620,
+          480
+        ],
+        [
+          850,
+          160
+        ],
+        [
+          1420,
+          -160
+        ]
+      ],
+      "vertical": true
+    },
+    {
+      "id": "tidekin_sea_dv",
+      "name": "Deepvault",
+      "access": "Light",
+      "group": "stronghold",
+      "level": 0,
+      "level_max": 0,
+      "levels": "None",
+      "width": 1800.0,
+      "art": "citadel",
+      "species": [],
+      "layout": "A compact archive with dry raised shelves and a shallow observation channel.",
+      "activity": "Archivist Coru supplies a rubbing of the original gate sequence. Records grant one authored quest completion, not repeat scan XP.",
+      "anchor": "Archive stair; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_ph"
+      ],
+      "platforms": [
+        [
+          380,
+          400,
+          225,
+          20
+        ],
+        [
+          520,
+          320,
+          225,
+          20
+        ],
+        [
+          660,
+          240,
+          225,
+          20
+        ],
+        [
+          800,
+          160,
+          225,
+          20
+        ],
+        [
+          940,
+          80,
+          225,
+          20
+        ],
+        [
+          1080,
+          0,
+          225,
+          20
+        ],
+        [
+          1220,
+          -80,
+          225,
+          20
+        ],
+        [
+          1360,
+          -160,
+          225,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          620,
+          480
+        ],
+        [
+          850,
+          160
+        ],
+        [
+          1420,
+          -160
+        ]
+      ],
+      "vertical": true
+    },
+    {
+      "id": "tidekin_sea_sc",
+      "name": "Shrine Causeway",
+      "access": "Light",
+      "group": "story",
+      "level": 0,
+      "level_max": 0,
+      "levels": "None",
+      "width": 1800.0,
+      "art": "shrine",
+      "species": [],
+      "layout": "A causeway descending beside the sea wall with a permanent handrail route.",
+      "activity": "An authorized shrine route opens after Amaya records the engineer's findings. Wrong timing only closes optional stepping-stone shortcuts.",
+      "anchor": "Shrine gate alcove; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_ph",
+        "tidekin_sea_fn"
+      ],
+      "platforms": [
+        [
+          380,
+          400,
+          225,
+          20
+        ],
+        [
+          520,
+          320,
+          225,
+          20
+        ],
+        [
+          660,
+          240,
+          225,
+          20
+        ],
+        [
+          800,
+          160,
+          225,
+          20
+        ],
+        [
+          940,
+          80,
+          225,
+          20
+        ],
+        [
+          1080,
+          0,
+          225,
+          20
+        ],
+        [
+          1220,
+          -80,
+          225,
+          20
+        ],
+        [
+          1360,
+          -160,
+          225,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          620,
+          480
+        ],
+        [
+          850,
+          160
+        ],
+        [
+          1420,
+          -160
+        ]
+      ],
+      "vertical": true
+    },
+    {
+      "id": "tidekin_sea_fn",
+      "name": "Flooded Nave",
+      "access": "Light",
+      "group": "story",
+      "level": 0,
+      "level_max": 0,
+      "levels": "None",
+      "width": 1800.0,
+      "art": "shrine",
+      "species": [],
+      "layout": "A nave with a high gallery, lower tide platforms and three symbol-marked sluices.",
+      "activity": "Route water through three separate repairs, each with a distinct persisted completion bit. A dry gallery always reaches the return portal.",
+      "anchor": "Upper gallery lantern; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_sc",
+        "tidekin_sea_cr"
+      ],
+      "platforms": [
+        [
+          380,
+          400,
+          225,
+          20
+        ],
+        [
+          520,
+          320,
+          225,
+          20
+        ],
+        [
+          660,
+          240,
+          225,
+          20
+        ],
+        [
+          800,
+          160,
+          225,
+          20
+        ],
+        [
+          940,
+          80,
+          225,
+          20
+        ],
+        [
+          1080,
+          0,
+          225,
+          20
+        ],
+        [
+          1220,
+          -80,
+          225,
+          20
+        ],
+        [
+          1360,
+          -160,
+          225,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          620,
+          480
+        ],
+        [
+          850,
+          160
+        ],
+        [
+          1420,
+          -160
+        ]
+      ],
+      "vertical": true
+    },
+    {
+      "id": "tidekin_sea_cr",
+      "name": "Coral Reliquary",
+      "access": "Light",
+      "group": "story",
+      "level": 0,
+      "level_max": 0,
+      "levels": "None",
+      "width": 1800.0,
+      "art": "shrine",
+      "species": [],
+      "layout": "A chamber of branching coral conduits and a sheltered observation balcony.",
+      "activity": "Match the archive rubbing to physical conduit symbols. Success releases one pearl lens; resetting a lever cannot mint another lens.",
+      "anchor": "Reliquary balcony; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_fn",
+        "tidekin_sea_ps"
+      ],
+      "platforms": [
+        [
+          380,
+          400,
+          225,
+          20
+        ],
+        [
+          520,
+          320,
+          225,
+          20
+        ],
+        [
+          660,
+          240,
+          225,
+          20
+        ],
+        [
+          800,
+          160,
+          225,
+          20
+        ],
+        [
+          940,
+          80,
+          225,
+          20
+        ],
+        [
+          1080,
+          0,
+          225,
+          20
+        ],
+        [
+          1220,
+          -80,
+          225,
+          20
+        ],
+        [
+          1360,
+          -160,
+          225,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          620,
+          480
+        ],
+        [
+          850,
+          160
+        ],
+        [
+          1420,
+          -160
+        ]
+      ],
+      "vertical": true
+    },
+    {
+      "id": "tidekin_sea_ps",
+      "name": "The Pearl Sanctum",
+      "access": "Light",
+      "group": "story",
+      "level": 0,
+      "level_max": 0,
+      "levels": "None",
+      "width": 1800.0,
+      "art": "shrine",
+      "species": [],
+      "layout": "A quiet circular sanctuary beneath a dome of water-lit glass.",
+      "activity": "Install the lens and restore the freshwater regulator. This is a peaceful traversal/story culmination, with an explicit return connection.",
+      "anchor": "Sanctum antechamber; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_cr"
+      ],
+      "platforms": [
+        [
+          460,
+          400,
+          230,
+          20
+        ],
+        [
+          620,
+          320,
+          230,
+          20
+        ],
+        [
+          780,
+          240,
+          230,
+          20
+        ],
+        [
+          1000,
+          320,
+          230,
+          20
+        ],
+        [
+          1170,
+          400,
+          230,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          880,
+          240
+        ],
+        [
+          1530,
+          480
+        ]
+      ],
+      "vertical": false
+    },
+    {
+      "id": "tidekin_sea_path_006",
+      "name": "Shellbell Strand",
+      "access": "Shared",
+      "group": "wilds",
+      "level": 6,
+      "level_max": 10,
+      "levels": "6\u201310",
+      "width": 2200.0,
+      "art": "shallows",
+      "species": [
+        "silt_skitter"
+      ],
+      "layout": "A shell beach with two beachside loops and a high public walkway.",
+      "activity": "Repair three different shell-bell tide markers along the full route.",
+      "anchor": "Shellbell shelter; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_path_001",
+        "tidekin_sea_site_006",
+        "tidekin_sea_path_011"
+      ],
+      "platforms": [
+        [
+          700,
+          400,
+          240,
+          20
+        ],
+        [
+          1200,
+          400,
+          240,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          1050,
+          480
+        ],
+        [
+          1530,
+          480
+        ]
+      ],
+      "vertical": false
+    },
+    {
+      "id": "tidekin_sea_site_006",
+      "name": "Nursery Reef",
+      "access": "Shared",
+      "group": "wilds",
+      "level": 6,
+      "level_max": 10,
+      "levels": "None hostile; aid creature 6\u201310",
+      "width": 2200.0,
+      "art": "pools",
+      "species": [
+        "shellbell_nymph"
+      ],
+      "layout": "A shell nursery under a stone canopy; short paths return to one central bell.",
+      "activity": "Replace two cracked bell supports and escort a nymph to the quiet alcove.",
+      "anchor": "Bell keeper's awning; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_path_006"
+      ],
+      "platforms": [
+        [
+          700,
+          400,
+          240,
+          20
+        ],
+        [
+          1200,
+          400,
+          240,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          1050,
+          480
+        ],
+        [
+          1530,
+          480
+        ]
+      ],
+      "vertical": false
+    },
+    {
+      "id": "tidekin_sea_path_011",
+      "name": "Coral Shelf Road",
+      "access": "Shared",
+      "group": "wilds",
+      "level": 11,
+      "level_max": 15,
+      "levels": "11\u201315",
+      "width": 2200.0,
+      "art": "shallows",
+      "species": [
+        "silt_skitter"
+      ],
+      "layout": "A broad shelf beneath coral overhangs with two climbable ramps.",
+      "activity": "Collect three loose survey tags without removing living coral.",
+      "anchor": "Surveyor's canopy; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_path_006",
+        "tidekin_sea_site_011",
+        "tidekin_sea_path_016"
+      ],
+      "platforms": [
+        [
+          460,
+          400,
+          230,
+          20
+        ],
+        [
+          620,
+          320,
+          230,
+          20
+        ],
+        [
+          780,
+          240,
+          230,
+          20
+        ],
+        [
+          1000,
+          320,
+          230,
+          20
+        ],
+        [
+          1170,
+          400,
+          230,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          880,
+          240
+        ],
+        [
+          1530,
+          480
+        ]
+      ],
+      "vertical": false
+    },
+    {
+      "id": "tidekin_sea_site_011",
+      "name": "Nipper Cliffs",
+      "access": "Shared",
+      "group": "wilds",
+      "level": 11,
+      "level_max": 15,
+      "levels": "11\u201315",
+      "width": 2200.0,
+      "art": "pools",
+      "species": [
+        "coral_nipper"
+      ],
+      "layout": "Three wide cliff terraces, with no enemy able to pin the recovery ledge.",
+      "activity": "Map the two-claw warning and clear two occupied survey perches.",
+      "anchor": "Clifftop survey tent; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_path_011"
+      ],
+      "platforms": [
+        [
+          380,
+          400,
+          225,
+          20
+        ],
+        [
+          520,
+          320,
+          225,
+          20
+        ],
+        [
+          660,
+          240,
+          225,
+          20
+        ],
+        [
+          800,
+          160,
+          225,
+          20
+        ],
+        [
+          940,
+          80,
+          225,
+          20
+        ],
+        [
+          1080,
+          0,
+          225,
+          20
+        ],
+        [
+          1220,
+          -80,
+          225,
+          20
+        ],
+        [
+          1360,
+          -160,
+          225,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          850,
+          160
+        ],
+        [
+          1420,
+          -160
+        ]
+      ],
+      "vertical": true
+    },
+    {
+      "id": "tidekin_sea_path_016",
+      "name": "Terrace Tideway",
+      "access": "Shared",
+      "group": "wilds",
+      "level": 16,
+      "level_max": 20,
+      "levels": "16\u201320",
+      "width": 2200.0,
+      "art": "shallows",
+      "species": [
+        "silt_skitter"
+      ],
+      "layout": "Stepped tidal terraces with a permanent upper path and optional lower pools.",
+      "activity": "Reopen three freshwater bypasses using different intake fixtures.",
+      "anchor": "Terrace watchhouse; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_path_011",
+        "tidekin_sea_site_016",
+        "tidekin_sea_path_021"
+      ],
+      "platforms": [
+        [
+          700,
+          400,
+          240,
+          20
+        ],
+        [
+          1200,
+          400,
+          240,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          1050,
+          480
+        ],
+        [
+          1530,
+          480
+        ]
+      ],
+      "vertical": false
+    },
+    {
+      "id": "tidekin_sea_site_016",
+      "name": "Crowncrab Basin",
+      "access": "Shared",
+      "group": "wilds",
+      "level": 16,
+      "level_max": 20,
+      "levels": "16\u201320 only if provoked",
+      "width": 2200.0,
+      "art": "pools",
+      "species": [
+        "tidepool_crowncrab"
+      ],
+      "layout": "A basin with an obvious wide bypass outside the nesting circle.",
+      "activity": "Count three nests from safe marked observation points. No crab kills required.",
+      "anchor": "Basin observation hide; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_path_016"
+      ],
+      "platforms": [
+        [
+          460,
+          400,
+          230,
+          20
+        ],
+        [
+          620,
+          320,
+          230,
+          20
+        ],
+        [
+          780,
+          240,
+          230,
+          20
+        ],
+        [
+          1000,
+          320,
+          230,
+          20
+        ],
+        [
+          1170,
+          400,
+          230,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          880,
+          240
+        ],
+        [
+          1530,
+          480
+        ]
+      ],
+      "vertical": false
+    },
+    {
+      "id": "tidekin_sea_path_021",
+      "name": "Mangrove Channels",
+      "access": "Shared",
+      "group": "wilds",
+      "level": 21,
+      "level_max": 25,
+      "levels": "21\u201325",
+      "width": 2200.0,
+      "art": "mangrove",
+      "species": [
+        "silt_skitter"
+      ],
+      "layout": "Woven root bridges over shallow channels; silhouettes visible through the roots.",
+      "activity": "Remove three marked debris bundles and plant replacement root bindings.",
+      "anchor": "Rootbridge shelter; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_path_016",
+        "tidekin_sea_site_021",
+        "tidekin_sea_path_026"
+      ],
+      "platforms": [
+        [
+          380,
+          400,
+          225,
+          20
+        ],
+        [
+          520,
+          320,
+          225,
+          20
+        ],
+        [
+          660,
+          240,
+          225,
+          20
+        ],
+        [
+          800,
+          160,
+          225,
+          20
+        ],
+        [
+          940,
+          80,
+          225,
+          20
+        ],
+        [
+          1080,
+          0,
+          225,
+          20
+        ],
+        [
+          1220,
+          -80,
+          225,
+          20
+        ],
+        [
+          1360,
+          -160,
+          225,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          850,
+          160
+        ],
+        [
+          1420,
+          -160
+        ]
+      ],
+      "vertical": true
+    },
+    {
+      "id": "tidekin_sea_site_021",
+      "name": "Snapper Rootbeds",
+      "access": "Shared",
+      "group": "wilds",
+      "level": 21,
+      "level_max": 25,
+      "levels": "21\u201325",
+      "width": 2200.0,
+      "art": "mangrove",
+      "species": [
+        "mangrove_snapper"
+      ],
+      "layout": "Root-knotted side pools with ample landing room beside each vertical snap lane.",
+      "activity": "Recover two dropped rigging spools after avoiding or defeating the local snappers.",
+      "anchor": "Rootbed rescue platform; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_path_021"
+      ],
+      "platforms": [
+        [
+          380,
+          400,
+          225,
+          20
+        ],
+        [
+          520,
+          320,
+          225,
+          20
+        ],
+        [
+          660,
+          240,
+          225,
+          20
+        ],
+        [
+          800,
+          160,
+          225,
+          20
+        ],
+        [
+          940,
+          80,
+          225,
+          20
+        ],
+        [
+          1080,
+          0,
+          225,
+          20
+        ],
+        [
+          1220,
+          -80,
+          225,
+          20
+        ],
+        [
+          1360,
+          -160,
+          225,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          850,
+          160
+        ],
+        [
+          1420,
+          -160
+        ]
+      ],
+      "vertical": true
+    },
+    {
+      "id": "tidekin_sea_path_026",
+      "name": "Lanternwater Halls",
+      "access": "Shared",
+      "group": "wilds",
+      "level": 26,
+      "level_max": 30,
+      "levels": "26\u201330",
+      "width": 2200.0,
+      "art": "shallows",
+      "species": [
+        "silt_skitter"
+      ],
+      "layout": "Roofless coastal halls with dry balconies and flooded side aisles.",
+      "activity": "Restore three signal lanterns with separate authored fuel parcels.",
+      "anchor": "Lantern keeper's porch; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_path_021",
+        "tidekin_sea_site_026",
+        "tidekin_sea_path_031"
+      ],
+      "platforms": [
+        [
+          380,
+          400,
+          225,
+          20
+        ],
+        [
+          520,
+          320,
+          225,
+          20
+        ],
+        [
+          660,
+          240,
+          225,
+          20
+        ],
+        [
+          800,
+          160,
+          225,
+          20
+        ],
+        [
+          940,
+          80,
+          225,
+          20
+        ],
+        [
+          1080,
+          0,
+          225,
+          20
+        ],
+        [
+          1220,
+          -80,
+          225,
+          20
+        ],
+        [
+          1360,
+          -160,
+          225,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          850,
+          160
+        ],
+        [
+          1420,
+          -160
+        ]
+      ],
+      "vertical": true
+    },
+    {
+      "id": "tidekin_sea_site_026",
+      "name": "Floodhall Passage",
+      "access": "Shared",
+      "group": "wilds",
+      "level": 26,
+      "level_max": 30,
+      "levels": "None hostile; aid creature 26\u201330",
+      "width": 2200.0,
+      "art": "pools",
+      "species": [
+        "floodhall_lanternfish"
+      ],
+      "layout": "A flooded hall seen from a dry gallery, with door marks below the waterline.",
+      "activity": "Copy three illuminated door signs during distinct light passes.",
+      "anchor": "Gallery survey bench; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_path_026"
+      ],
+      "platforms": [
+        [
+          380,
+          400,
+          225,
+          20
+        ],
+        [
+          520,
+          320,
+          225,
+          20
+        ],
+        [
+          660,
+          240,
+          225,
+          20
+        ],
+        [
+          800,
+          160,
+          225,
+          20
+        ],
+        [
+          940,
+          80,
+          225,
+          20
+        ],
+        [
+          1080,
+          0,
+          225,
+          20
+        ],
+        [
+          1220,
+          -80,
+          225,
+          20
+        ],
+        [
+          1360,
+          -160,
+          225,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          850,
+          160
+        ],
+        [
+          1420,
+          -160
+        ]
+      ],
+      "vertical": true
+    },
+    {
+      "id": "tidekin_sea_path_031",
+      "name": "Reefsong Current",
+      "access": "Shared",
+      "group": "wilds",
+      "level": 31,
+      "level_max": 35,
+      "levels": "31\u201335",
+      "width": 2200.0,
+      "art": "shallows",
+      "species": [
+        "silt_skitter"
+      ],
+      "layout": "Reef platforms surrounding an audible current; a fixed bridge parallels the moving route.",
+      "activity": "Retune three current beacons in the order shown by their wave patterns.",
+      "anchor": "Reefwatch ledge; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_path_026",
+        "tidekin_sea_site_031",
+        "tidekin_sea_path_036"
+      ],
+      "platforms": [
+        [
+          700,
+          400,
+          240,
+          20
+        ],
+        [
+          1200,
+          400,
+          240,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          1050,
+          480
+        ],
+        [
+          1530,
+          480
+        ]
+      ],
+      "vertical": false
+    },
+    {
+      "id": "tidekin_sea_site_031",
+      "name": "Whalelet Sanctuary",
+      "access": "Shared",
+      "group": "wilds",
+      "level": 31,
+      "level_max": 35,
+      "levels": "None hostile; aid creature 31\u201335",
+      "width": 2200.0,
+      "art": "pools",
+      "species": [
+        "reefsong_whalelet"
+      ],
+      "layout": "A broad open-reef loop with dry platforms within every current crossing.",
+      "activity": "Place three resonance stakes, then record one complete song.",
+      "anchor": "Whalewatch shelter; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_path_031"
+      ],
+      "platforms": [
+        [
+          460,
+          400,
+          230,
+          20
+        ],
+        [
+          620,
+          320,
+          230,
+          20
+        ],
+        [
+          780,
+          240,
+          230,
+          20
+        ],
+        [
+          1000,
+          320,
+          230,
+          20
+        ],
+        [
+          1170,
+          400,
+          230,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          880,
+          240
+        ],
+        [
+          1530,
+          480
+        ]
+      ],
+      "vertical": false
+    },
+    {
+      "id": "tidekin_sea_path_036",
+      "name": "Outer Sluiceway",
+      "access": "Shared",
+      "group": "wilds",
+      "level": 36,
+      "level_max": 40,
+      "levels": "36\u201340",
+      "width": 2200.0,
+      "art": "shallows",
+      "species": [
+        "silt_skitter"
+      ],
+      "layout": "A long industrial sluice with raised causeways and marked wet channels.",
+      "activity": "Service three distinct grounding straps and sign off at the outer gauge.",
+      "anchor": "Sluice inspection booth; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_path_031",
+        "tidekin_sea_site_036"
+      ],
+      "platforms": [
+        [
+          700,
+          400,
+          240,
+          20
+        ],
+        [
+          1200,
+          400,
+          240,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          1050,
+          480
+        ],
+        [
+          1530,
+          480
+        ]
+      ],
+      "vertical": false
+    },
+    {
+      "id": "tidekin_sea_site_036",
+      "name": "Gate Eel Narrows",
+      "access": "Shared",
+      "group": "wilds",
+      "level": 36,
+      "level_max": 40,
+      "levels": "36\u201340",
+      "width": 2200.0,
+      "art": "pools",
+      "species": [
+        "tidal_gate_eel"
+      ],
+      "layout": "Parallel wet channels and raised dry stepping ledges around one gate.",
+      "activity": "Close two damaged contacts after surviving clearly signalled pulses.",
+      "anchor": "Dry gate-inspection deck; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_path_036"
+      ],
+      "platforms": [
+        [
+          700,
+          400,
+          240,
+          20
+        ],
+        [
+          1200,
+          400,
+          240,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          1050,
+          480
+        ],
+        [
+          1530,
+          480
+        ]
+      ],
+      "vertical": false
+    },
+    {
+      "id": "tidekin_sea_return_061",
+      "name": "Stormtide Terraces",
+      "access": "Shared",
+      "group": "wilds",
+      "level": 61,
+      "level_max": 65,
+      "levels": "61\u201365",
+      "width": 2200.0,
+      "art": "storm",
+      "species": [
+        "stormshell_skitter"
+      ],
+      "layout": "A storm-battered outer terrace with two parallel retreat paths.",
+      "activity": "Rebuild three storm screens and remove loose conductive shell fragments.",
+      "anchor": "Stormwatch shelter; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_land",
+        "tidekin_sea_return_066"
+      ],
+      "platforms": [
+        [
+          460,
+          400,
+          230,
+          20
+        ],
+        [
+          620,
+          320,
+          230,
+          20
+        ],
+        [
+          780,
+          240,
+          230,
+          20
+        ],
+        [
+          1000,
+          320,
+          230,
+          20
+        ],
+        [
+          1170,
+          400,
+          230,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          880,
+          240
+        ],
+        [
+          1530,
+          480
+        ]
+      ],
+      "vertical": false
+    },
+    {
+      "id": "tidekin_sea_return_066",
+      "name": "Blackwater Reef",
+      "access": "Shared",
+      "group": "wilds",
+      "level": 66,
+      "level_max": 70,
+      "levels": "66\u201370",
+      "width": 2200.0,
+      "art": "storm",
+      "species": [
+        "blackwater_pincer"
+      ],
+      "layout": "A dark reef corridor with broken sightlines and dry refuge islands.",
+      "activity": "Recover three pressure gauges; fights are avoidable on the repair route.",
+      "anchor": "Reef rescue beacon; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_return_061",
+        "tidekin_sea_return_071"
+      ],
+      "platforms": [
+        [
+          700,
+          400,
+          240,
+          20
+        ],
+        [
+          1200,
+          400,
+          240,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          1050,
+          480
+        ],
+        [
+          1530,
+          480
+        ]
+      ],
+      "vertical": false
+    },
+    {
+      "id": "tidekin_sea_return_071",
+      "name": "Pressurehall Passage",
+      "access": "Shared",
+      "group": "wilds",
+      "level": 71,
+      "level_max": 75,
+      "levels": "71\u201375",
+      "width": 2200.0,
+      "art": "storm",
+      "species": [
+        "bellowshell_crawler"
+      ],
+      "layout": "A pressure-control complex with redundant dry relief galleries.",
+      "activity": "Vent three separate chambers without entering the discharge lanes.",
+      "anchor": "Relief-gallery cabin; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_return_066",
+        "tidekin_sea_return_076"
+      ],
+      "platforms": [
+        [
+          380,
+          400,
+          225,
+          20
+        ],
+        [
+          520,
+          320,
+          225,
+          20
+        ],
+        [
+          660,
+          240,
+          225,
+          20
+        ],
+        [
+          800,
+          160,
+          225,
+          20
+        ],
+        [
+          940,
+          80,
+          225,
+          20
+        ],
+        [
+          1080,
+          0,
+          225,
+          20
+        ],
+        [
+          1220,
+          -80,
+          225,
+          20
+        ],
+        [
+          1360,
+          -160,
+          225,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          850,
+          160
+        ],
+        [
+          1420,
+          -160
+        ]
+      ],
+      "vertical": true
+    },
+    {
+      "id": "tidekin_sea_return_076",
+      "name": "Maelstrom Causeway",
+      "access": "Shared",
+      "group": "wilds",
+      "level": 76,
+      "level_max": 80,
+      "levels": "76\u201380",
+      "width": 2200.0,
+      "art": "storm",
+      "species": [
+        "riptide_coil"
+      ],
+      "layout": "A causeway circling an offshore vortex, with an anchored inner service route.",
+      "activity": "Reset three mooring winches while keeping out of marked pull lanes.",
+      "anchor": "Mooring house; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_return_071"
+      ],
+      "platforms": [
+        [
+          460,
+          400,
+          230,
+          20
+        ],
+        [
+          620,
+          320,
+          230,
+          20
+        ],
+        [
+          780,
+          240,
+          230,
+          20
+        ],
+        [
+          1000,
+          320,
+          230,
+          20
+        ],
+        [
+          1170,
+          400,
+          230,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          880,
+          240
+        ],
+        [
+          1530,
+          480
+        ]
+      ],
+      "vertical": false
+    },
+    {
+      "id": "tidekin_sea_return_101",
+      "name": "First Pearl Shoals",
+      "access": "Shared",
+      "group": "wilds",
+      "level": 101,
+      "level_max": 105,
+      "levels": "101\u2013105",
+      "width": 2200.0,
+      "art": "confluence",
+      "species": [
+        "pearlglass_sentinel"
+      ],
+      "layout": "A luminous shoal of fossil pearl plates and broad stone platforms.",
+      "activity": "Realign three prism plates; reflective phases are visible from safe cover.",
+      "anchor": "Pearlwatch refuge; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_land"
+      ],
+      "platforms": [
+        [
+          380,
+          400,
+          225,
+          20
+        ],
+        [
+          520,
+          320,
+          225,
+          20
+        ],
+        [
+          660,
+          240,
+          225,
+          20
+        ],
+        [
+          800,
+          160,
+          225,
+          20
+        ],
+        [
+          940,
+          80,
+          225,
+          20
+        ],
+        [
+          1080,
+          0,
+          225,
+          20
+        ],
+        [
+          1220,
+          -80,
+          225,
+          20
+        ],
+        [
+          1360,
+          -160,
+          225,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          850,
+          160
+        ],
+        [
+          1420,
+          -160
+        ]
+      ],
+      "vertical": true
+    },
+    {
+      "id": "tidekin_sea_return_116",
+      "name": "Worldtide Confluence",
+      "access": "Shared",
+      "group": "wilds",
+      "level": 116,
+      "level_max": 120,
+      "levels": "116\u2013120; optional boss 120",
+      "width": 3200.0,
+      "art": "confluence",
+      "species": [
+        "confluence_eel",
+        "undertow_regent"
+      ],
+      "layout": "A convergence of three sea channels around a dry ring of ancient gates.",
+      "activity": "Stabilize three channel anchors for solo completion; the boss occupies an optional inner ring.",
+      "anchor": "Confluence service refuge; a dry refuge on this same map.",
+      "neighbors": [
+        "tidekin_sea_land"
+      ],
+      "platforms": [
+        [
+          700,
+          400,
+          240,
+          20
+        ],
+        [
+          1200,
+          400,
+          240,
+          20
+        ]
+      ],
+      "fixture_points": [
+        [
+          570,
+          480
+        ],
+        [
+          1050,
+          480
+        ],
+        [
+          1530,
+          480
+        ]
+      ],
+      "vertical": false
+    }
+  ],
+  "creatures": {
+    "silt_skitter": {
+      "id": "silt_skitter",
+      "name": "Silt Skitter",
+      "disposition": "hostile",
+      "health": 1,
+      "damage": 1,
+      "tell": 0.75,
+      "active": 0.2,
+      "recovery": 0.95,
+      "attack": "lunge",
+      "sprite": "res://assets/monsters/tidekin/silt_skitter.png",
+      "pivot": [
+        0.5,
+        1.0
+      ]
+    },
+    "ripplefin_sprout": {
+      "id": "ripplefin_sprout",
+      "name": "Ripplefin Sprout",
+      "disposition": "benevolent",
+      "health": 1,
+      "damage": 0,
+      "tell": 1,
+      "active": 0,
+      "recovery": 1,
+      "attack": "aid",
+      "sprite": "res://assets/monsters/tidekin/ripplefin_sprout.png",
+      "pivot": [
+        0.5,
+        0.5
+      ]
+    },
+    "shellbell_nymph": {
+      "id": "shellbell_nymph",
+      "name": "Shellbell Nymph",
+      "disposition": "benevolent",
+      "health": 1,
+      "damage": 0,
+      "tell": 1,
+      "active": 0,
+      "recovery": 1,
+      "attack": "aid",
+      "sprite": "res://assets/monsters/tidekin/shellbell_nymph.png",
+      "pivot": [
+        0.5,
+        0.5
+      ]
+    },
+    "coral_nipper": {
+      "id": "coral_nipper",
+      "name": "Coral Nipper",
+      "disposition": "hostile",
+      "health": 1.1,
+      "damage": 1,
+      "tell": 0.8,
+      "active": 0.25,
+      "recovery": 1,
+      "attack": "pinch",
+      "sprite": "res://assets/monsters/tidekin/coral_nipper.png",
+      "pivot": [
+        0.5,
+        1.0
+      ]
+    },
+    "tidepool_crowncrab": {
+      "id": "tidepool_crowncrab",
+      "name": "Tidepool Crowncrab",
+      "disposition": "neutral",
+      "health": 1.3,
+      "damage": 0.9,
+      "tell": 1,
+      "active": 0.25,
+      "recovery": 1.2,
+      "attack": "shove",
+      "sprite": "res://assets/monsters/tidekin/tidepool_crowncrab.png",
+      "pivot": [
+        0.5,
+        1.0
+      ]
+    },
+    "mangrove_snapper": {
+      "id": "mangrove_snapper",
+      "name": "Mangrove Snapper",
+      "disposition": "hostile",
+      "health": 0.9,
+      "damage": 1.2,
+      "tell": 0.8,
+      "active": 0.25,
+      "recovery": 1.1,
+      "attack": "snap",
+      "sprite": "res://assets/monsters/tidekin/mangrove_snapper.png",
+      "pivot": [
+        0.5,
+        1.0
+      ]
+    },
+    "floodhall_lanternfish": {
+      "id": "floodhall_lanternfish",
+      "name": "Floodhall Lanternfish",
+      "disposition": "benevolent",
+      "health": 1,
+      "damage": 0,
+      "tell": 1,
+      "active": 0,
+      "recovery": 1,
+      "attack": "aid",
+      "sprite": "res://assets/monsters/tidekin/floodhall_lanternfish.png",
+      "pivot": [
+        0.5,
+        0.5
+      ]
+    },
+    "reefsong_whalelet": {
+      "id": "reefsong_whalelet",
+      "name": "Reefsong Whalelet",
+      "disposition": "benevolent",
+      "health": 1,
+      "damage": 0,
+      "tell": 1,
+      "active": 0,
+      "recovery": 1,
+      "attack": "aid",
+      "sprite": "res://assets/monsters/tidekin/reefsong_whalelet.png",
+      "pivot": [
+        0.5,
+        0.5
+      ]
+    },
+    "tidal_gate_eel": {
+      "id": "tidal_gate_eel",
+      "name": "Tidal Gate Eel",
+      "disposition": "hostile",
+      "health": 1,
+      "damage": 1.1,
+      "tell": 1,
+      "active": 0.35,
+      "recovery": 1.4,
+      "attack": "pulse",
+      "sprite": "res://assets/monsters/tidekin/tidal_gate_eel.png",
+      "pivot": [
+        0.5,
+        0.5
+      ]
+    },
+    "stormshell_skitter": {
+      "id": "stormshell_skitter",
+      "name": "Stormshell Skitter",
+      "disposition": "hostile",
+      "health": 1.1,
+      "damage": 1,
+      "tell": 0.85,
+      "active": 0.25,
+      "recovery": 1.1,
+      "attack": "shard",
+      "sprite": "res://assets/monsters/tidekin/stormshell_skitter.png",
+      "pivot": [
+        0.5,
+        1.0
+      ]
+    },
+    "blackwater_pincer": {
+      "id": "blackwater_pincer",
+      "name": "Blackwater Pincer",
+      "disposition": "hostile",
+      "health": 1.2,
+      "damage": 1.1,
+      "tell": 0.9,
+      "active": 0.3,
+      "recovery": 1.2,
+      "attack": "pinch",
+      "sprite": "res://assets/monsters/tidekin/blackwater_pincer.png",
+      "pivot": [
+        0.5,
+        1.0
+      ]
+    },
+    "bellowshell_crawler": {
+      "id": "bellowshell_crawler",
+      "name": "Bellowshell Crawler",
+      "disposition": "hostile",
+      "health": 1.25,
+      "damage": 1,
+      "tell": 1,
+      "active": 0.5,
+      "recovery": 1.4,
+      "attack": "steam",
+      "sprite": "res://assets/monsters/tidekin/bellowshell_crawler.png",
+      "pivot": [
+        0.5,
+        1.0
+      ]
+    },
+    "riptide_coil": {
+      "id": "riptide_coil",
+      "name": "Riptide Coil",
+      "disposition": "hostile",
+      "health": 1,
+      "damage": 1.15,
+      "tell": 1,
+      "active": 0.6,
+      "recovery": 1.2,
+      "attack": "pull",
+      "sprite": "res://assets/monsters/tidekin/riptide_coil.png",
+      "pivot": [
+        0.5,
+        0.5
+      ]
+    },
+    "pearlglass_sentinel": {
+      "id": "pearlglass_sentinel",
+      "name": "Pearlglass Sentinel",
+      "disposition": "corrupted",
+      "health": 1.35,
+      "damage": 1,
+      "tell": 1.1,
+      "active": 0.45,
+      "recovery": 1.5,
+      "attack": "beam",
+      "sprite": "res://assets/monsters/tidekin/pearlglass_sentinel.png",
+      "pivot": [
+        0.5,
+        1.0
+      ]
+    },
+    "confluence_eel": {
+      "id": "confluence_eel",
+      "name": "Confluence Eel",
+      "disposition": "hostile",
+      "health": 1.2,
+      "damage": 1.1,
+      "tell": 1.15,
+      "active": 0.4,
+      "recovery": 1.5,
+      "attack": "pulse",
+      "sprite": "res://assets/monsters/tidekin/confluence_eel.png",
+      "pivot": [
+        0.5,
+        0.5
+      ]
+    },
+    "undertow_regent": {
+      "id": "undertow_regent",
+      "name": "The Undertow Regent",
+      "disposition": "optional Group boss",
+      "health": 12,
+      "damage": 1.8,
+      "tell": 1.2,
+      "active": 0.5,
+      "recovery": 1.5,
+      "attack": "regent",
+      "sprite": "res://assets/monsters/tidekin/undertow_regent.png",
+      "pivot": [
+        0.5,
+        1.0
+      ]
+    }
+  }
+}

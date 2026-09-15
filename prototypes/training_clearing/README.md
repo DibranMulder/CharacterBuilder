@@ -21,7 +21,7 @@ real progression. No account, server, Exchange or village is implemented yet.
 ## Guided in-game tutorial
 
 Choose **Start tutorial** in the builder or **Tutorial · T** in free practice.
-The tutorial uses four separate map states, connected by stone arch exits:
+The tutorial uses four separate map states, connected by ground-glow exits:
 
 | Map | Learn by doing | East exit opens after |
 | --- | --- | --- |
@@ -32,12 +32,12 @@ The tutorial uses four separate map states, connected by stone arch exits:
 
 Each map has its own dimensions, platforms, enemies, landmarks and palette.
 The trail and camp are safe. Only camp contains Rowan. Walk through an open
-arch to change maps; western arches return to previous maps. Arrival positions
+glow to change maps; western glows return to previous maps. Arrival positions
 are outside the return trigger. Menus, death, airborne movement, unfinished
 attacks and active projectiles prevent transfers. Death recovers at the current
 map's Recovery Anchor. Returning preserves defeated enemies and collected bags.
 
-Only one short, two-line hint appears near the relevant place or target.
+A small hint icon appears near the relevant place or target; hover to read its guidance, or tap to toggle on touch.
 It changes automatically as actions succeed. Enemy windups prompt defense;
 missing health or mana can prompt a potion. Shieldless heroes get an evasion
 hint. Menus replace the world hint with one short instruction beneath their
@@ -60,7 +60,7 @@ or wearing a shield does not block the route.
 
 `tutorial.gd` owns maps, transitions and objective-derived hints. `encounter.gd`
 owns map bounds, physics, rewards and successful-action reporting.
-`tutorial_panel.gd` renders a fixed-size hint and changes text only when needed.
+`tutorial_panel.gd` uses the shared hover hint icon and changes text only when needed.
 The scene assigns each control's final visibility once per frame. This replaces
 the old hide/show loop (1,440 visibility changes in 60 unchanged frames) and
 repeated status-label rewriting. The regression now reports zero unnecessary
@@ -92,7 +92,7 @@ still cannot wear pants or boots. Finish an attack/projectile before swapping.
 Closing the pouch restores the previous pause state. Builder retains its original
 selection; loot and clearing gear swaps do not overwrite that selection.
 
-Start with three HP and three mana potions. **H** restores up to 40 HP and **M**
+Start with three HP and three mana potions. **H** restores up to 40 HP and **P**
 up to 40 mana, with matching on-screen buttons and a shared one-second cooldown.
 Full resources, empty stacks, death, and cooldown never consume a potion.
 Potions and collected loot survive local death. Restart resets coins, pouch and
@@ -109,7 +109,7 @@ slot cards and a navy comparison panel. Drag gear onto its highlighted matching
 slot, or drag equipped gear to a pouch cell to unequip; clicking and the action
 button remain available. Filters, sorting and paging do not discard items.
 24 is the page size, not a new inventory capacity restriction. Potion stacks
-are inspectable here and remain usable via H/M after closing the paused pouch.
+are inspectable here and remain usable via H/P after closing the paused pouch.
 Only the eight implemented equipment slots and real prototype stats are shown;
 the mockup's future talents, rarity system and extra slots are not implied.
 
@@ -209,3 +209,23 @@ overlapping level badge, name, red/blue numeric bars and slim green XP percentag
 The portrait renders the equipped character (including headgear) once per outfit
 change through `src/ui/character_portrait.gd`; it is not a continuously animated
 second character. `capture_hud.gd` produces an eight-lineage visual audit.
+
+
+**M** or **Map · M** opens the [world atlas](../../src/world/README.md), including all regions, strongholds, roads and submap charts. Browsing pauses play without travelling. **P** uses a mana potion.
+
+### Action assignments
+
+Open **Bindings · B** to assign actions to **1–6**, **H**, and **P**. Each dropdown
+accepts a lineage/shared skill, basic attack, held guard, health potion, mana
+potion, or an empty slot. Changes save automatically per lineage across sessions
+and apply in the hometown, Tidekin maps, training, and sparring (where potions
+are unavailable). Locked skills can be assigned but still require training.
+The menu pauses play; **Done**, **B**, or **Esc** restores the previous pause state.
+**Reset defaults** restores the original layout. **J**, **Shift**, **K** (training),
+and **7/8** remain secondary shortcuts. Skill badges and potion labels reflect
+assignments.
+
+Portals share a pulsing gold floor ring with fading upward light and sparks;
+sealed destinations show a dim floor ring without the rising light.
+
+Stand on a portal and press **Up** to activate it; walking onto it no longer travels automatically. **E** remains the NPC interaction key. Portal destinations, quest guidance, and tutorial instructions are icon-only until hovered (or tapped on touch).

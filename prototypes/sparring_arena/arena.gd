@@ -4,6 +4,9 @@ const Avatar = preload("res://prototypes/training_clearing/vanguard_visual.gd")
 const Chronicle = preload("res://src/ui/chronicle_theme.gd")
 const Reaction = preload("res://src/ui/combat_reaction.gd")
 var reactions := [Reaction.new(),Reaction.new()]
+var bindings = preload("res://src/action_bindings.gd").new()
+var bindings_panel: Control
+var paused_before_bindings := false
 var model = Duel.new()
 var selection: Dictionary
 var opponent := "goblin"
@@ -32,6 +35,7 @@ var time := 0.0
 
 func _ready() -> void:
 	selection = get_tree().get_meta("training_character",{"lineage":"human","loadout":CharacterCatalog.reference_loadout("human"),"facing":&"right"}).duplicate(true)
+	bindings.load_for(selection.lineage)
 	for id in CharacterCatalog.race_ids():
 		if id != selection.lineage: opponents.append(id)
 	opponent = opponents[0] if not opponent in opponents else opponent
@@ -99,6 +103,7 @@ func _build_ui() -> void:
 	level.select(1)
 	level.item_selected.connect(func(index): difficulty = index; rematch())
 	add_child(level)
+	_button("Bindings · B",Vector2(800,136),Vector2(130,32),_toggle_bindings)
 	_button("Builder",Vector2(365,136),Vector2(92,32),_builder)
 	_button("Rematch · R",Vector2(463,136),Vector2(112,32),rematch)
 	_button("Skills · L",Vector2(581,136),Vector2(96,32),_toggle_skills)
@@ -157,6 +162,7 @@ func _builder() -> void:
 	get_tree().change_scene_to_file("res://main.tscn")
 
 func _toggle_skills() -> void:
+	if is_instance_valid(bindings_panel): return
 	if is_instance_valid(skill_overview):
 		skill_overview.queue_free()
 		skill_overview = null
@@ -165,6 +171,7 @@ func _toggle_skills() -> void:
 	paused_before_skills = paused
 	_set_paused(true)
 	skill_overview = preload("res://src/ui/skill_overview.gd").new()
+	skill_overview.bindings = bindings
 	skill_overview.lineage = selection.lineage
 	skill_overview.progression = preload("res://src/discipline_profiles.gd").get_profile(get_tree(),selection.lineage)
 	skill_overview.sandbox = true
@@ -184,19 +191,24 @@ func _attack(slot: int) -> void:
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	if not event is InputEventKey or not event.pressed or event.echo: return
+	if is_instance_valid(bindings_panel):
+		if event.physical_keycode in [KEY_B,KEY_ESCAPE]: _toggle_bindings()
+		return
 	if is_instance_valid(skill_overview):
 		if event.physical_keycode in [KEY_ESCAPE,KEY_L]: _toggle_skills()
 		return
+	if event.physical_keycode in bindings.KEYS:
+		var action: String = bindings.action_for(event.physical_keycode)
+		if action == "attack": _attack(-1)
+		elif action.begins_with("skill:"): _attack(int(action.get_slice(":",1)))
+		return
 	match event.physical_keycode:
+		KEY_B: _toggle_bindings()
 		KEY_L: _toggle_skills()
 		KEY_ESCAPE: _set_paused(not paused)
 		KEY_R: rematch()
 		KEY_SPACE,KEY_UP: _jump()
-		KEY_J,KEY_1: _attack(-1)
-		KEY_3: _attack(0)
-		KEY_4: _attack(1)
-		KEY_5: _attack(2)
-		KEY_6: _attack(3)
+		KEY_J: _attack(-1)
 		KEY_7: _attack(4)
 		KEY_8: _attack(5)
 
@@ -206,7 +218,7 @@ func _physics_process(delta: float) -> void:
 		time += delta
 		var direction := float(held.right or Input.is_physical_key_pressed(KEY_D) or Input.is_physical_key_pressed(KEY_RIGHT))-float(held.left or Input.is_physical_key_pressed(KEY_A) or Input.is_physical_key_pressed(KEY_LEFT))
 		for i in 2: model.muzzles[i] = to_local(avatars[i].skill_projectile_socket(model.fighters[i].action))
-		model.step(delta,direction,held.guard or Input.is_physical_key_pressed(KEY_SHIFT) or Input.is_physical_key_pressed(KEY_2))
+		model.step(delta,direction,held.guard or Input.is_physical_key_pressed(KEY_SHIFT) or bindings.held("guard"))
 		for event in model.events:
 			if event.kind == "effect":
 				event.age = 0.0
@@ -223,7 +235,7 @@ func _physics_process(delta: float) -> void:
 func _update_view() -> void:
 	for child in get_children():
 		if child is BaseButton and child not in skill_buttons:
-			child.visible = paused and child.position.y < 190 and not is_instance_valid(skill_overview)
+			child.visible = paused and child.position.y < 190 and not is_instance_valid(skill_overview) and not is_instance_valid(bindings_panel)
 	var viewport := get_viewport_rect().size
 	var factor := minf(viewport.x/1152,viewport.y/648)
 	scale = Vector2.ONE*factor
@@ -250,14 +262,17 @@ func _update_view() -> void:
 	for i in skill_buttons.size():
 		var skill: Dictionary = player.skills[i]
 		var cooldown: float = player.cooldowns[i]
+		skill_buttons[i].hotkey = bindings.label_for("skill:%d" % i)
+		skill_buttons[i].visible = not is_instance_valid(bindings_panel) and not is_instance_valid(skill_overview)
 		skill_buttons[i].cooldown = cooldown
 		skill_buttons[i].cooldown_max = skill.cooldown
 		skill_buttons[i].mana_available = player.mana >= skill.mana
 		skill_buttons[i].disabled = paused or model.countdown > 0 or model.winner >= 0 or cooldown > 0 or player.mana < skill.mana or not player.action.is_empty()
 		skill_buttons[i].queue_redraw()
+	attack_button.text = "ATTACK\nJ " + bindings.label_for("attack")
 	attack_button.disabled = paused or model.countdown > 0 or model.winner >= 0 or player.loadout.weapon == "none"
 	guard_button.disabled = not player.can_guard() or paused or model.winner >= 0
-	guard_button.text = "GUARD %d\nShift / 2"%player.stamina if player.can_guard() else "NO SHIELD"
+	guard_button.text = "GUARD %d\nShift %s"%[player.stamina,bindings.label_for("guard")] if player.can_guard() else "NO SHIELD"
 	result.text = "Paused" if paused else ("Ready · %d"%ceili(model.countdown) if model.countdown > 0 else "")
 	if model.winner >= 0:
 		result.text = ["Victory","Defeat","Draw"][model.winner]+" · %.1fs · R to rematch"%model.elapsed
@@ -312,3 +327,19 @@ func _draw() -> void:
 		draw_arc(effect.position,radius,0,TAU,48,color,3,true)
 		if effect.effect in ["dash","retreat"]:
 			draw_line(effect.position,model.fighters[effect.owner].position-Vector2(0,65),color,5,true)
+
+func _toggle_bindings() -> void:
+	if is_instance_valid(bindings_panel):
+		bindings_panel.queue_free()
+		bindings_panel = null
+		_set_paused(paused_before_bindings)
+		return
+	if is_instance_valid(skill_overview): return
+	paused_before_bindings = paused
+	_set_paused(true)
+	bindings_panel = preload("res://src/ui/action_bindings_panel.gd").new()
+	bindings_panel.bindings = bindings
+	bindings_panel.kit = model.fighters[0].skills
+	bindings_panel.closed.connect(_toggle_bindings)
+	add_child(bindings_panel)
+	bindings_panel.status.text = "Potions are unavailable in sparring. Assignments also apply outside the arena."

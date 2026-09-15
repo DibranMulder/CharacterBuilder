@@ -1,0 +1,86 @@
+[
+  {
+    "id": "open_lands",
+    "file": "assets/maps/regions/open_lands.png",
+    "reference": "designs/moodboards/humans-v2.png",
+    "prompt": "Use case: stylized-concept. Asset: background PNG for an interactive RPG REGION MAP. Generate a single landscape 3:2 painted illustrated fantasy atlas plate showing verdant fields, orchard terraces, river and ivory castle, blue banners, warm country roads. Use the supplied moodboard for the cultural palette, materials and painterly anime storybook quality. View the entire terrain obliquely from high above, cartographic miniature scale; NOT a side-scrolling scene and NOT a moodboard. Arrange illustrative terrain around a broad calm center, low-contrast empty areas throughout for game-drawn location markers and paths. Organic edges, richly painted geography, soft atmospheric depth. The game overlays accurate routes and labels separately: no text, no labels, no numbers, no compass, no UI, no border, no people, no monsters, no drawn dotted route lines. Clear region-specific identity, lovely detailed hand-painted image; no generic parchment.",
+    "tool": "built-in image_gen"
+  },
+  {
+    "id": "tidekin_sea",
+    "file": "assets/maps/regions/tidekin_sea.png",
+    "reference": "designs/moodboards/tidekin.png",
+    "prompt": "Use case: stylized-concept. Asset: background PNG for an interactive RPG REGION MAP. Generate a single landscape 3:2 painted illustrated fantasy atlas plate showing turquoise archipelago, shell wharves, coral reefs, kelp, ivory Pearl Citadel and submerged shrine, sea-green currents. Use the supplied moodboard for the cultural palette, materials and painterly anime storybook quality. View the entire terrain obliquely from high above, cartographic miniature scale; NOT a side-scrolling scene and NOT a moodboard. Arrange illustrative terrain around a broad calm center, low-contrast empty areas throughout for game-drawn location markers and paths. Organic edges, richly painted geography, soft atmospheric depth. The game overlays accurate routes and labels separately: no text, no labels, no numbers, no compass, no UI, no border, no people, no monsters, no drawn dotted route lines. Clear region-specific identity, lovely detailed hand-painted image; no generic parchment.",
+    "tool": "built-in image_gen"
+  },
+  {
+    "id": "elder_forests",
+    "file": "assets/maps/regions/elder_forests.png",
+    "reference": "designs/moodboards/grove-centaurs.png",
+    "prompt": "Use case: stylized-concept. Asset: background PNG for an interactive RPG REGION MAP. Generate a single landscape 3:2 painted illustrated fantasy atlas plate showing ancient canopy, massive Heartgrove tree, mossy root paths, woodland clearings, bronze and fern green. Use the supplied moodboard for the cultural palette, materials and painterly anime storybook quality. View the entire terrain obliquely from high above, cartographic miniature scale; NOT a side-scrolling scene and NOT a moodboard. Arrange illustrative terrain around a broad calm center, low-contrast empty areas throughout for game-drawn location markers and paths. Organic edges, richly painted geography, soft atmospheric depth. The game overlays accurate routes and labels separately: no text, no labels, no numbers, no compass, no UI, no border, no people, no monsters, no drawn dotted route lines. Clear region-specific identity, lovely detailed hand-painted image; no generic parchment.",
+    "tool": "built-in image_gen"
+  },
+  {
+    "id": "sky_reaches",
+    "file": "assets/maps/regions/sky_reaches.png",
+    "reference": "designs/moodboards/aeralith.png",
+    "prompt": "Use case: stylized-concept. Asset: background PNG for an interactive RPG REGION MAP. Generate a single landscape 3:2 painted illustrated fantasy atlas plate showing floating ivory islands, rope bridges, cloud seas, blue-gold Skyspire and astronomical observatory, pale lavender. Use the supplied moodboard for the cultural palette, materials and painterly anime storybook quality. View the entire terrain obliquely from high above, cartographic miniature scale; NOT a side-scrolling scene and NOT a moodboard. Arrange illustrative terrain around a broad calm center, low-contrast empty areas throughout for game-drawn location markers and paths. Organic edges, richly painted geography, soft atmospheric depth. The game overlays accurate routes and labels separately: no text, no labels, no numbers, no compass, no UI, no border, no people, no monsters, no drawn dotted route lines. Clear region-specific identity, lovely detailed hand-painted image; no generic parchment.",
+    "tool": "built-in image_gen"
+  },
+  {
+    "id": "broken_mountains",
+    "file": "assets/maps/regions/broken_mountains.png",
+    "reference": "designs/moodboards/crag-trolls.png",
+    "prompt": "Use case: stylized-concept. Asset: background PNG for an interactive RPG REGION MAP. Generate a single landscape 3:2 painted illustrated fantasy atlas plate showing basalt peaks, quarry terraces, wooden hoists, iron Stormgate fortress, orange forge light amid slate mountain passes. Use the supplied moodboard for the cultural palette, materials and painterly anime storybook quality. View the entire terrain obliquely from high above, cartographic miniature scale; NOT a side-scrolling scene and NOT a moodboard. Arrange illustrative terrain around a broad calm center, low-contrast empty areas throughout for game-drawn location markers and paths. Organic edges, richly painted geography, soft atmospheric depth. The game overlays accurate routes and labels separately: no text, no labels, no numbers, no compass, no UI, no border, no people, no monsters, no drawn dotted route lines. Clear region-specific identity, lovely detailed hand-painted image; no generic parchment.",
+    "tool": "built-in image_gen"
+  },
+  {
+    "id": "underdeep",
+    "file": "assets/maps/regions/underdeep.png",
+    "reference": "designs/moodboards/deep-goblins.png",
+    "prompt": "Use case: stylized-concept. Asset: background PNG for an interactive RPG REGION MAP. Generate a single landscape 3:2 painted illustrated fantasy atlas plate showing cavern cross-section seen as illustrated map, branching tunnels, luminous purple mushrooms, copper railways, great gearworks and cyan crystals. Use the supplied moodboard for the cultural palette, materials and painterly anime storybook quality. View the entire terrain obliquely from high above, cartographic miniature scale; NOT a side-scrolling scene and NOT a moodboard. Arrange illustrative terrain around a broad calm center, low-contrast empty areas throughout for game-drawn location markers and paths. Organic edges, richly painted geography, soft atmospheric depth. The game overlays accurate routes and labels separately: no text, no labels, no numbers, no compass, no UI, no border, no people, no monsters, no drawn dotted route lines. Clear region-specific identity, lovely detailed hand-painted image; no generic parchment.",
+    "tool": "built-in image_gen"
+  },
+  {
+    "id": "ember_desert",
+    "file": "assets/maps/regions/ember_desert.png",
+    "reference": "designs/moodboards/sunscour.png",
+    "prompt": "Use case: stylized-concept. Asset: background PNG for an interactive RPG REGION MAP. Generate a single landscape 3:2 painted illustrated fantasy atlas plate showing golden dunes, palm oases, red awnings, sandstone Shade Bastion, aqueduct, solar furnace, ember red and turquoise. Use the supplied moodboard for the cultural palette, materials and painterly anime storybook quality. View the entire terrain obliquely from high above, cartographic miniature scale; NOT a side-scrolling scene and NOT a moodboard. Arrange illustrative terrain around a broad calm center, low-contrast empty areas throughout for game-drawn location markers and paths. Organic edges, richly painted geography, soft atmospheric depth. The game overlays accurate routes and labels separately: no text, no labels, no numbers, no compass, no UI, no border, no people, no monsters, no drawn dotted route lines. Clear region-specific identity, lovely detailed hand-painted image; no generic parchment.",
+    "tool": "built-in image_gen"
+  },
+  {
+    "id": "ice_lands",
+    "file": "assets/maps/regions/ice_lands.png",
+    "reference": "designs/moodboards/rimeborn.png",
+    "prompt": "Use case: stylized-concept. Asset: background PNG for an interactive RPG REGION MAP. Generate a single landscape 3:2 painted illustrated fantasy atlas plate showing snowy pine valleys, icy bridges, thermal Thawcamp, blue Aurora Hall, buried ruin under green aurora, silver blue and amber. Use the supplied moodboard for the cultural palette, materials and painterly anime storybook quality. View the entire terrain obliquely from high above, cartographic miniature scale; NOT a side-scrolling scene and NOT a moodboard. Arrange illustrative terrain around a broad calm center, low-contrast empty areas throughout for game-drawn location markers and paths. Organic edges, richly painted geography, soft atmospheric depth. The game overlays accurate routes and labels separately: no text, no labels, no numbers, no compass, no UI, no border, no people, no monsters, no drawn dotted route lines. Clear region-specific identity, lovely detailed hand-painted image; no generic parchment.",
+    "tool": "built-in image_gen"
+  },
+  {
+    "id": "shattered_march",
+    "file": "assets/maps/regions/shattered_march.png",
+    "reference": "designs/moodboards/babylon.png",
+    "prompt": "Use case: stylized-concept. Create a single landscape 3:2 painted background PNG for an interactive RPG REGIONAL MAP of SHATTERED MARCH. Use ONLY the supplied approved Babylon moodboard's finely detailed painterly art style, sandstone and lapis brick, tarnished gold, marsh green. Terrain: abandoned Babylon and ruined ziggurat, fallen observatory, shattered causeways, drowned canals, marshy frontier and distant mountain gullies. High oblique bird's-eye cartographic miniature view of the region, not a side-scrolling environment or a moodboard. Keep broad quiet spaces through the middle so the game can overlay its graph and location markers. Rich illustrated terrain around the edges. No text, labels, letters, numbers, routes, compass, UI, borders, people or monsters. No generic parchment. This is atmospheric regional art, not authoritative navigation geometry.",
+    "tool": "built-in image_gen"
+  },
+  {
+    "id": "gloamfen",
+    "file": "assets/maps/regions/gloamfen.png",
+    "reference": "designs/moodboards/tidekin.png",
+    "prompt": "Use case: stylized-concept. Asset: background PNG for an interactive RPG REGION MAP. Generate a single landscape 3:2 painted illustrated fantasy atlas plate showing misty dark marsh frontier, drowned reeds, peat islands, fractured mirror pools and Mireglass catacomb entrance, subdued moss teal silver. Use the supplied moodboard for the cultural palette, materials and painterly anime storybook quality. View the entire terrain obliquely from high above, cartographic miniature scale; NOT a side-scrolling scene and NOT a moodboard. Arrange illustrative terrain around a broad calm center, low-contrast empty areas throughout for game-drawn location markers and paths. Organic edges, richly painted geography, soft atmospheric depth. The game overlays accurate routes and labels separately: no text, no labels, no numbers, no compass, no UI, no border, no people, no monsters, no drawn dotted route lines. Clear region-specific identity, lovely detailed hand-painted image; no generic parchment.",
+    "tool": "built-in image_gen"
+  },
+  {
+    "id": "ashen_scar",
+    "file": "assets/maps/regions/ashen_scar.png",
+    "reference": "designs/moodboards/crag-trolls.png",
+    "prompt": "Use case: stylized-concept. Asset: background PNG for an interactive RPG REGION MAP. Generate a single landscape 3:2 painted illustrated fantasy atlas plate showing volcanic frontier, ash gullies, black basalt, ember fissures and buried Cinder Vault entrance, charcoal rust muted gold. Use the supplied moodboard for the cultural palette, materials and painterly anime storybook quality. View the entire terrain obliquely from high above, cartographic miniature scale; NOT a side-scrolling scene and NOT a moodboard. Arrange illustrative terrain around a broad calm center, low-contrast empty areas throughout for game-drawn location markers and paths. Organic edges, richly painted geography, soft atmospheric depth. The game overlays accurate routes and labels separately: no text, no labels, no numbers, no compass, no UI, no border, no people, no monsters, no drawn dotted route lines. Clear region-specific identity, lovely detailed hand-painted image; no generic parchment.",
+    "tool": "built-in image_gen"
+  },
+  {
+    "id": "verdant_maw",
+    "file": "assets/maps/regions/verdant_maw.png",
+    "reference": "designs/moodboards/grove-centaurs.png",
+    "prompt": "Use case: stylized-concept. Asset: background PNG for an interactive RPG REGION MAP. Generate a single landscape 3:2 painted illustrated fantasy atlas plate showing overgrown jungle frontier, strangler vines, carnivorous foliage, enormous coil roots around buried Coilroot dungeon, dark green ochre. Use the supplied moodboard for the cultural palette, materials and painterly anime storybook quality. View the entire terrain obliquely from high above, cartographic miniature scale; NOT a side-scrolling scene and NOT a moodboard. Arrange illustrative terrain around a broad calm center, low-contrast empty areas throughout for game-drawn location markers and paths. Organic edges, richly painted geography, soft atmospheric depth. The game overlays accurate routes and labels separately: no text, no labels, no numbers, no compass, no UI, no border, no people, no monsters, no drawn dotted route lines. Clear region-specific identity, lovely detailed hand-painted image; no generic parchment.",
+    "tool": "built-in image_gen"
+  }
+]

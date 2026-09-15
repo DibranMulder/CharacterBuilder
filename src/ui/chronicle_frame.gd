@@ -6,6 +6,7 @@ var pressed := false
 var disabled := false
 var focus_only := false
 var parchment := false
+var textured := true
 
 func _outline(rect: Rect2, notch: float) -> PackedVector2Array:
 	var p := rect.position
@@ -32,7 +33,7 @@ func _draw(canvas: RID, rect: Rect2) -> void:
 	# Fine material grain: deterministic, without tiling seams or raster scaling.
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 31
-	for i in mini(600,int(rect.size.x*rect.size.y/65)):
+	for i in (mini(600,int(rect.size.x*rect.size.y/65)) if textured else 0):
 		var at := rect.position + Vector2(rng.randf_range(7,rect.size.x-7),rng.randf_range(6,rect.size.y-6))
 		RenderingServer.canvas_item_add_circle(canvas,at,rng.randf_range(.3,.85),Color(1,.87,.56,.045))
 	_stroke(canvas,points,border,1.5)

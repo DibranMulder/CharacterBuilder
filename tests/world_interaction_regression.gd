@@ -12,6 +12,7 @@ func _run() -> void:
 	scene.model.position.x = 800
 	scene._update_view(0)
 	check(scene.merchant_markers.size() == 3,"all three actual services are marked")
+	check(scene.merchant_markers[0].kind == "trade","working trader uses coin-pouch marker")
 	check(scene.merchant_markers[0].visible and not scene.merchant_markers[0].ready_to_use,"distant services are discoverable but not actionable")
 	scene.model.position.x = 500
 	scene._update_view(0)
@@ -38,5 +39,18 @@ func _run() -> void:
 		await process_frame
 	check(redraws[0] == 0 and changes[0] == 0,"unchanged signs cause no redraw or visibility churn")
 	scene.free()
+	var town = load("res://prototypes/human_hometown/human_hometown.tscn").instantiate()
+	root.add_child(town)
+	town.set_physics_process(false)
+	town._update_view(0)
+	check(town.merchant_markers[0].kind == "quest_active","current quest giver has a bright quest marker")
+	check(town.merchant_markers[1].kind == "talk","broker without working trade stays a conversation")
+	town.quest_stage = 1
+	town._update_view(0)
+	check(town.merchant_markers[0].kind == "quest","later quest contact keeps a subdued quest marker")
+	town.quest_stage = 5
+	town._update_view(0)
+	check(town.merchant_markers[0].kind == "talk","finished story does not promise another quest")
+	town.free()
 	if not failed: print("PASS: service discovery, legal action prompts, menu visibility, exit destination and retained marker rendering")
 	quit(1 if failed else 0)

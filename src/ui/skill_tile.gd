@@ -60,7 +60,8 @@ func _draw() -> void:
 	if selected or is_hovered():
 		draw_style_box(Chronicle.create().get_stylebox("focus","Button"),square)
 	if not hotkey.is_empty():
-		var badge := Rect2(icon_edge*.5-10,icon_edge+3,20,18)
+		var badge_width := maxf(20,Chronicle.create().default_font.get_string_size(hotkey,0,-1,12).x+10)
+		var badge := Rect2((icon_edge-badge_width)*.5,icon_edge+3,badge_width,18)
 		var key_frame := StyleBoxFlat.new()
 		key_frame.bg_color = Chronicle.NAVY
 		key_frame.border_color = Chronicle.BRASS
