@@ -1,0 +1,20 @@
+{
+  "status": "pass",
+  "maps": 80,
+  "overview_maps": 4,
+  "regions": {
+    "open_lands": 41,
+    "tidekin_sea": 39
+  },
+  "checks": [
+    "source coverage",
+    "standalone native SVG references",
+    "unique platform geometry",
+    "supported climb endpoints",
+    "route to every landing and exit",
+    "jumpable scenery",
+    "unclipped prop bounds",
+    "reciprocal portal destinations",
+    "complete overview links and edges"
+  ]
+}
