@@ -26,11 +26,11 @@ func configure_region(entry: Dictionary) -> void:
 		else:
 			var boss: bool = species == "undertow_regent"
 			for i in (1 if boss else 6):
-				var spawn_x := 2800.0 if boss else lerpf(650,entry.width-480,float(i)/5)
+				var spawn_x: float = entry.width*.875 if boss else lerpf(650,entry.width-480,float(i)/5)
 				_spawn_enemy(spawn_x,false)
 				var enemy: Dictionary = enemies.back()
 				enemy.merge({"species":species,"level":120 if boss else mini(int(entry.level_max),int(entry.level)+i%3),"provoked":info.disposition != "neutral","respawn":RESPAWN_SECONDS,"spawn_warning":0.0,"boss":boss,"phase":1,"cycle":0,"target_x":0.0,"attack_origin":0.0})
-				enemy.max_hp = 50*info.health*(1+.03*(enemy.level-1))
+				enemy.max_hp = 90*info.health*(1+.03*(enemy.level-1))
 				enemy.hp = enemy.max_hp
 
 func step(delta: float, direction: float, guard_held: bool, muzzle := Vector2.INF) -> void:
@@ -59,6 +59,14 @@ func _damage_enemy(enemy: Dictionary, power: bool, explicit_damage := -1.0, pres
 	enemy.provoked = true
 	var amount: float = explicit_damage if explicit_damage >= 0 else weapon_feel().damage*(2.1 if power else 1)
 	amount *= 1+.03*(adventure_level-1)
+	# The recommended five-level cohort stays approachable. Beyond it, armor
+	# resistance grows until an enemy 25 levels above the hero is out of reach.
+	var gap := maxi(0,int(enemy.level)-adventure_level-5)
+	var effectiveness := pow(maxf(0,1-float(gap)/20),2)
+	amount *= effectiveness
+	if roundi(amount) <= 0:
+		events.append({"kind":"dealt","text":"Outmatched","position":Vector2(enemy.x,350)})
+		return
 	if explicit_damage < 0 and progression != null:
 		progression.train_hit(minf(enemy.hp,amount),weapon in ["staff","branch_staff"],power)
 	super._damage_enemy(enemy,power,amount,presentation)
@@ -72,6 +80,37 @@ func _damage_enemy(enemy: Dictionary, power: bool, explicit_damage := -1.0, pres
 			inventory.grant({"coins":120})
 
 func _update_enemy(enemy: Dictionary, delta: float) -> void:
+	var previous_x: float = enemy.x
+	_advance_enemy(enemy,delta)
+	enemy["moving"] = absf(enemy.x-previous_x) > .01
+	if enemy.hp <= 0 or health <= 0 or invulnerable > 0: return
+	if not enemy.provoked or (enemy.boss and not boss_active): return
+	# Contact uses bodies, not the telegraphed attack range. Raised platforms and
+	# jumps clear this volume; the shared immunity also prevents stacked hits.
+	var body := Rect2(enemy.x-30,412,60,68)
+	var hero := Rect2(position-Vector2(14,65),Vector2(28,65))
+	if body.intersects(hero):
+		_hurt(enemy,Region.creature(enemy.species).damage*.6)
+		invulnerable = .65
+
+func _hit_lineage_skill(enemy: Dictionary, skill: Dictionary) -> void:
+	# An ineffective hit must not apply a root, slow or displacement afterward.
+	if int(enemy.level)-adventure_level >= 25:
+		_damage_enemy(enemy,true,skill.power)
+		return
+	super._hit_lineage_skill(enemy,skill)
+
+func _patrol(enemy: Dictionary, delta: float) -> void:
+	if enemy.boss or enemy.get("rooted",0.0) > 0: return
+	var direction: float = enemy.get("patrol_direction",1.0)
+	if enemy.x >= enemy.home+70: direction = -1
+	elif enemy.x <= enemy.home-70: direction = 1
+	enemy["patrol_direction"] = direction
+	enemy.facing = direction
+	enemy.x += direction*delta*30*(.55 if enemy.get("slowed",0.0)>0 else 1)
+	enemy.x = clampf(enemy.x,enemy.home-70,enemy.home+70)
+
+func _advance_enemy(enemy: Dictionary, delta: float) -> void:
 	var info := Region.creature(enemy.species)
 	enemy.flash = maxf(0,enemy.flash-delta)
 	enemy.rooted = maxf(0,enemy.get("rooted",0.0)-delta)
@@ -87,11 +126,13 @@ func _update_enemy(enemy: Dictionary, delta: float) -> void:
 		return
 	if enemy.boss and not boss_active: return
 	if not enemy.provoked:
-		if absf(position.x-enemy.x)<180: enemy.x = move_toward(enemy.x,enemy.home+120,delta*45)
+		_patrol(enemy,delta)
 		return
 	if absf(position.x-enemy.home)>420 or position.x < 300:
 		enemy.state = "idle"
-		enemy.x = move_toward(enemy.x,enemy.home,delta*100)
+		if absf(enemy.x-enemy.home)>75:
+			if enemy.rooted <= 0: enemy.x = move_toward(enemy.x,enemy.home,delta*100)
+		else: _patrol(enemy,delta)
 		enemy.hp = minf(enemy.max_hp,enemy.hp+delta*15)
 		return
 	enemy.phase = 3 if enemy.hp/enemy.max_hp <= .35 else (2 if enemy.hp/enemy.max_hp <= .7 else 1)
@@ -106,6 +147,7 @@ func _update_enemy(enemy: Dictionary, delta: float) -> void:
 			enemy.attack_origin = enemy.x
 		elif absf(dx)<300 and enemy.get("rooted",0.0)<=0:
 			enemy.x += signf(dx)*delta*(50 if enemy.boss else 75)*(.55 if enemy.get("slowed",0.0)>0 else 1)
+		else: _patrol(enemy,delta)
 		return
 	enemy.timer -= delta
 	if enemy.timer > 0: return
@@ -133,7 +175,8 @@ func attack_hits(enemy: Dictionary) -> bool:
 	return attack_zone(enemy).has_point(position+Vector2(0,-25))
 
 func _hurt(enemy: Dictionary, multiplier: float) -> void:
-	var scaling := clampf((1+.03*(enemy.level-1))/(1+.03*(adventure_level-1)),.5,3)
+	var gap := maxi(0,int(enemy.level)-adventure_level-5)
+	var scaling := clampf((1+.03*(enemy.level-1))/(1+.03*(adventure_level-1)),.5,3) * (1+float(gap)*.14)
 	var damage := 10*multiplier*scaling
 	var blocked: bool = guarding and (enemy.x-position.x)*facing>0 and stamina>=18
 	if blocked:
@@ -153,7 +196,7 @@ func _hurt(enemy: Dictionary, multiplier: float) -> void:
 		guarding = false
 
 func start_boss() -> bool:
-	if spec.level != 116 or boss_completed or health<=0 or position.x<2450: return false
+	if spec.level != 116 or boss_completed or health<=0 or position.x<world_width*.765625: return false
 	boss_active = true
 	return true
 

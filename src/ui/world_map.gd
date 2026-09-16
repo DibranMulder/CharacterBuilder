@@ -246,7 +246,11 @@ func open_region(id: String, group := "") -> void:
 		marker.tooltip_text = entry.name+" · "+("You are here" if entry.id == current else ("Explored" if is_explored(entry.id) else "Unexplored"))+" · "+entry.access
 		marker.gui_input.connect(func(event: InputEvent): _node_input(event,entry.id))
 		chart.add_child(marker)
-		marker.caption.text = entry.name
+		marker.caption.text = ("You are here\n" if marker.current else "")+entry.name
+		if marker.current:
+			marker.caption.size.y = 64
+			marker.caption.add_theme_color_override("font_color",Color("9cf8ff"))
+			marker.z_index = 2
 		targets[entry.id] = marker
 	chart_bounds = Catalog.group_bounds(id,"")
 	_add_crossings(spec)
@@ -291,6 +295,7 @@ func select_node(id: String) -> void:
 	detail_title.text = entry.name
 	var access: String = "Both allegiances" if entry.access == "Shared" else entry.access+" allegiance required"
 	var lines: Array[String] = [entry.group.capitalize()+" map · "+("Explored" if is_explored(id) else "Unexplored"),access,""]
+	if id == current: lines.push_front("You are here · "+Catalog.region(entry.region).name+"\n")
 	if entry.has("levels"): lines.append("Creature levels: "+str(entry.levels))
 	if entry.runtime_id.is_empty(): lines.append("Charted location. This submap is not open for play yet.")
 	elif not is_explored(id): lines.append("Visit on foot to explore this map.")
@@ -305,7 +310,7 @@ func select_node(id: String) -> void:
 	travel_button.visible = allow_travel and is_explored(id) and Districts.NAMES.has(id)
 	travel_button.disabled = not Districts.allowed(id,lineage,quest_stage).is_empty()
 	travel_button.tooltip_text = Districts.allowed(id,lineage,quest_stage)
-	status.text = "Selected "+entry.name+". Your character remains in the current map."
+	status.text = "You are here · "+Catalog.region(entry.region).name+" / "+entry.name if id == current else "Selected "+entry.name+". Your character remains in the current map."
 
 func _request_travel() -> void:
 	if not allow_travel or not is_explored(selected_node) or not Districts.NAMES.has(selected_node): return
@@ -320,8 +325,14 @@ func show_current() -> void:
 	if entry.is_empty():
 		status.text = "This practice area is outside the charted world. Select a region to browse."
 		return
-	open_region(entry.region,entry.group)
+	if region_id != entry.region: open_region(entry.region)
+	focused_group = ""
 	select_node(current)
+	zoom = clampf(1.0,min_zoom,max_zoom)
+	chart.scale = Vector2.ONE*zoom
+	chart.position = canvas.size*.5-chart.points[current]*zoom
+	_update_zoom_label()
+	subtitle.text = "You are here · "+Catalog.region(entry.region).name+" / "+entry.name
 
 func focus_group(group: String) -> void:
 	if region_id.is_empty(): return
@@ -390,7 +401,7 @@ func _update_zoom_label() -> void:
 
 		var order: Array = targets.keys()
 		# Reserve labels for the selected map and hero before other names.
-		for priority in [current,selected_node]:
+		for priority in [selected_node,current]:
 			if priority in order:
 				order.erase(priority)
 				order.push_front(priority)
@@ -402,7 +413,7 @@ func _update_zoom_label() -> void:
 			marker.selected = id == selected_node
 			var show_name: bool = id in [current,selected_node] or zoom >= .70 or entry.group == focused_group
 			marker.caption.position = Vector2(24,-3)
-			var label_rect := Rect2(chart.points[id]*zoom+Vector2(12,-15),Vector2(165,42))
+			var label_rect := Rect2(chart.points[id]*zoom+Vector2(12,-15),marker.caption.size)
 			if id in [current,selected_node] and occupied.any(func(rect): return rect.intersects(label_rect)):
 				marker.caption.position = Vector2(-70,27)
 				label_rect.position = chart.points[id]*zoom+Vector2(-82,15)

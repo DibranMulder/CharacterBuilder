@@ -25,11 +25,14 @@ func _ready() -> void:
 
 func _draw() -> void:
 	var center := size*.5
-	if current or selected or is_hovered():
+	if current:
+		draw_circle(center,18,Color("10212a"))
+		draw_arc(center,16,0,TAU,32,Color("9cf8ff"),3,true)
+		draw_circle(center,8,Color("9cf8ff"))
+		draw_circle(center,3,Color("10212a"))
+		return
+	if selected or is_hovered():
 		draw_circle(center,13,Color(accent,.22))
 		draw_arc(center,11,0,TAU,24,accent,1.5,true)
 	draw_circle(center,6,Color("122937"))
 	draw_circle(center,3.5,accent if discovered or selected else Color("91a6ae"))
-	if current:
-		var arrow := PackedVector2Array([center+Vector2(-4,-15),center+Vector2(4,-15),center+Vector2(0,-10)])
-		draw_colored_polygon(arrow,Color("fff1bc"))
