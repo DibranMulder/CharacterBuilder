@@ -33,6 +33,7 @@ for region,heading,end,total in [('open_lands','Open Lands','Tidekin Sea',41),('
     check(c['type'] in ['stairs','ladder','rope'],id_+': unsupported connector')
     a,b=surfaces[c['from']],surfaces[c['to']]
     check(a['x']<=c['x']<=a['x']+a['w'] and b['x']<=c['x']<=b['x']+b['w'],id_+': climb has unsupported endpoint')
+    check(a['x']<=c['bottom_x']<=a['x']+a['w'],id_+': unsupported stair foot')
     check(c['y1']==b['y'] and c['y2']==a['y'],id_+': climb does not meet its landings')
     if c['from'] in reachable:reachable.add(c['to'])
   check(reachable==set(surfaces),id_+': unreachable landing')

@@ -233,7 +233,7 @@ def connector(upper,lower,index,p):
  x=(lx+rx)/2;y=upper['y'];end=lower['y'];i=p['ink'];s=''
  kind='stairs' if index in [0,3] else ('rope' if index in [1,5,6] else 'ladder')
  if kind=='stairs':
-  run=min(230,upper['w']*.65);start=x-run;steps=max(3,math.ceil((end-y)/32));pts=[(start,end)]
+  run=min(230,upper['w']*.65,x-lower['x']-12);start=x-run;steps=max(3,math.ceil((end-y)/32));pts=[(start,end)]
   for j in range(steps):pts += [(start+(j+1)*run/steps,end-j*(end-y)/steps),(start+(j+1)*run/steps,end-(j+1)*(end-y)/steps)]
   s+=path('M'+'L'.join(f'{a:.1f} {b:.1f}' for a,b in pts),stroke=i,sw=13)
   s+=path('M'+'L'.join(f'{a:.1f} {b:.1f}' for a,b in pts),stroke=p['top'],sw=7)
@@ -246,7 +246,7 @@ def connector(upper,lower,index,p):
  else:
   s+=ellipse(x,y-8,9,9,p['wood'],i)+path(f'M{x} {y}Q{x-10} {(y+end)/2} {x} {end}',stroke=i,sw=8)+path(f'M{x} {y}Q{x-10} {(y+end)/2} {x} {end}',stroke=p['top'],sw=4)
   for yy in range(int(y+25),int(end-5),30):s+=line(x-7,yy,x+5,yy+3,p['wood'],3)
- return tag('g',s,id=f'climb-{index+1}',data_kind=kind),{'id':f'climb-{index+1}','type':kind,'from':lower['id'],'to':upper['id'],'x':round(x,1),'y1':y,'y2':end}
+ return tag('g',s,id=f'climb-{index+1}',data_kind=kind),{'id':f'climb-{index+1}','type':kind,'from':lower['id'],'to':upper['id'],'x':round(x,1),'bottom_x':round(start if kind=='stairs' else x,1),'y1':y,'y2':end}
 
 
 def surface(a,p,ground=False,material='stone'):
@@ -317,7 +317,7 @@ def draw_map(d):
    x=a['x']+28+k*(a['w']-sz-55);y=a['y']-sz-7
    world+=tag('g',tag('title',ESC(kind.replace('_',' ')+' · optional jump surface'))+use(kind,x,y,sz,sz),data_prop=kind)
    objects.append({'type':kind,'surface':a['id'],'x':x,'y':y,'w':sz,'h':sz,'jumpable':kind in ['crate','barrel','bench','table','bed','shelf','chest','basket','cart','hay','log','mushroom','boat','anvil','trough']})
- for j,x in enumerate([365,705,1110,1570,1920,2240]):
+ for j,x in enumerate([350,550,750,950,1150,1350,1550,1750,1950,2210]):
   kind=d['props'][(j+3)%len(d['props'])];sz=100 if kind!='tree' else 155
   world+=use(kind,x,1100-sz-8,sz,sz)
   objects.append({'type':kind,'surface':'street','x':x,'y':1100-sz-8,'w':sz,'h':sz,'jumpable':kind in ['crate','barrel','bench','table','chest','cart','hay','log','basket','boat']})
@@ -345,7 +345,7 @@ def draw_map(d):
  s+=line(64,1220,2536,1220,p['dark'],1)
  s+=txt(64,1260,'01 / SPATIAL STORY',17,p['cloth'],letter_spacing=3)+wrap(64,1297,d['story'],90,21,p['ink'],29)
  route=' / '.join(f'{c["type"]} → {c["to"]}' for c in climbs[:4])
- s+=txt(64,1432,'ROUTES',15,p['dark'],letter_spacing=2)+txt(64,1462,'7 raised landings · 2 stair flights · 3 rope climbs · 2 ladders · 20 placed props',19,p['ink'])
+ s+=txt(64,1432,'ROUTES',15,p['dark'],letter_spacing=2)+txt(64,1462,f"{len(d['platforms'])} raised landings · {sum(c['type']=='stairs' for c in climbs)} stairs · {sum(c['type']=='rope' for c in climbs)} ropes · {sum(c['type']=='ladder' for c in climbs)} ladders · {len(objects)} props",19,p['ink'])
  s+=txt(64,1500,'R = same-map recovery  ·  structural concept, not an exported collision mesh',17,p['dark'])
  s+=txt(1330,1260,'02 / DESTINATIONS & RESIDENTS',17,p['cloth'],letter_spacing=3)
  exits='   ·   '.join(f'P{j+1} {NAMES.get(n,n)}' for j,n in enumerate(d['neighbors']))

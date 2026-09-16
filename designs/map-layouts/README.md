@@ -14,7 +14,7 @@
 ## How to read a detail sheet
 
 - Pale platform edges and furniture tops are landing surfaces. Timber galleries, roofwalks, root shelves and stone terraces use distinct structural materials.
-- All seven main raised landings connect to the public floor through an explicit stair, ladder or rope. Furniture supplies additional optional hops. Layout coordinates are design-sheet units; final game jump spacing still needs implementation playtesting.
+- All main raised landings connect to the public floor through an explicit stair, ladder or rope. Furniture supplies additional optional hops. Layout coordinates are design-sheet units; final game jump spacing still needs implementation playtesting.
 - Golden `P1…` exits map exactly to the destination list. `R` marks local recovery. Numbered small characters map to named residents in the footer.
 - The first footer explains the place’s spatial story; the second names destinations and inhabitants. Stronghold and story access rules remain intact.
 - Soft, low-contrast background forms support detailed foreground routes. This atlas develops MapleStory-like layered side-scrolling traversal using this project’s own Human and Tidekin architecture.
