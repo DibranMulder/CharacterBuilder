@@ -7,13 +7,15 @@ var wildlife: Array[Dictionary] = []
 var boss_active := false
 var boss_completed := false
 var active_time := 0.0
+var climb_axis := 0.0
+var climbing := false
 const RESPAWN_SECONDS := 30.0
 const SPAWN_CLEARANCE := 240.0
 
 func configure_region(entry: Dictionary) -> void:
 	spec = entry
 	configure_map({"id":entry.id,"width":entry.width,"platforms":[],"rowan":false,"enemies":[]})
-	recovery_anchor = Vector2(180,480)
+	recovery_anchor = Vector2(entry.recovery_point[0],entry.recovery_point[1])
 	position = recovery_anchor
 	platforms.clear()
 	for box in entry.platforms: platforms.append(Rect2(box[0],box[1],box[2],box[3]))
@@ -37,7 +39,9 @@ func step(delta: float, direction: float, guard_held: bool, muzzle := Vector2.IN
 	active_time += delta
 	if health <= 0: boss_active = false
 	job_cooldown = maxf(0,job_cooldown-delta)
+	var before := position
 	super.step(delta,direction,guard_held,muzzle)
+	_advance_climb(delta,before)
 	if job_cooldown == 0 and fixtures.all(func(value): return value): fixtures = [false,false,false]
 
 func fixture_point(index: int) -> Vector2: return Vector2(spec.fixture_points[index][0],spec.fixture_points[index][1])
@@ -223,3 +227,39 @@ func advance_spawn(enemy: Dictionary, delta: float, occupied: bool) -> void:
 	enemy.provoked = Region.creature(enemy.species).disposition != "neutral"
 	enemy.respawn = RESPAWN_SECONDS
 	enemy.spawn_warning = 0.0
+
+func can_climb() -> bool:
+	return health>0 and attack_time<=0 and not _nearby_climb().is_empty()
+
+func _nearby_climb() -> Dictionary:
+	var closest := {}
+	var distance := 40.0
+	for route in spec.climbs:
+		var top := Vector2(route.top[0],route.top[1])
+		var bottom := Vector2(route.bottom[0],route.bottom[1])
+		# At a shared landing, prefer the connector continuing in the requested
+		# direction rather than latching back onto the one just completed.
+		if climb_axis<0 and position.y<=top.y+.01: continue
+		if climb_axis>0 and position.y>=bottom.y-.01: continue
+		var fraction := clampf((position.y-top.y)/(bottom.y-top.y),0,1)
+		var x := lerpf(top.x,bottom.x,fraction)
+		if absf(position.x-x)<distance and position.y>=top.y-12 and position.y<=bottom.y+12:
+			distance = absf(position.x-x)
+			closest = route
+	return closest
+
+func _advance_climb(delta: float, before: Vector2) -> void:
+	climbing = false
+	if climb_axis == 0 or health<=0 or attack_time>0: return
+	var after_physics := position
+	position = before
+	var route := _nearby_climb()
+	position = after_physics
+	if route.is_empty(): return
+	var top := Vector2(route.top[0],route.top[1])
+	var bottom := Vector2(route.bottom[0],route.bottom[1])
+	position.y = clampf(before.y+climb_axis*190*delta,top.y,bottom.y)
+	position.x = lerpf(top.x,bottom.x,(position.y-top.y)/(bottom.y-top.y))
+	velocity = Vector2.ZERO
+	grounded = true
+	climbing = true

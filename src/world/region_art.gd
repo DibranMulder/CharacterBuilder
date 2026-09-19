@@ -14,7 +14,7 @@ static func ink(id: String) -> Color: return Color(PALETTES.get(id,["183454","f2
 static func accent(id: String) -> Color: return Color(PALETTES.get(id,["183454","f2c45f"])[1])
 static func background(id: String) -> Texture2D:
 	if not textures.has(id):
-		textures[id] = load("res://assets/maps/regions/"+id+".png")
+		textures[id] = load("res://assets/maps/tidekin/layouts/atlas.svg" if id=="tidekin_sea" else "res://assets/maps/regions/"+id+".png")
 	return textures[id]
 static func theme_for(id: String) -> Theme:
 	var chronicle = preload("res://src/ui/chronicle_theme.gd")

@@ -8,7 +8,22 @@ Stand on a portal and press **Up** to travel. **E** handles water-care and other
 
 Combat maps contain six regular creatures, spaced along the combat lane outside arrival refuges. Each defeated creature returns after **30 seconds**, with a **two-second warning** when the map is occupied. Spawns wait while the hero is within **240 px**. Timers keep running in previously visited maps during active play, so neighboring-map farming loops work. Each new defeat awards XP and loot. Helpful species are noncombat aid encounters; Crowncrabs attack only after provocation. The optional Undertow Regent does not respawn during a session.
 
-All 39 map widths are doubled: peaceful maps span 3,600 units, ordinary wilderness maps 4,400, and Worldtide Confluence 6,400. Town interiors have open walking space around residents; outdoor and shrine routes retain reachable ledges, including tall routes up to 640 units above the floor. Backgrounds use fixed-scale, distant scenery and atmospheric perspective rather than growing with map width. Upper water-care objectives reward exploration; all rises fit an ordinary jump. Every route retains a safe floor beneath it, and recovery stays on the same map. Three-station jobs can be repeated after 90 seconds on the active map.
+All 39 maps now use the reviewed SVGs' landings, furniture, stairs, ladders,
+ropes and portal locations. **Up/Down** climbs while beside a connector; **Space**
+jumps onto crates, benches and other furniture. There are 281 supported climbs
+and 531 jumpable props. Town and wilderness walking routes retain a continuous
+safe floor beneath the galleries. Ordinary travel arrives at the matching portal
+in the destination, including raised shrine entrances; **R** returns to the
+map's sheltered recovery anchor. The atlas uses the SVG regional overview's
+positions and exact connections.
+
+Residents use new moodboard-derived frog townspeople paintings and a moss-backed
+Mireback guardian, independently of the character builder. Residents take short
+walks within clear work areas, breathe, turn toward approaching heroes, and stop
+for conversations. Hidden residents continue their simulation but skip visual
+updates. Props and dock surfaces use a matching painted atlas. Map-lifetime
+retained scenery avoids rebuilding geometry each frame. Upper galleries retain
+the painted coastal or submerged background.
 
 The sixteen cleaned PNGs are single poses, with runtime facing and hit feedback; they are not frame-animated sprite sheets. Enemy attacks use body anticipation, thin ground brackets and coral/cyan strikes instead of filled yellow hitboxes. Equal-level Common enemies generally take 4–6 ordinary reference hits. A five-level cohort remains approachable; resistance increases beyond it, and monsters at least 25 levels above the Hero cannot be damaged or controlled by the Hero. Their attacks become substantially more dangerous. The Regent's complete encounter choreography remains a separate prototype limitation. Tide display/water are cosmetic. Separate per-Lineage Tidekin checkpoints retain current map and position, inventory, progression, visited populations, repairs, quest state and lens consumption across application restarts. Saves occur on map transfer, story actions, every ten active seconds and scene exit. They do not alter Wendmere saves. SceneTree test harnesses do not read or write player checkpoints.
 
@@ -29,3 +44,14 @@ World hints show icons; hover for text, or tap to toggle on touch. The atlas has
 Talk to Sera in Tidal Lagoon, then clear all three runnels in Siltbank Shallows. Bring the sample to Mero in Cistern Works, obtain Coru's rubbing in Deepvault, and show both records to Amaya in Pearl Hall. Her authorization opens the Light-only shrine route. Repair the three Flooded Nave sluices, align **Shell → Wave → Pearl** in the Coral Reliquary, install the unique lens in the Pearl Sanctum, and report to Sera. The lens and completion reward cannot be duplicated. Landing chores no longer bypass the investigation.
 
 Additional regressions: `tests/tidekin_town_regression.gd`, `tests/tidekin_save_regression.gd`, `tests/tidekin_level_balance_regression.gd`, and `tests/tidekin_contact_regression.gd`. Rendered review captures come from `tools/capture_tidekin_town.gd`.
+
+
+SVG integration checks: `tests/tidekin_svg_regression.gd` verifies all 39 source
+layouts, atlas edges, portal positions, reciprocal arrivals, climbing in both
+directions, safe floor returns and resident culling/routines.
+`tests/tidekin_height_regression.gd` verifies ordinary jumps onto every authored
+jumpable prop. Rebuild scenery/data with `python3 tools/build_tidekin_runtime.py`.
+Capture all maps and the atlas with `tools/capture_tidekin_svg.gd`.
+
+Implementation, image-generation provenance and matched performance evidence:
+[SVG implementation review](../../docs/tidekin-svg-review.md).

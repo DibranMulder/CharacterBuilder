@@ -26,10 +26,61 @@ static func for_map(id: String, width: float) -> Array[Dictionary]:
 		elif row[2] == "Armorer": stock = Market.MERCHANTS[1].stock.duplicate(true)
 		elif row[2] == "Wandwright": stock = Market.MERCHANTS[2].stock.duplicate(true)
 		elif row[2] in ["Apothecary","Provisioner"]: stock = [{"slot":"potion","id":"hp","price":6},{"slot":"potion","id":"mana","price":6}]
-		var outfit := CharacterCatalog.reference_loadout("bogkin")
-		outfit.merge({"weapon":row[4],"head":"none","back":"none","accessory":"none","offhand":"none"},true)
-		if row[2] in ["Vanguard Trainer","Armorer","Captain","Sentry"]: outfit.merge({"offhand":"shield","armor":"plate"},true)
-		if row[2] in ["Arcanist Trainer","Archivist","Wandwright"]: outfit.offhand = "spellbook"
-		result.append({"id":row[0],"name":row[1],"role":row[2],"greeting":row[3],"stock":stock,"gear":outfit,"x":lerpf(650,width-650,float(i+1)/(rows.size()+1))})
+		var kind := portrait_for(row[0],row[2])
+		result.append({"id":row[0],"name":row[1],"role":row[2],"greeting":row[3],"stock":stock,"portrait":kind,"x":lerpf(650,width-650,float(i+1)/(rows.size()+1)),"phase":float(i)*1.7,"facing":1.0,"moving":false})
 		if row[0] == "tavi": result.back().x = 700.0
+		result.back()["home"] = result.back().x
 	return result
+
+static func portrait_for(id: String, role: String) -> int:
+	if id == "nacre": return 7
+	if role in ["Captain","Reefguard","Sentry","Vanguard Trainer","Ravager Trainer","Duelist Trainer"]: return 3
+	if role in ["Apothecary","Lorekeeper","Warden Trainer","Arcanist Trainer","Wandwright"]: return 2
+	if role in ["Engineer","Weaponsmith","Armorer"]: return 4
+	if role in ["Archivist","Steward","Tide Speaker"]: return 5
+	if role == "Innkeeper": return 6
+	if role in ["Exchange Broker","Provisioner","Quartermaster"]: return 1
+	return 0
+
+static func advance(people: Array[Dictionary], delta: float, clock: float, hero: Vector2, conversing: bool) -> void:
+	for person in people:
+		person.moving = false
+		if conversing or absf(hero.x-person.x)<140:
+			if absf(hero.x-person.x)>5: person.facing = signf(hero.x-person.x)
+			continue
+		if person.id == "nacre": continue
+		# Short trips between work stations, with a pause at each end. Simulation
+		# advances independently of culling; residents stay near their service.
+		var cycle := fmod(clock+person.phase,20.0)
+		var target: float = person.get("walk_right",person.home+65.0) if cycle<10 else person.get("walk_left",person.home-65.0)
+		if cycle<4 or (cycle>=10 and cycle<14):
+			var before: float = person.x
+			person.x = move_toward(person.x,target,delta*32)
+			person.moving = absf(person.x-before)>.001
+			if person.moving: person.facing = signf(person.x-before)
+
+static func place(people: Array[Dictionary], objects: Array, width: float) -> void:
+	var blocked: Array[Vector2] = []
+	for object in objects:
+		if object.surface=="street": blocked.append(Vector2(object.rect[0]-45,object.rect[0]+object.rect[2]+45))
+	blocked.sort_custom(func(a,b): return a.x<b.x)
+	var gaps: Array[Vector2] = []
+	var left := 160.0
+	for interval in blocked:
+		if interval.x-left>85: gaps.append(Vector2(left,interval.x))
+		left = maxf(left,interval.y)
+	if width-160-left>85: gaps.append(Vector2(left,width-160))
+	for person in people:
+		if person.id=="nacre" or gaps.is_empty(): continue
+		var nearest := 0
+		var distance := INF
+		for i in gaps.size():
+			var center: float = (gaps[i].x+gaps[i].y)*.5
+			if absf(center-person.home)<distance:
+				distance=absf(center-person.home)
+				nearest=i
+		var gap: Vector2 = gaps.pop_at(nearest)
+		person.x = (gap.x+gap.y)*.5
+		person.home = person.x
+		person.walk_left = maxf(gap.x,person.home-65)
+		person.walk_right = minf(gap.y,person.home+65)

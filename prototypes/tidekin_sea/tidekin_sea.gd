@@ -5,6 +5,8 @@ const RegionEncounter = preload("res://prototypes/tidekin_sea/region_encounter.g
 var MAPS: Array = Region.maps()
 const FLOOR_RATIOS := {"landing":.635,"shallows":.705,"pools":.745,"citadel":.635,"shrine":.635,"mangrove":.635,"storm":.635,"confluence":.66}
 var art_cache := {}
+var layout_texture: Texture2D
+var props: Node2D
 var sprite_cache := {}
 var route_markers: Array[Node2D] = []
 var work_markers: Array[Node2D] = []
@@ -45,6 +47,7 @@ func _ready() -> void:
 	add_child(boss_marker)
 	if preload("res://prototypes/tidekin_sea/region_save.gd").read(self):
 		camera_x = clampf(model.position.x-430,0,model.world_width-1152)
+		camera_y = minf(0,model.position.y-425)
 		location_title = MAPS[map_index].name + (" · Peaceful" if MAPS[map_index].species.is_empty() else " · Lv " + MAPS[map_index].levels)
 		_equipment_changed()
 	_build_markers()
@@ -66,8 +69,8 @@ func _travel_map() -> void:
 	pass # Portal travel is activated explicitly with Up.
 
 func portal_point(index: int) -> Vector2:
-	var xs := [80.0,model.world_width-80,400.0,model.world_width-400,model.world_width*.5]
-	return Vector2(xs[index],480)
+	var point: Array = MAPS[map_index].portals[index].point
+	return Vector2(point[0],point[1])
 
 func travel_to(destination: String) -> bool:
 	if destination not in MAPS[map_index].neighbors or paused or model.health <= 0: return false
@@ -76,10 +79,10 @@ func travel_to(destination: String) -> bool:
 		message = reason
 		message_time = 5
 		return false
-	enter_map(Region.index_of(destination),false)
+	enter_map(Region.index_of(destination),false,model.map_id)
 	return true
 
-func enter_map(index: int, from_east: bool) -> void:
+func enter_map(index: int, from_east: bool, arrival_from := "") -> void:
 	if index < 0 or index >= MAPS.size(): return
 	if not visits.has(index):
 		var next = RegionEncounter.new()
@@ -89,25 +92,39 @@ func enter_map(index: int, from_east: bool) -> void:
 	if next != model: next.carry_player_from(model)
 	model = next
 	map_index = index
-	model.recovery_anchor = Vector2(model.world_width-180 if from_east else 180,480)
+	model.recovery_anchor = Vector2(MAPS[index].recovery_point[0],MAPS[index].recovery_point[1])
+	if from_east: model.recovery_anchor.x = model.world_width-180
 	model.position = model.recovery_anchor
+	for portal in MAPS[index].portals:
+		if portal.to==arrival_from:
+			model.position = Vector2(portal.point[0]+44,portal.point[1])
+			break
 	model.velocity = Vector2.ZERO
 	model.grounded = true
 	model.projectiles.clear()
 	model.attack_time = 0
 	model.invulnerable = 1
 	camera_x = clampf(model.position.x-430,0,model.world_width-1152)
-	camera_y = 0
+	camera_y = minf(0,model.position.y-425)
 	location_title = MAPS[index].name + (" · Peaceful" if MAPS[index].species.is_empty() else " · Lv " + MAPS[index].levels)
 	_build_markers()
 	_update_view(0)
 	_save_progress()
 
 func _build_markers() -> void:
+	layout_texture = load("res://assets/maps/tidekin/layouts/"+model.map_id+".svg")
+	if is_instance_valid(props):
+		remove_child(props)
+		props.queue_free()
+	props = preload("res://prototypes/tidekin_sea/prop_visual.gd").new()
+	props.spec = model.spec
+	add_child(props)
+	move_child(props,0)
 	for node in resident_nodes+resident_markers: node.queue_free()
 	resident_nodes.clear()
 	resident_markers.clear()
 	residents = preload("res://prototypes/tidekin_sea/residents.gd").for_map(model.map_id,model.world_width)
+	preload("res://prototypes/tidekin_sea/residents.gd").place(residents,model.spec.objects,model.world_width)
 	active_resident = -1
 	model.rowan_enabled = not residents.is_empty()
 	for resident in residents:
@@ -141,10 +158,12 @@ func _restart() -> void:
 	avatar.process_mode = Node.PROCESS_MODE_INHERIT
 
 func _physics_process(delta: float) -> void:
+	model.climb_axis = float(Input.is_physical_key_pressed(KEY_DOWN))-float(Input.is_physical_key_pressed(KEY_UP))
 	if not paused:
 		if active_resident >= 0:
 			model.rowan.position = Vector2(residents[active_resident].x,480)
 			model.rowan.conversing = true
+		preload("res://prototypes/tidekin_sea/residents.gd").advance(residents,delta,model.active_time,model.position,is_instance_valid(dialogue) or is_instance_valid(shop))
 		tide_time = fmod(tide_time+delta,60)
 		message_time = maxf(0,message_time-delta)
 		for index in visits:
@@ -259,15 +278,17 @@ func _update_view(delta: float) -> void:
 	builder_button.position = Vector2(872,114)
 	restart_button.position = Vector2(1010,150)
 	if is_instance_valid(aid_label):
-		aid_label.refresh(Vector2(560,560),message if message_time > 0 else "Controls\nA/D move · Space jump · J attack · ↑ portals · E interact · M map",false,not paused,"hint")
+		aid_label.refresh(Vector2(560,560),message if message_time > 0 else "Controls\nA/D move · Space jump · ↑/↓ climb · J attack · ↑ portals · E interact · M map",false,not paused,"hint")
 	if is_instance_valid(boss_marker):
 		boss_marker.refresh(Vector2(model.world_width*.81-camera_x,270-camera_y),"The Undertow Regent · Lv 120\nE · Awaken",false,not paused and MAPS[map_index].id == "tidekin_sea_return_116" and not model.boss_active and not model.boss_completed,"quest_active")
 	var camera := Vector2(camera_x,camera_y)
+	if is_instance_valid(props): props.position = -camera
 	for i in residents.size():
 		var at := Vector2(residents[i].x,472)-camera
 		resident_nodes[i].position = at
-		resident_nodes[i].visible = at.x > -180 and at.x < 1332 and at.y > -100 and at.y < 900
-		resident_markers[i].refresh(at+Vector2(0,-215),residents[i].name+" · "+residents[i].role+"\nE · Talk",model.position.distance_to(Vector2(residents[i].x,480))<110,not paused and resident_nodes[i].visible,"talk")
+		resident_nodes[i].visible = Rect2(-340,-50,1832,1038).has_point(at)
+		resident_nodes[i].refresh_pose(model.active_time)
+		resident_markers[i].refresh(at+Vector2(0,-preload("res://prototypes/tidekin_sea/resident_visual.gd").HEIGHTS[residents[i].portrait]-28),residents[i].name+" · "+residents[i].role+"\nE · Talk",model.position.distance_to(Vector2(residents[i].x,480))<110,not paused and resident_nodes[i].visible,"talk")
 	for i in route_markers.size():
 		var destination: String = MAPS[map_index].neighbors[i]
 		var at := portal_point(i)
@@ -324,29 +345,31 @@ func _draw() -> void:
 	# slowly than the walkable platforms; mirrored tiles avoid a hard seam.
 	var factor := 430.0/(texture.get_height()*ratio)
 	var art_size := texture.get_size()*factor
-	draw_rect(Rect2(0,0,1152,648),Color("789fa4"))
+	var mist := Color("183f49") if kit=="shrine" else Color("789fa4")
+	draw_rect(Rect2(0,0,1152,648),mist)
 	var offset := fmod(camera_x*.3,art_size.x*2)
 	var tile := floori(camera_x*.3/(art_size.x*2))*2
 	for i in range(-1,4):
 		var x := i*art_size.x-offset
 		if x+art_size.x < 0 or x > 1152: continue
 		var flipped := (tile+i)%2 != 0
-		draw_set_transform(Vector2(x+art_size.x if flipped else x,480-art_size.y*ratio-camera_y),0,Vector2(-1 if flipped else 1,1))
+		draw_set_transform(Vector2(x+art_size.x if flipped else x,480-art_size.y*ratio-camera_y*.08),0,Vector2(-1 if flipped else 1,1))
 		draw_texture_rect(texture,Rect2(Vector2.ZERO,art_size),false,Color(.78,.89,.91))
 	draw_set_transform(Vector2.ZERO)
-	var mist := Color("789fa4")
 	var clear_mist := mist
 	clear_mist.a = .12
-	var sky_end := maxf(0,480-art_size.y*ratio-camera_y)
+	var sky_end := maxf(0,480-art_size.y*ratio-camera_y*.08)
 	draw_rect(Rect2(0,0,1152,sky_end),mist)
 	draw_polygon(PackedVector2Array([Vector2(0,sky_end),Vector2(1152,sky_end),Vector2(1152,420),Vector2(0,420)]),PackedColorArray([mist,mist,clear_mist,clear_mist]))
 	draw_set_transform(Vector2(-camera_x,-camera_y))
-	for platform in model.platforms:
-		var source := Rect2(texture.get_width()*.35,texture.get_height()*(ratio-.015),texture.get_width()*.16,texture.get_height()*.075)
-		draw_texture_rect_region(texture,Rect2(platform.position,Vector2(platform.size.x,42)),source)
+	if layout_texture != null:
+		var origin: Array = MAPS[map_index].layout_origin
+		var size: Array = MAPS[map_index].layout_size
+		draw_texture_rect(layout_texture,Rect2(origin[0],origin[1],size[0],size[1]),false)
+
 	for i in MAPS[map_index].neighbors.size():
 		var at := portal_point(i)
-		if at.x >= camera_x-110 and at.x <= camera_x+1262:
+		if Rect2(camera_x-140,camera_y-60,1432,988).has_point(at):
 			preload("res://prototypes/human_hometown/portal_visual.gd").paint(self,at,false,tide_time)
 	for enemy in model.enemies:
 		if enemy.hp > 0: _draw_enemy(enemy)
@@ -368,7 +391,7 @@ func _caption(at: Vector2, text: String, font_size: int) -> void:
 	draw_string(ThemeDB.fallback_font,at,text,HORIZONTAL_ALIGNMENT_LEFT,-1,font_size,CREAM)
 
 func _draw_creature(species: String, at: Vector2, size: float, facing: float, tint: Color, enemy: Dictionary = {}) -> void:
-	if at.x < camera_x-size*2 or at.x > camera_x+1152+size*2: return
+	if not _creature_in_view(at,size*2): return
 	if not sprite_cache.has(species): sprite_cache[species] = load("res://assets/monsters/tidekin/"+species+".png")
 	var texture: Texture2D = sprite_cache[species]
 	var dimensions := texture.get_size()*size/texture.get_height()
@@ -380,7 +403,7 @@ func _draw_creature(species: String, at: Vector2, size: float, facing: float, ti
 	draw_set_transform(Vector2(-camera_x,-camera_y))
 
 func _draw_enemy(enemy: Dictionary) -> void:
-	if enemy.x < camera_x-340 or enemy.x > camera_x+1492: return
+	if not _creature_in_view(Vector2(enemy.x,480),340): return
 	var at := Vector2(enemy.x,480)
 	var info := Region.creature(enemy.species)
 	_draw_creature(enemy.species,at,170 if enemy.boss else 94,enemy.facing,Color(1.6,1.4,1.2) if enemy.flash>0 else Color.WHITE,enemy)
@@ -419,3 +442,9 @@ func _activate_portal() -> bool:
 func _apply_test_destination(target: Dictionary, player) -> void:
 	model.carry_player_from(player)
 	enter_map(target.index,false)
+
+func _movement_pose() -> String:
+	return "climb" if model.climbing else super._movement_pose()
+
+func _creature_in_view(at: Vector2, margin: float) -> bool:
+	return Rect2(Vector2(camera_x,camera_y)-Vector2.ONE*margin,Vector2(1152,648)+Vector2.ONE*margin*2).has_point(at)
