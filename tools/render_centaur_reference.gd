@@ -19,7 +19,7 @@ func _render() -> void:
 	title.add_theme_color_override("font_color", Color("f2d181"))
 	canvas.add_child(title)
 	var crop := AtlasTexture.new()
-	crop.atlas = load("res://light-lineages.png")
+	crop.atlas = load("res://designs/references/light-lineages.png")
 	crop.region = Rect2(665, 385, 315, 380)
 	var reference := Sprite2D.new()
 	reference.texture = crop

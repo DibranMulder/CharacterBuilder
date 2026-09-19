@@ -80,7 +80,7 @@ no character, scenery, particles, text, or watermark.
   forked crown use the same pole socket and 126-pixel spell reach as the crystal
   staff, so it shares casting, locomotion, climbing, and projectile behavior.
 
-The built-in image generator used `light-lineages.png` as the authoritative Fae
+The built-in image generator used `designs/references/light-lineages.png` as the authoritative Fae
 design reference and the crystal staff only as an orientation/grip template.
 The final prompt requested one slender hand-carved warm-brown branch staff with
 a restrained leather wrap, uneven Y-shaped crown, one small green leaf, genuine
@@ -108,7 +108,7 @@ continuously and the free hand can follow it into the release pose.
   trigger grip sits at the local origin, its forward support grip is 34 pixels
   along the stock, and the guide rail reaches the 88-pixel projectile socket.
 
-The built-in image generator used `dark-lineages.png` as the authoritative
+The built-in image generator used `designs/references/dark-lineages.png` as the authoritative
 Goblin design reference and `bow_storybook.png` for the established wood, ink,
 and detail treatment. The final prompt requested exactly one unloaded compact
 hand crossbow with dark yew limbs and stock, a bronze trigger and fasteners, a
@@ -230,7 +230,7 @@ its genuine alpha, so changing equipment cannot leak the shader between items.
   both arm openings retain genuine alpha, so the shoulder and arm chains remain
   independently animated beneath them.
 
-The built-in image generator used `dark-lineages.png` as the authoritative
+The built-in image generator used `designs/references/dark-lineages.png` as the authoritative
 Duneborn reference, with the leather and plate runtime items establishing the
 project's detached garment silhouette and detail scale. The final generation
 prompt requested one front-facing sleeveless desert cuirass with overlapping
@@ -254,7 +254,7 @@ selects that back artwork through the shared equipment view-state contract.
   82×76 torso-socket exports. Their collar/front field and broad arm openings
   preserve Bogkin anatomy and leave the orange scarf independently swappable.
 
-The built-in image generator used `light-lineages.png` as the authoritative
+The built-in image generator used `designs/references/light-lineages.png` as the authoritative
 Bogkin outfit reference, with cloth armor defining the socket framing and
 leather armor supplying belt detail. The front prompt requested a loose
 warm-ivory homespun sleeveless tunic, tan bindings, brown belt, brass buckle,
@@ -275,7 +275,7 @@ background-extraction edit converted the generated checkerboard to true alpha.
   Their open torso centers and arm apertures preserve the Centaur's authored
   skin and articulated bow arms.
 
-The built-in image generator used `light-lineages.png` as the authoritative
+The built-in image generator used `designs/references/light-lineages.png` as the authoritative
 Centaur reference, with the leather armor defining the detached socket framing
 and the Fae tunic establishing split-panel detail scale. The front prompt
 requested antique-bronze shoulder pauldrons, a diagonal brown leather harness,
@@ -297,7 +297,7 @@ and arm holes—into genuine alpha.
   paired 82×76 torso-socket exports. The neck/front field and both arm sockets
   preserve the broad troll anatomy instead of baking blue skin into armor.
 
-The built-in image generator used `dark-lineages.png` as the authoritative
+The built-in image generator used `designs/references/dark-lineages.png` as the authoritative
 Frost Troll outfit reference and the authored leather armor as the detached
 socket/framing reference. The front prompt requested a broad charcoal-black
 worn hide vest with raw shoulder straps, tan laced chest inset, dull iron
@@ -320,7 +320,7 @@ were needed to turn its painted checkerboard into genuine alpha.
   82×76 torso-socket exports. The outer field, neck/arm apertures, and split
   tails use genuine alpha so anatomy and articulated limbs remain independent.
 
-The built-in image generator used `dark-lineages.png` as the authoritative
+The built-in image generator used `designs/references/dark-lineages.png` as the authoritative
 Frostling outfit reference and the existing cloth torso as the framing/socket
 reference. The front prompt requested a compact midnight-indigo quilted wool
 travel coat with an off-white fur collar, open fur-lined arm sockets, leather
@@ -340,7 +340,7 @@ front clasp and buckle for correct ladder-facing presentation.
   82×76 torso-socket exports. The front preserves open neck and arm apertures;
   the rear keeps both arm apertures open beneath its wrapped capelet collar.
 
-The built-in image generator used `light-lineages.png` as the authoritative Fae
+The built-in image generator used `designs/references/light-lineages.png` as the authoritative Fae
 outfit reference, with the cloth and lamellar runtime items supplying the
 project's detached silhouette, ink, and detail scale. The prompt requested one
 golden-yellow wrap tunic with long split panels, a compact brick-red shoulder
@@ -431,7 +431,7 @@ leather quiver with three ash shafts and muted blue fletching. All three prompts
 required genuine alpha and excluded anatomy, mannequins, other equipment,
 scenery, floors, shadows, text, checkerboards, and watermarks.
 
-The accepted second-generation long cape used `light-lineages.png` as the
+The accepted second-generation long cape used `designs/references/light-lineages.png` as the
 authoritative Human silhouette reference and both earlier capes as its clasp,
 ink, and textile references. The built-in prompt requested one detached
 royal-blue travel cape with two brass clasps, large painterly folds, a broad
@@ -498,7 +498,7 @@ waist/thigh/shin attachments and fully articulated knees.
 
 The selectable `ranger` cut also reuses the cloth kit, but retains the standard
 21-pixel thigh and 18-pixel shin widths. Its fixed olive-green dye matches the
-Human travel trousers in `light-lineages.png`; unlike lineage-dyed `cloth`, it
+Human travel trousers in `designs/references/light-lineages.png`; unlike lineage-dyed `cloth`, it
 keeps that forest palette when equipped by any race while preserving the same
 five articulated waist/thigh/shin attachments.
 

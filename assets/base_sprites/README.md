@@ -57,7 +57,7 @@ the left runtime sprite is a deterministic mirror of the right.
 
 The original shared head, extremity, and rear-tail generations returned chroma-magenta backdrops instead of preserving requested alpha. `BaseAnatomyVisual` owns that source defect and removes the backdrop in its internal shader. Its coverage is based on balanced red/blue dominance rather than distance from one exact key color, then subtracts the remaining magenta contribution from antialiased edge pixels. This prevents neon fringe without eroding warm-brown ink, hair, skin, or blue cloth. The Bogkin extremities and side centaur-tail preserve genuine transparency and therefore bypass chroma keying. Callers only use `setup(race_id, part_id, target_size)` and `set_back_view(enabled)`.
 
-Generation used the supplied `light-lineages.png` as a style and race-design reference. Final prompts requested polished hand-painted chibi 2D game sprites with warm dark-brown outlines, expressive anime-inspired eyes, soft cel-painted storybook shading, matching front/rear head views, detached anatomy only, and no equipment, bodies, text, scenery, or watermarks. The extremity prompt requested an open hand, gripping hand, bare foot, and centaur hoof on a uniform chroma background. The Duneborn prompt requested warm brown skin, human ears, and long practical dark braids. The side centaur-tail prompt requested one layered chestnut tail flowing left from a right-edge rump anchor. The rear-tail prompt used that sprite as an identity reference and requested the same tail hanging vertically from a centered top root for ladder climbing, on a uniform chroma background.
+Generation used the supplied `designs/references/light-lineages.png` as a style and race-design reference. Final prompts requested polished hand-painted chibi 2D game sprites with warm dark-brown outlines, expressive anime-inspired eyes, soft cel-painted storybook shading, matching front/rear head views, detached anatomy only, and no equipment, bodies, text, scenery, or watermarks. The extremity prompt requested an open hand, gripping hand, bare foot, and centaur hoof on a uniform chroma background. The Duneborn prompt requested warm brown skin, human ears, and long practical dark braids. The side centaur-tail prompt requested one layered chestnut tail flowing left from a right-edge rump anchor. The rear-tail prompt used that sprite as an identity reference and requested the same tail hanging vertically from a centered top root for ladder climbing, on a uniform chroma background.
 
 The Frost Troll `v2`, Centaur `v2`, Duneborn `v3`, and Frostling `v3` head
 sheets use one shared contour, cel-shadow, highlight, and texture language.
@@ -69,7 +69,7 @@ ice-blue eyes, and shaggy white hair. Their chroma-magenta fields continue to
 be removed inside `BaseAnatomyVisual`.
 
 `frost_troll_extremities.png` is a dedicated anatomy atlas generated from
-`dark-lineages.png`: an oversized open hand, palm-facing grip, back-of-fist
+`designs/references/dark-lineages.png`: an oversized open hand, palm-facing grip, back-of-fist
 weapon grip, and a broad three-toed foot. All hands enter from the left so the shared
 forearm socket and its existing 90-degree presentation continue to work for
 every weapon and shield. Unlike the shared human atlas, these sprites retain
@@ -81,7 +81,7 @@ handle; the shared human-base cell exposes only the thumbnail, not fingernails o
 the curled fingers. Palm-facing grip cells remain available for ladder climbing.
 
 `bogkin_extremities_storybook_v1.png` was generated from the supplied
-`light-lineages.png` design and the shared extremity atlas's socket layout. The
+`designs/references/light-lineages.png` design and the shared extremity atlas's socket layout. The
 final prompt requested exactly four isolated teal amphibian pieces in a 2×2
 sheet: a four-finger webbed palm, a compact front grip with a handle opening, a
 rear grip, and a broad webbed side-view foot, all with warm dark-brown ink and

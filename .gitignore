@@ -5,6 +5,14 @@
 .DS_Store
 artifacts/*.log
 
+# Regenerated captures and local benchmark output. Existing reviewed evidence
+# remains tracked; deliberately add new review evidence with git add -f.
+/artifacts/*.png
+/artifacts/*.json
+/artifacts/*.import
+__pycache__/
+*.py[cod]
+
 # Local exports.
 build/
 exports/

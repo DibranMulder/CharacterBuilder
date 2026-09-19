@@ -15,7 +15,7 @@ painted storybook style. These are original effects, not copies of another
 game's characters, logos or exact skill assets. No runtime effects are added
 by this design document.
 
-Visual references: `light-lineages.png`, `dark-lineages.png`, and
+Visual references: `designs/references/light-lineages.png`, `designs/references/dark-lineages.png`, and
 `designs/npc-interaction-mockup.png` at the repository root. Preserve their
 painted edges, warm materials, appealing proportions and legible equipment.
 Do not replace them with realistic explosions or uniformly neon particle clouds.

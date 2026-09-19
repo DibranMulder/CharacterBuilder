@@ -2,6 +2,17 @@
 
 This folder now contains a runnable Godot 4 character-builder prototype for the eight silhouettes in the supplied concept art. The lineage names follow the [game art-direction roster](docs/game/0008-playable-lineage-art-direction.md) and remain separate from stable rig IDs. See the [character-design index](docs/characters/README.md) for the naming map.
 
+## Repository layout
+
+- `src/`: shared character, gameplay, world, and UI code.
+- `prototypes/`: playable scenes and their local gameplay systems.
+- `assets/`: runtime artwork and asset provenance.
+- `designs/`: concept art, map layouts, and [original visual references](designs/references/README.md).
+- `docs/`: design records, character documentation, and performance reviews;
+  [DESIGN-0008](docs/game/0008-playable-lineage-art-direction.md) is the current lineage art-direction brief.
+- `tests/` and `tools/`: regression checks, capture scripts, and benchmarks.
+- `artifacts/`: [retained review evidence and regenerated captures](artifacts/README.md).
+
 ## Run it
 
 The first playable combat experiment is available separately:
@@ -332,7 +343,7 @@ and backpack. Equipment remains swappable. See the
 [Deep Goblin reference comparison](artifacts/goblin_reference_comparison.png) and
 [surface notes](docs/characters/goblin-surface-rig.md).
 
-Crag Troll now uses coordinated artwork drawn from `dark-lineages.png`: a
+Crag Troll now uses coordinated artwork drawn from `designs/references/dark-lineages.png`: a
 broad blue mottled body, heavy continuous arms and short legs, a connected
 tusked head, ragged charcoal jerkin and leather bracers. See the
 [reference comparison](artifacts/troll_reference_comparison.png) and
@@ -344,7 +355,7 @@ angular insect wings. Equipment remains swappable. See the
 [Aeralith reference comparison](artifacts/fae_reference_comparison.png) and
 [surface and verification notes](docs/characters/fae-surface-rig.md).
 
-Grove Centaur now uses new artwork drawn from `light-lineages.png`: a bare upper body,
+Grove Centaur now uses new artwork drawn from `designs/references/light-lineages.png`: a bare upper body,
 pointed ears, waist-length braided hair, a compact barrel, sturdy legs and small
 dark hooves. The face, torso and arms share one coordinated atlas. The horse
 body, near legs and hooves now form one continuous painted mesh; a matching

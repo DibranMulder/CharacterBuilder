@@ -1,6 +1,6 @@
 # Sunscour reference-art surfaces
 
-The third character in `dark-lineages.png` guides the bronze lamellar shoulder
+The third character in `designs/references/dark-lineages.png` guides the bronze lamellar shoulder
 mantle, rust-red split robe, brown straps and boots, cape, and burgundy wrapped
 headgear. The new anatomy and outfit paintings are
 `duneborn_reference_base_v4.png` and `duneborn_reference_clothes_v4.png`.

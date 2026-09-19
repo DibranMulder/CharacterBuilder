@@ -7,7 +7,7 @@ chroma fringes. Atlas clipping isolates the selected head view. The shader also
 respects character tint and opacity.
 
 The scarf uses `assets/equipment/scarf_painted_atlas.png`, a paired front/rear
-painting based on the human collar in `light-lineages.png`. It replaces the small
+painting based on the human collar in `designs/references/light-lineages.png`. It replaces the small
 tubular-ring artwork with broad cloth folds, a raised rear collar, and a brass
 clasp. The rear view has no front clasp. Source art remains intact; the renderer
 maps each region onto the cloth mesh and applies lineage dye.

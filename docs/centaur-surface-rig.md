@@ -1,7 +1,7 @@
 # Grove Centaur painted surface rig
 
 The upper artwork is `centaur_reference_upper_v3.png`, drawn using
-`light-lineages.png` itself as the reference. The side horse anatomy now uses
+`designs/references/light-lineages.png` itself as the reference. The side horse anatomy now uses
 `centaur_equine_unified_v4.png`: a single painting of the barrel, withers, two
 near legs and their hooves. The older equine atlas remains for the tail and rear
 climbing body, but its separate side legs and hooves are no longer rendered.
@@ -12,7 +12,7 @@ magenta key. The head adapter sizes
 the face independently from its long hair, placing the hair behind the chest in
 profile and over the back when climbing.
 
-Proportions follow `light-lineages.png`: the humanoid torso is 70×70 rather than
+Proportions follow `designs/references/light-lineages.png`: the humanoid torso is 70×70 rather than
 54×76, arms are 22 units wide, and the complete side horse painting fits a
 116×110 bind rectangle, including the legs and hooves. The tail is 45×66.
 The head is lowered 9

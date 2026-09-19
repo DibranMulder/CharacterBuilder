@@ -18,7 +18,7 @@ func _render() -> void:
 		label.add_theme_font_size_override("font_size", 22)
 		canvas.add_child(label)
 	var atlas := AtlasTexture.new()
-	atlas.atlas = load("res://dark-lineages.png")
+	atlas.atlas = load("res://designs/references/dark-lineages.png")
 	atlas.region = Rect2(55, 280, 530, 440)
 	var reference := Sprite2D.new()
 	reference.texture = atlas

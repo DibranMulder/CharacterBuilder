@@ -1,6 +1,6 @@
 # Deep Goblin reference-art surfaces
 
-The second character in `dark-lineages.png` guides the goblin's large sideways
+The second character in `designs/references/dark-lineages.png` guides the goblin's large sideways
 ears, amber eyes, olive-green skin, compact body, purple neck scarf, worn
 leather outfit, brass forehead goggles and small backpack. New anatomy and
 clothing paintings are stored in `goblin_reference_base_v2.png` and

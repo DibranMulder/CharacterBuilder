@@ -1,6 +1,6 @@
 # Rimeborn reference-art surfaces
 
-The rightmost character in `dark-lineages.png` guides the gray-blue anatomy,
+The rightmost character in `designs/references/dark-lineages.png` guides the gray-blue anatomy,
 large icy eyes, shaggy white hair, navy coat, ivory fur trim and bedroll pack.
 The coordinated paintings are `frostling_reference_base_v4.png` and
 `frostling_reference_clothes_v4.png`. Original assets are preserved.

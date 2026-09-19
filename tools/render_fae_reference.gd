@@ -19,7 +19,7 @@ func _render() -> void:
 		label.add_theme_color_override("font_color", Color("f2d181"))
 		canvas.add_child(label)
 	var atlas := AtlasTexture.new()
-	atlas.atlas = load("res://light-lineages.png")
+	atlas.atlas = load("res://designs/references/light-lineages.png")
 	atlas.region = Rect2(965, 432, 366, 335)
 	var reference := Sprite2D.new()
 	reference.texture = atlas

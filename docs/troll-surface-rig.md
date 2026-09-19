@@ -1,6 +1,6 @@
 # Crag Troll reference-art surfaces
 
-The leftmost character in `dark-lineages.png` guides the new troll: broad
+The leftmost character in `designs/references/dark-lineages.png` guides the new troll: broad
 slate-blue mottled anatomy, a friendly tusked face, dark crest, thick arms,
 short sturdy legs, oversized hands and bare feet. Two coordinated paintings
 live in `troll_reference_base_v3.png` and `troll_reference_clothes_v3.png`.

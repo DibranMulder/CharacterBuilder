@@ -1,6 +1,6 @@
 # Aeralith reference-art surfaces
 
-The Aeralith is rebuilt from the rightmost character in `light-lineages.png`, using
+The Aeralith is rebuilt from the rightmost character in `designs/references/light-lineages.png`, using
 three new paintings: `fae_reference_base_v2.png`,
 `fae_reference_clothes_v2.png`, and `fae_reference_wings_v2.png`. The older
 sources are preserved. The new head and ponytail, cream base torso, arms, legs
