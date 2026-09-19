@@ -13,10 +13,11 @@ with sync_playwright() as pw:
  data=json.loads((OUT/'manifest.json').read_text());rows=data['maps'];report=[]
  for d in rows:
   if not args.all and d['id'] not in ids:continue
+  page.set_viewport_size({'width':d['viewBox'][2],'height':d['viewBox'][3]})
   page.goto((OUT/d['region']/(d['id']+'.svg')).as_uri())
   assert not page.locator('parsererror').count(),d['id']
   # Browser-computed text bounds catch long metadata labels escaping the sheet.
-  outside=page.evaluate('''() => [...document.querySelectorAll('text')].filter(e=>{const b=e.getBBox();return b.x<0 || b.y<0 || b.x+b.width>2601 || b.y+b.height>1541}).map(e=>e.textContent)''')
+  outside=page.evaluate('''() => [...document.querySelectorAll('text')].filter(e=>{const b=e.getBBox();return b.x<0 || b.y<0 || b.x+b.width>document.documentElement.viewBox.baseVal.width+1 || b.y+b.height>document.documentElement.viewBox.baseVal.height+1}).map(e=>e.textContent)''')
   if outside:raise RuntimeError(d['id']+' out-of-sheet text: '+str(outside))
   page.screenshot(path=str(out/(d['id']+'.png')))
   report.append(d['id'])
@@ -32,16 +33,16 @@ with sync_playwright() as pw:
    for batch in range(0,len(group),10):
     cells=''.join(f'<section><h2>{html.escape(d["name"])}</h2><img src="{(out/(d["id"]+".png")).as_uri()}"></section>' for d in group[batch:batch+10])
     page.set_viewport_size({'width':1800,'height':2900})
-    page.set_content('<html><style>body{margin:0;padding:24px;background:#f7f1e4;color:#25434a;font:20px Arial}main{display:grid;grid-template-columns:1fr 1fr;gap:16px}h1{font:36px Georgia}h2{font:24px Georgia;margin:12px}section{border:1px solid #b7c8bc;background:#fff}img{width:100%;display:block}</style><h1>'+region+' · maps '+str(batch+1)+'–'+str(min(batch+10,len(group)))+'</h1><main>'+cells+'</main></html>')
+    page.set_content('<html><style>body{margin:0;padding:24px;background:#f7f1e4;color:#25434a;font:20px Arial}main{display:grid;grid-template-columns:1fr 1fr;gap:16px}h1{font:36px Georgia}h2{font:24px Georgia;margin:12px}section{border:1px solid #b7c8bc;background:#fff}img{width:100%;height:520px;object-fit:contain;display:block}</style><h1>'+region+' · maps '+str(batch+1)+'–'+str(min(batch+10,len(group)))+'</h1><main>'+cells+'</main></html>')
     page.wait_for_function('''() => [...document.images].every(i=>i.complete && i.naturalWidth>0)''')
-    page.locator('body').screenshot(path=str(out/f'contact-{region}-{batch//10+1}.png'))
+    page.screenshot(path=str(out/f'contact-{region}-{batch//10+1}.png'),full_page=True)
  # Test the catalogue without network access or a local server.
  page.set_viewport_size({'width':1500,'height':1000});page.goto((OUT/'index.html').as_uri())
  assert page.locator('article').count()==80
  page.select_option('#region','tidekin_sea');assert page.locator('article:visible').count()==39
  page.select_option('#group','village');assert page.locator('article:visible').count()==7
- page.select_option('#region','');page.select_option('#group','');page.fill('#search','Winding Stair');assert page.locator('article:visible').count()==1
+ page.select_option('#region','');page.select_option('#group','');page.fill('#search','Winding Stair');assert page.locator('article:visible').count()==2
  page.fill('#search','');page.screenshot(path=str(out/'catalogue.png'))
- (OUT/'render-review.json').write_text(json.dumps({'renderer':'Chromium via Playwright','rendered_maps':report,'overviews':4,'xml_parser_errors':0,'detail_text_outside_sheet':0,'catalogue_filters':'80 all / 39 Tidekin / 7 Tidekin village / 1 Winding Stair'},indent=2)+'\n')
+ (OUT/'render-review.json').write_text(json.dumps({'renderer':'Chromium via Playwright','rendered_maps':report,'overviews':4,'xml_parser_errors':0,'detail_text_outside_sheet':0,'catalogue_filters':'80 all / 39 Tidekin / 7 Tidekin village / 2 mentioning Winding Stair'},indent=2)+'\n')
  print(f'Rendered {len(report)} SVG maps, four overviews; catalogue filters passed')
  browser.close()

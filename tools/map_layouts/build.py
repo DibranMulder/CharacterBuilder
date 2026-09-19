@@ -286,6 +286,12 @@ def npc_marker(x,y,name,index,p):
 
 
 def draw_map(d):
+ if d['region']=='tidekin_sea':
+  from tidekin import draw_tidekin
+  return draw_tidekin(d,NAMES)
+ if d['id'] in ['tower','stair','solar']:
+  from tower import draw_tower
+  return draw_tower(d,NAMES)
  p=PAL[d['region']];s=header(d,p)
  defs=props(p)+tag('linearGradient',tag('stop',offset='0%',stop_color=p['sky'])+tag('stop',offset='100%',stop_color=p['paper']),id='sky',x2='0',y2='1')+tag('clipPath',rect(40,195,2520,995,'white',rx=20),id='scene-clip')
  s+=f'<defs>{defs}</defs>'

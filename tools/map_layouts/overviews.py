@@ -1,11 +1,13 @@
 """Illustrated hometown cartography and complete region progression maps."""
 import json,math,textwrap
 from build import *
+from tidekin import overview_icon, tide_symbols, P as SEA_PALETTE
 TOWN_POS={
 'open_lands':{'square':(430,1060),'market':(310,620),'apothecary':(700,760),'trainers':(730,1390),'inn':(350,1550),'approach':(1020,1030),'gatehouse':(1400,900),'barracks':(1430,560),'service':(1280,1310),'hall':(1800,700),'king':(2170,510),'archive':(2180,900),'tower':(1710,1500),'stair':(2050,1390),'solar':(2380,1240)},
 'tidekin_sea':{'land':(300,1210),'cm':(330,460),'lag':(770,840),'ka':(380,820),'dy':(820,1350),'inn':(1220,1510),'caus':(1220,820),'gs':(1570,680),'rb':(1380,360),'cw':(1830,350),'ph':(1960,710),'tc':(2310,420),'dv':(2350,860),'sc':(1930,1030),'fn':(2210,1230),'cr':(1960,1450),'ps':(2300,1630)}}
 
 def icon(x,y,d,p,scale=1):
+ if d['region']=='tidekin_sea':return overview_icon(x,y,d,p,scale)
  shape=d['shape'];k='shell' if d['region']=='tidekin_sea' else 'house'
  if shape=='roofstreet':
   s=house(-105,-73,92,70,p,'shop')+house(-24,-103,100,100,p,'shop')+house(62,-63,70,60,p,'shop')+use('crate',-24,-37,40,40)
@@ -53,10 +55,12 @@ def label_block(x,y,name,p,size=22,maxwidth=24):
 def background(region,w,h,p):
  s=rect(0,0,w,h,p['paper'])+rect(35,190,w-70,h-390,p['sky'],None,rx=28)
  if region=='tidekin_sea':
-  s+=path(f'M100 250Q570 170 790 410Q1100 440 1300 200H{w-80}V{h-350}Q2000 1350 1480 1520Q930 1260 410 1600Q100 1370 100 250Z',p['mist'],p['far'],4)
-  s+=ellipse(760,940,435,400,p['water'],p['far'],4)
+  s+=rect(50,205,w-100,h-420,p['water'],None,rx=45)
+  for yy in range(300,h-250,145):
+   for xx in range(100+(yy%130),w-180,280):s+=path(f'M{xx} {yy}q55-13 115 0',stroke=p['paper'],sw=3,opacity='.3')
+  s+=ellipse(760,940,435,400,p['cloth'],p['far'],4,opacity='.45')
   for j in range(3):s+=ellipse(760,940,330-j*75,285-j*65,'none',p['paper'],3,opacity='.35')
-  for x,y in [(1500,1500),(1690,1670),(2250,1350)]:s+=use('coral',x,y,95,130)
+  for x,y in [(1500,1500),(1690,1670),(2250,1350)]:s+=use('sea-shell',x,y,95,130)
  else:
   s+=path(f'M70 530Q530 140 920 380Q1180 190 1530 310Q2150 80 {w-70} 410V{h-270}H70Z',p['mist'],p['far'],4)
   s+=path(f'M55 1620Q760 1690 1020 1270T{w-50} 1430',stroke=p['water'],sw=78)
@@ -66,11 +70,11 @@ def background(region,w,h,p):
  return s
 
 def town(region,maps):
- p=PAL[region];w,h=2600,1950
+ p=SEA_PALETTE if region=='tidekin_sea' else PAL[region];w,h=2600,1950
  title='Tidewharf · Pearl Citadel · Sunken Shrine' if region=='tidekin_sea' else 'Wendmere · King’s Keep · Princess’s Tower'
  nodes=[d for d in maps if d['region']==region and d['group']!='wilds']
  positions={d['id']:TOWN_POS[region][d['short']] for d in nodes}
- s=svg_open(title,w,h)+tag('defs',props(p))+background(region,w,h,p)
+ s=svg_open(title,w,h)+tag('defs',props(p)+(tide_symbols() if region=='tidekin_sea' else ''))+background(region,w,h,p)
  s+=txt(64,67,'HOMETOWN / ILLUSTRATED REGION PLAN',19,p['cloth'],letter_spacing=4)+txt(64,130,title,43,p['ink'],'Georgia, serif')
  s+=txt(2500,75,f'{len(nodes)} MAPS',27,p['ink'],text_anchor='end')
  groups={'village':('TIDEWHARF' if region=='tidekin_sea' else 'WENDMERE',260,290),'stronghold':('PEARL CITADEL' if region=='tidekin_sea' else 'THE KING’S KEEP',1430,245),'story':('THE SUNKEN SHRINE' if region=='tidekin_sea' else 'THE PRINCESS’S TOWER',1800,1800)}
@@ -109,10 +113,10 @@ def town(region,maps):
 
 
 def full_region(region,maps):
- p=PAL[region];w,h=3000,2500
+ p=SEA_PALETTE if region=='tidekin_sea' else PAL[region];w,h=3000,2500
  nodes=[d for d in maps if d['region']==region];homes=[d for d in nodes if d['group']!='wilds'];wild=[d for d in nodes if d['group']=='wilds']
  title='Tidekin Sea' if region=='tidekin_sea' else 'Human Open Lands'
- s=svg_open(title+' — all region maps',w,h)+tag('defs',props(p))+rect(0,0,w,h,p['paper'])
+ s=svg_open(title+' — all region maps',w,h)+tag('defs',props(p)+(tide_symbols() if region=='tidekin_sea' else ''))+rect(0,0,w,h,p['paper'])
  s+=txt(65,70,'COMPLETE REGIONAL ATLAS / ALL MAPS',20,p['cloth'],letter_spacing=4)+txt(65,138,title,60,p['ink'],'Georgia, serif')
  s+=txt(2935,100,f'{len(nodes)} detailed SVG layouts',28,p['ink'],text_anchor='end')
  # Cartographic islands distinguish social home, starter coast and later-return routes.
